@@ -1,0 +1,13 @@
+<!-- public/oauth-resp.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+        window.opener?.postMessage(window.location.href, '*');
+        window.close();
+    </script>
+</head>
+<body>
+Redirecting...
+</body>
+</html>
