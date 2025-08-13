@@ -1,6 +1,6 @@
 // src/App.tsx
-import { useEffect, useState } from 'react';
-import {setup, getModule, setAPI_Key, querySystems} from '@placeos/ts-client';
+import {useEffect, useState} from 'react';
+import {getModule, querySystems, setAPI_Key, setup} from '@placeos/ts-client';
 import {ControlStateProvider} from "./hooks/ControlStateContext.tsx";
 import MainView from "./components/MainView.tsx";
 
@@ -9,26 +9,26 @@ function App() {
     const [power, setPower] = useState<boolean>(false);
     const KEY = import.meta.env.VITE_APP_KEY;
     window.debug = true;
-    
+
     useEffect(() => {
         (async () => {
             try {
-                
+
                 // Setup PlaceOS in mock mode
                 await setup({
                     host: 'ucla-dev.placeos.run',
-                    auth_uri: '/auth/oauth/authorize', 
+                    auth_uri: '/auth/oauth/authorize',
                     token_uri: '/auth/oauth/token',
                     redirect_uri: 'http://localhost:5174/oauth-resp.html',
-                    scope: 'admin', 
-                    handle_login: false, 
-                    use_iframe: false, 
+                    scope: 'admin',
+                    handle_login: false,
+                    use_iframe: false,
                     storage: 'local',
                     mock: false,
                     secure: true,
                     token_header: true
                 });
-                
+
                 //set api key
                 setAPI_Key(KEY);
                 // setAPI_Key(api_key);
@@ -43,21 +43,21 @@ function App() {
                 //         }
                 //     ]
                 // });
-                
-                querySystems({ limit: 10 }).toPromise().then((res) => {
+
+                querySystems({limit: 10}).toPromise().then((res) => {
                     console.log(res!.data);
                 });
-                
+
                 const mod = getModule('sys-Ic6SL_lDwR', 'System');
                 const powerBinding = mod.binding('active');
                 console.log('Initial power value:', powerBinding);
                 const unbind = powerBinding.bind();
-                const powerSub = powerBinding.listen().subscribe( 
-                value => {
-                    console.log("Power Value: ", value);
-                    if (value != null)
-                        setPower(value);
-                });
+                const powerSub = powerBinding.listen().subscribe(
+                    value => {
+                        console.log("Power Value: ", value);
+                        if (value != null)
+                            setPower(value);
+                    });
 
                 const tab = getModule('sys-Ic6SL_lDwR', 'System');
                 const tabBinding = tab.binding('tabs');
@@ -67,8 +67,6 @@ function App() {
                     value => {
                         console.log("Tab Value: ", value);
                     });
-                    
-
 
 
                 // const mod = getModule(id, 'System');
@@ -76,7 +74,7 @@ function App() {
                 // const unbind = binding.bind();
                 // this.subscription(`binding:${name}`, unbind);
                 // return binding.listen();
-                    setReady(true);
+                setReady(true);
 
                 return () => {
                     powerSub.unsubscribe();
@@ -100,10 +98,10 @@ function App() {
             (err) => console.log("Error: ", err)
         );
     };
-    
+
     console.log("toggle power", togglePower);
 
-    
+
     return (
         // <div className="p-4">
         //     <div className="mt-4">
@@ -118,7 +116,7 @@ function App() {
         //     </div>
         // </div>
         <ControlStateProvider systemID={"sys-Ic6SL_lDwR"}><MainView></MainView></ControlStateProvider>
-        
+
     );
 }
 

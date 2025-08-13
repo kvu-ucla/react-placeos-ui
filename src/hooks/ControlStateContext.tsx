@@ -1,5 +1,5 @@
-import React, { createContext, useContext } from 'react';
-import { useControlState, type ControlState } from '../hooks/useControlState';
+import React, {createContext, useContext} from 'react';
+import {type ControlState, useControlState} from '../hooks/useControlState';
 
 const ControlContext = createContext<ControlState | null>(null);
 

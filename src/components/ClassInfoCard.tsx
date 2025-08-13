@@ -23,25 +23,25 @@ export function ClassInfoCard() {
 
         return () => clearInterval(interval); // cleanup
     }, [meetingDetails.classTime]);
-    
+
     useEffect(() => {
         const dummyData = {
             classTime: "12:30 PM",
             classTitle: "Introduction to Psychology",
             instructor: "Professor Jordan Davis",
         }
-        
+
         //TODO insert live data from registrar API here
-        
+
         setMeetingDetails(dummyData);
     }, [])
 
     useEffect(() => {
-        
+
     }, []);
 
     function getCountdownToTime(timeString: string): string {
-        
+
         // Parse the input time string like "12:30"
         const [hourStr, minuteStr] = timeString.split(':');
         const inputHour = parseInt(hourStr, 10);
@@ -64,7 +64,7 @@ export function ClassInfoCard() {
         if (diffMins === 1) return 'Starts in 1 minute';
         return `Starts in ${diffMins} minutes`;
     }
-    
+
     return (
         <div className="card bg-white mt-6 p-6 rounded shadow w-full max-w-4xl min-h-96 text-center">
             <div className="mt-8 text-3xl flex items-center justify-center gap-2">
@@ -82,7 +82,7 @@ export function ClassInfoCard() {
                 <span className="text-xs mx-2">●</span>
                 <div>Upcoming class at 4:00 PM</div>
             </div>
-            
+
         </div>
     );
 }
