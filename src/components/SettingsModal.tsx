@@ -431,7 +431,7 @@ function Section({
 }
 
 function MicControl({ mic }: { mic: number }) {
-  const isEven = mic % 2 === 0;
+  // const isEven = mic % 2 === 0;
   const muted = mic % 2 !== 0;
   const volume = muted ? 0 : 65;
 

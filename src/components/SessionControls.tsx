@@ -145,7 +145,7 @@ function ControlCard({
   detailsButton,
 }: {
   label: string;
-  icon?: { On: string; Off: string };
+  icon?: any;
   disabled?: boolean;
   detailsButton?: () => void;
   buttonAction?: () => void;
