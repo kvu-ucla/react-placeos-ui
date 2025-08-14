@@ -16,7 +16,7 @@ export const IconType = {
   Share: {
     On: "material-symbols:screen-share-outline-rounded",
     Off: "material-symbols:stop-screen-share-outline-rounded",
-  },
+  }
 };
 
 export default function SessionControls() {
@@ -32,6 +32,8 @@ export default function SessionControls() {
   } = useZoomModule();
   const { showModal } = useModalContext();
 
+  console.log('SessionControls recording =', recording);
+
   return (
     <div className="bg-gradient-to-r from-[#0331A9] to-[#2F69FF] rounded-lg px-13 py-7.5 shadow text-white">
       <div className="inline-flex justify-between items-center w-full mb-4">
@@ -42,7 +44,7 @@ export default function SessionControls() {
               <div className="absolute inline-flex h-4 w-4 rounded-full bg-green-400 opacity-75 animate-ping"></div>
               <div className="relative h-4 w-4 bg-green-400 rounded-full"></div>
             </div>
-            <span className="font-semibold">In-Meeting</span>
+            <span className="font-semibold">In Meeting</span>
           </div>
         )}
       </div>
@@ -72,7 +74,6 @@ export default function SessionControls() {
         />
         <ControlCard
           label="Meeting Controls"
-          icon={IconType.Share}
           buttonAction={() => showModal("settings", { tab: "Status" })}
         />
       </div>
@@ -144,7 +145,7 @@ function ControlCard({
   detailsButton,
 }: {
   label: string;
-  icon: { On: string; Off: string };
+  icon?: { On: string; Off: string };
   disabled?: boolean;
   detailsButton?: () => void;
   buttonAction?: () => void;
@@ -201,7 +202,7 @@ function ControlCard({
                   height={64}
                 />
               ))}
-            {!hasButtonState && (
+            {icon == null && (
               <img
                 src="/assets/zoom_logo.svg"
                 alt="Logo"

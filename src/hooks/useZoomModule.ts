@@ -34,7 +34,9 @@ export function useZoomModule(mod = 'Zoom') {
     const [user, setUser] = useState<any>(null);
 
     const handleActiveRecordings = (data: string[] | null | undefined) => {
-        setRecording(!!(data && data.length > 0));
+        const value = !!(data && data.length > 0)
+        console.log("new recording value: ", value);
+        setRecording(value);
     }
     
     const clearTimeoutsRef = useRef<Record<string, number>>({});

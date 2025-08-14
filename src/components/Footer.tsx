@@ -1,41 +1,63 @@
 // src/components/Footer.tsx
-import {useControlContext} from "../hooks/ControlStateContext.tsx";
-import {Icon} from "@iconify/react";
-import {useZoomModule} from "../hooks/useZoomModule.ts";
+import { useControlContext } from "../hooks/ControlStateContext.tsx";
+import { Icon } from "@iconify/react";
+import { useZoomModule } from "../hooks/useZoomModule.ts";
 
 export default function Footer() {
+  const { togglePower } = useControlContext();
+  const { recording } = useZoomModule();
 
-    const {togglePower} = useControlContext();
-    const {recording} = useZoomModule();
-
-
-    return (
-        <footer className="min-h-38 bg-blue-900 text-white py-4 px-8 flex justify-end items-center">
-            {recording && <div className="flex flex-col p-2">
-                <div className="inline-flex justify-evenly items-center bg-gray-400/15 rounded-lg p-4">
-                    <div className="h-4 w-4 bg-green-500 rounded-full"></div>
-                    <div className="text-2xl">BruinCast On</div>
-                </div>
-                <div className="text-lg text-gray-300">Recording powered by BruinCast</div>
-            </div>}
-
-            <div className="flex items-center space-x-2">
-                <div className="flex items-center mr-8">
-                    <div className="text-3xl">Speaker Volume</div>
-                    <Icon icon="material-symbols:volume-down-outline-rounded" width={128} height={128} />
-                    <div className="w-full overflow-hidden">
-                        <input type="range"
-                               className="w-full range rounded-3xl [--range-thumb:white] text-blue-300 range-xl touch-none"/>
-                    </div>
-                    <Icon icon="material-symbols:volume-up-outline-rounded" width={128} height={128} />
-                </div>
-
-                <button onClick={togglePower} className="btn btn-error text-white text-3xl p-8 rounded-lg font-medium">
-                    End Meeting
-                </button>
+  console.log("Footer recording =", recording);
+  return (
+    <footer className="min-h-38 bg-blue-900 text-white py-4 px-8 flex justify-between items-center">
+      {recording && (
+        <div className="flex flex-col items-center p-2">
+          <div className="inline-flex justify-evenly items-center bg-gray-400/15 rounded-[10px] px-4 py-4">
+            <div className="relative">
+              <div className="absolute inline-flex h-4 w-4 rounded-full bg-red-400 opacity-75 animate-ping"></div>
+              <div className="relative h-4 w-4 bg-red-400 rounded-full mr-4"></div>
             </div>
+            <div className="font-semibold">BruinCast Live!</div>
+          </div>
+          <div className="text-lg text-gray-300">
+            Recording powered by BruinCast
+          </div>
+        </div>
+      )}
+      {!recording && (
+        <div className="flex flex-col items-center p-2">
+          <div className="inline-flex justify-evenly items-center bg-[#001A5C] rounded-[10px] px-4 py-4">
+            <div className="h-4 w-4 bg-[#BFC2C7] rounded-full mr-4"></div>
+            <div className="font-semibold">Not Bruincasted</div>
+          </div>
+          <div className="text-lg text-gray-300">
+            Recording powered by BruinCast
+          </div>
+        </div>
+      )}
+      <div className="flex items-center space-x-2">
+        <div className="flex items-center mr-8">
+          <div className="text-3xl">Speaker Volume</div>
+          <Icon
+            icon="material-symbols:volume-up-outline-rounded"
+            width={128}
+            height={128}
+          />
+          <div className="ml-4 w-full overflow-hidden">
+            <input
+              type="range"
+              className="w-full range rounded-3xl [--range-thumb:white] text-blue-300 range-xl touch-none"
+            />
+          </div>
+        </div>
 
-
-        </footer>
-    );
+        <button
+          onClick={togglePower}
+          className="btn btn-error text-white text-3xl p-8 rounded-lg font-medium"
+        >
+          End Meeting
+        </button>
+      </div>
+    </footer>
+  );
 }

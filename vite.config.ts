@@ -1,55 +1,67 @@
-import {defineConfig} from 'vite';
+import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite'
+import { defineConfig, type ProxyOptions } from 'vite';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
+//////////////////////////////////////////////////////////////
+///////////////////   Proxy Configuration   //////////////////
+//////////////////////////////////////////////////////////////
+
+/** FQDN to proxy requests. i.e. No protocol and path should be in the value */
+const domain = 'ucla-dev.placeos.run';
+/** Whether the proxied endpoints use SSL */
+const secure = true;
+/** Whether the SSL certificate used is valid on the internet */
+const valid_ssl = true;
+
+const context = [
+    '/control',
+    '/auth',
+    '/api',
+    '/styles',
+    '/scripts',
+    '/login',
+    '/backoffice',
+    '/r',
+];
+const ws_context = ['/control/websocket', '/api'];
+
+const PROXY_MAP: Record<string, ProxyOptions> = {};
+
+const baseConfig: ProxyOptions = {
+    target: `http${secure ? 's' : ''}://${domain}`,
+    secure: valid_ssl,
+    changeOrigin: true,
+};
+
+context.forEach((path) => {
+    PROXY_MAP[path] = { ...baseConfig };
+});
+
+ws_context.forEach((path) => {
+    PROXY_MAP[path] = { ...baseConfig, ws: true };
+});
+
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+
+// https://vite.dev/config/
 export default defineConfig({
-    plugins: [react(), tailwindcss()],
-    base: "./",
+    plugins: [
+        react(),
+        tailwindcss(),
+        viteStaticCopy({
+            targets: [
+                {
+                    src: 'node_modules/@placeos/ts-client/dist/oauth-resp.html',
+                    dest: '.',
+                },
+            ],
+        }),
+    ],
+    base: './',
     server: {
-        proxy: {
-            '/control/**': {
-                target: 'https://ucla-dev.placeos.run',
-                secure: true,
-                changeOrigin: true
-            },
-            '/auth/**': {
-                target: 'https://ucla-dev.placeos.run',
-                secure: true,
-                changeOrigin: true
-            },
-            '/api/**': {
-                target: 'https://ucla-dev.placeos.run',
-                secure: true,
-                changeOrigin: true,
-                ws: true
-            },
-            '/styles/**': {
-                target: 'https://ucla-dev.placeos.run',
-                secure: true,
-                changeOrigin: true
-            },
-            '/scripts/**': {
-                target: 'https://ucla-dev.placeos.run',
-                secure: true,
-                changeOrigin: true
-            },
-            '/login/**': {
-                target: 'https://ucla-dev.placeos.run',
-                secure: true,
-                changeOrigin: true
-            },
-            '/backoffice/**': {
-                target: 'https://ucla-dev.placeos.run',
-                secure: true,
-                changeOrigin: true
-            },
-            '/control/websocket/**': {
-                target: 'https://ucla-dev.placeos.run',
-                secure: true,
-                changeOrigin: true,
-                ws: true
-            }
-
-        },
+        proxy: PROXY_MAP,
     },
 });

@@ -1,0 +1,1089 @@
+
+{
+  "function_schemas": [
+    {
+      "function": "set_power_state",
+      "description": "power on or off the meeting room. Send true for power on (startup) or false for power off (shutdown)",
+      "parameters": {
+        "state": {
+          "type": "boolean",
+          "title": "Bool"
+        }
+      }
+    },
+    {
+      "function": "power?",
+      "description": "query the system power state?",
+      "parameters": {}
+    },
+    {
+      "function": "inputs_and_outputs",
+      "description": "available inputs and outputs. Route using id keys",
+      "parameters": {}
+    },
+    {
+      "function": "route_input",
+      "description": "route to present an input to an output / display. Don't guess, look up available input and output ids",
+      "parameters": {
+        "input_id": {
+          "type": "string",
+          "title": "String"
+        },
+        "output_id": {
+          "type": "string",
+          "title": "String"
+        }
+      }
+    },
+    {
+      "function": "route_all",
+      "description": "route an input for presentation to all displays. Don't guess, look up available input ids",
+      "parameters": {
+        "input_id": {
+          "type": "string",
+          "title": "String"
+        }
+      }
+    },
+    {
+      "function": "unroute",
+      "description": "blank a display / output, sometimes called a video mute",
+      "parameters": {
+        "output": {
+          "type": "string",
+          "title": "String"
+        }
+      }
+    },
+    {
+      "function": "unroute_all",
+      "description": "blank all displays / outputs",
+      "parameters": {}
+    },
+    {
+      "function": "set_volume",
+      "description": "change the room volume",
+      "parameters": {
+        "level": {
+          "anyOf": [
+            {
+              "type": "number",
+              "format": "Float64"
+            },
+            {
+              "type": "integer",
+              "format": "Int32"
+            }
+          ],
+          "title": "(Float64|Int32)"
+        }
+      }
+    },
+    {
+      "function": "volume?",
+      "description": "query the current volume, useful to know when asked to change the volume relatively",
+      "parameters": {}
+    },
+    {
+      "function": "audio_mute",
+      "description": "mute or unmute the room audio",
+      "parameters": {
+        "state": {
+          "type": "boolean",
+          "title": "Bool"
+        }
+      }
+    },
+    {
+      "function": "audio_muted?",
+      "description": "check if the room audio is muted",
+      "parameters": {}
+    },
+    {
+      "function": "lighting_scenes",
+      "description": "returns the list of available lighting scenes",
+      "parameters": {}
+    },
+    {
+      "function": "lighting_scene?",
+      "description": "query the current lighting scene",
+      "parameters": {}
+    },
+    {
+      "function": "set_lighting_scene",
+      "description": "set a new lighting scene. Remember to list available lighting scenes before calling",
+      "parameters": {
+        "scene": {
+          "type": "string",
+          "title": "String"
+        }
+      }
+    }
+  ],
+  "active": false,
+  "available_cameras": [
+    "Camera_1",
+    "Camera_2"
+  ],
+  "local_inputs": [
+    "ECP319_Lectern_Input_HDMI",
+    "ECP319_Input_1_HDMI",
+    "ECP319_Input_2_HDMI",
+    "ECP319_Input_3_HDMI",
+    "ECP319_Input_4_HDMI",
+    "ECP319_Input_5_HDMI",
+    "ECP319_Document_Cam",
+    "ECP319_Wireless_Presenter"
+  ],
+  "output/319_Preview_Monitor": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1.7",
+    "source": "MUTE",
+    "locked": false,
+    "name": "3.19 Lectern Monitor",
+    "inputs": [
+      "ECP319_Document_Cam",
+      "ECP319_Wireless_Presenter",
+      "ECP319_Input_5_HDMI",
+      "ECP319_Input_2_HDMI",
+      "ECP319_Input_4_HDMI",
+      "ECP319_Input_1_HDMI",
+      "ECP319_Input_3_HDMI",
+      "ECP319_Lectern_Input_HDMI",
+      "ECP320_Input_1_HDMI",
+      "ECP320_Input_2_HDMI",
+      "ECP320_Input_3_HDMI",
+      "ECP320_Input_4_HDMI",
+      "ECP320_Input_5_HDMI",
+      "ECP320_Document_Cam",
+      "ECP320_Wireless_Presenter",
+      "ECP320_Lectern_Input_HDMI",
+      "Camera_1",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "local_preview_outputs": [],
+  "inputs": [
+    "ECP319_Input_3_HDMI",
+    "ECP319_Input_2_HDMI",
+    "ECP319_Input_1_HDMI",
+    "ECP319_Input_4_HDMI",
+    "ECP319_Input_5_HDMI",
+    "ECP319_Lectern_Input_HDMI",
+    "ECP319_Wireless_Presenter",
+    "Camera_1",
+    "Camera_2",
+    "ECP319_Document_Cam",
+    "ECP320_Input_1_HDMI",
+    "ECP320_Input_2_HDMI",
+    "ECP320_Input_3_HDMI",
+    "ECP320_Input_4_HDMI",
+    "ECP320_Input_5_HDMI",
+    "ECP320_Lectern_Input_HDMI",
+    "ECP320_Wireless_Presenter",
+    "Camera_3",
+    "Camera_4",
+    "ECP320_Document_Cam"
+  ],
+  "help": {
+    "phone-help": {
+      "icon": "phone",
+      "title": "Phone Numbers",
+      "content": "<li>For IT assistance, please contact the DTS Service Desk on <b>(08)&nbsp;7943&nbsp;6600 </b></li> <li>For AV assistance, please contact the DTS AV Team on <b>(08)&nbsp;8946&nbsp;6291</b></li> <li>For Collaborate/Learnline assistance, please Contact the Learnline CDU Staff Support team on <b>(08)&nbsp;8946&nbsp;6198</b> </li> <li>For assistance with Door Access or to report a Security concern, please contact CDU Security Office on <b>(08)&nbsp;8946&nbsp;7777</b> or Danala Security on <b>0407&nbsp;751&nbsp;336</b>.</li> <li>For Room Booking, Air Conditioning or Furniture assistance, please contact Facilities on <b>(08)&nbsp;8946&nbsp;6500</b> </li>"
+    },
+    "document-camera-help": {
+      "icon": "settings_input_hdmi",
+      "title": "HDMI Wall Ports",
+      "content": "<div style=\"display:block; width:100%;\"> <div style=\"width:50%;float:left;display:inline-block;\"> <li>PlaceHolder Help - Plug in Document Camera/Auxillary Input/ HDMI Input Device into HDMI Port above Credenza/Bench</li>\n\n<img src=\"https://placeos-img.cdu.edu.au/document_input_wide.jpg\" alt=\"Swytch\" title=\"Swytch help\" style=\"max-width:360px; max-height:270px\" /> </div> <div style=\"width:50%; float:left; display:inline-block;\"> <li>For IT assistance, please contact the DTS Service Desk on <b>(08)&nbsp;7943&nbsp;6600 </b></li> <li>For AV assistance, please contact the DTS AV Team on <b>(08)&nbsp;8946&nbsp;6291</b></li> <li>For Collaborate/Learnline assistance, please Contact the Learnline CDU Staff Support team on <b>(08)&nbsp;8946&nbsp;6198</b> </li> <li>For assistance with Door Access or to report a Security concern, please contact CDU Security Office on <b>(08)&nbsp;8946&nbsp;7777</b> or Danala Security on <b>0407&nbsp;751&nbsp;336</b>.</li> <li>For Room Booking, Air Conditioning or Furniture assistance, please contact Facilities on <b>(08)&nbsp;8946&nbsp;6500</b> </li> </div> </div>"
+    },
+    "wallports-help": {
+      "icon": "settings_input_hdmi",
+      "title": "HDMI Wall Ports",
+      "content": "<div style=\"display:block; width:100%;\"> <div style=\"width:50%;float:left;display:inline-block;\"> <li>PlaceHolder Help - Plug HDMI Cable into HDMI port on wall below screen</li>\n\n<img src=\"https://placeos-img.cdu.edu.au/wallport_input.png\" alt=\"Swytch\" title=\"Swytch help\" style=\"max-width:360px; max-height:270px\" /> </div> <div style=\"width:50%; float:left; display:inline-block;\"> <li>For IT assistance, please contact the DTS Service Desk on <b>(08)&nbsp;7943&nbsp;6600 </b></li> <li>For AV assistance, please contact the DTS AV Team on <b>(08)&nbsp;8946&nbsp;6291</b></li> <li>For Collaborate/Learnline assistance, please Contact the Learnline CDU Staff Support team on <b>(08)&nbsp;8946&nbsp;6198</b> </li> <li>For assistance with Door Access or to report a Security concern, please contact CDU Security Office on <b>(08)&nbsp;8946&nbsp;7777</b> or Danala Security on <b>0407&nbsp;751&nbsp;336</b>.</li> <li>For Room Booking, Air Conditioning or Furniture assistance, please contact Facilities on <b>(08)&nbsp;8946&nbsp;6500</b> </li> </div> </div>"
+    },
+    "laptop-help": {
+      "icon": "computer",
+      "title": "Laptop",
+      "content": "<div style=\"display:block; width:100%;\"> <div style=\"width:50%;float:left;display:inline-block;\"> <li>PlaceHolder Help - Please plug in the USB-C Cable into your device.</li>\n\n<li>Open up Teams Call, Zoom or collaborate</li>\n\n<li>Select INOGENI device for Microphone and Camera.</li>\n\n<li>Select CRESTRON Device for Speakers</li>\n\n<img src=\"https://placeos-img.cdu.edu.au/lectern_input.png\" alt=\"Swytch\" title=\"Swytch help\" style=\"max-width:360px; max-height:270px\" /> </div> <div style=\"width:50%; float:left; display:inline-block;\"> <li>For IT assistance, please contact the DTS Service Desk on <b>(08)&nbsp;7943&nbsp;6600 </b></li> <li>For AV assistance, please contact the DTS AV Team on <b>(08)&nbsp;8946&nbsp;6291</b></li> <li>For Collaborate/Learnline assistance, please Contact the Learnline CDU Staff Support team on <b>(08)&nbsp;8946&nbsp;6198</b> </li> <li>For assistance with Door Access or to report a Security concern, please contact CDU Security Office on <b>(08)&nbsp;8946&nbsp;7777</b> or Danala Security on <b>0407&nbsp;751&nbsp;336</b>.</li> <li>For Room Booking, Air Conditioning or Furniture assistance, please contact Facilities on <b>(08)&nbsp;8946&nbsp;6500</b> </li> </div> </div>"
+    },
+    "wireless-help": {
+      "icon": "connected_tv",
+      "title": "VIA Go Wireless",
+      "content": "<div style=\"display:block; width:100%;\"> <div style=\"width:50%;float:left;display:inline-block;\"> <li>Select Screen to Output Wireless Presenter to</li>\n\n<li>Follow Instructions displayed on Screen</li>\n\n<li>Use the code displayed on Screen</li> </div> <div style=\"width:50%; float:left; display:inline-block;\"> <li>For IT assistance, please contact the DTS Service Desk on <b>(08)&nbsp;7943&nbsp;6600 </b></li> <li>For AV assistance, please contact the DTS AV Team on <b>(08)&nbsp;8946&nbsp;6291</b></li> <li>For Collaborate/Learnline assistance, please Contact the Learnline CDU Staff Support team on <b>(08)&nbsp;8946&nbsp;6198</b> </li> <li>For assistance with Door Access or to report a Security concern, please contact CDU Security Office on <b>(08)&nbsp;8946&nbsp;7777</b> or Danala Security on <b>0407&nbsp;751&nbsp;336</b>.</li> <li>For Room Booking, Air Conditioning or Furniture assistance, please contact Facilities on <b>(08)&nbsp;8946&nbsp;6500</b> </li> </div> </div>"
+    }
+  },
+  "input/ECP319_Input_3_HDMI": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1:ECP319-W2HDMI-NVXE30",
+    "source": "sys-HPYC1Wkbhb/Switcher_1:ECP319-W2HDMI-NVXE30",
+    "locked": false,
+    "name": "3.19 West HDMI 2",
+    "icon": "input"
+  },
+  "preview_outputs": [],
+  "join_hide_button": false,
+  "microphones": [
+    {
+      "name": "Handheld Mic",
+      "level_id": [
+        "handheldGain"
+      ],
+      "mute_id": [
+        "handheldMute"
+      ],
+      "level_index": null,
+      "mute_index": null,
+      "level_feedback": "faderhandheldGain",
+      "mute_feedback": "faderhandheldMute_mute",
+      "module_id": "Mixer_1",
+      "min_level": 0,
+      "max_level": 100,
+      "rooms": null
+    },
+    {
+      "name": "Lapel Mic",
+      "level_id": [
+        "lapelGain"
+      ],
+      "mute_id": [
+        "lapelMute"
+      ],
+      "level_index": null,
+      "mute_index": null,
+      "level_feedback": "faderlapelGain",
+      "mute_feedback": "faderlapelMute_mute",
+      "module_id": "Mixer_1",
+      "min_level": 0,
+      "max_level": 100,
+      "rooms": null
+    },
+    {
+      "name": "Catchbox Lapel",
+      "level_id": [
+        "catchLapelGain"
+      ],
+      "mute_id": [
+        "catchLapelMute"
+      ],
+      "level_index": null,
+      "mute_index": null,
+      "level_feedback": "fadercatchLapelGain",
+      "mute_feedback": "fadercatchLapelMute_mute",
+      "module_id": "Mixer_1",
+      "min_level": 0,
+      "max_level": 100,
+      "rooms": null
+    },
+    {
+      "name": "Catchbox Handheld",
+      "level_id": [
+        "catchHHGain"
+      ],
+      "mute_id": [
+        "catchHHMute"
+      ],
+      "level_index": null,
+      "mute_index": null,
+      "level_feedback": "fadercatchHHGain",
+      "mute_feedback": "fadercatchHHMute_mute",
+      "module_id": "Mixer_1",
+      "min_level": 0,
+      "max_level": 100,
+      "rooms": null
+    }
+  ],
+  "available_outputs": [
+    "319_Display_6",
+    "319_Display_1",
+    "319_Display_2",
+    "319_Display_3",
+    "319_Display_4",
+    "319_Display_5",
+    "319_Preview_Monitor"
+  ],
+  "input/Camera_3": {
+    "ref": "sys-HPYC1Wkbhb/Camera_3",
+    "source": "sys-HPYC1Wkbhb/Camera_3",
+    "locked": false,
+    "name": "3.20 Camera Rear",
+    "icon": "videocam",
+    "type": "cam",
+    "mod": "Camera_3"
+  },
+  "input/ECP319_Input_5_HDMI": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1:ECP319-E1HDMI-NVXE30",
+    "source": "sys-HPYC1Wkbhb/Switcher_1:ECP319-E1HDMI-NVXE30",
+    "locked": false,
+    "name": "3.19 East HDMI 1",
+    "icon": "input"
+  },
+  "local_cameras": [
+    "Camera_1",
+    "Camera_2"
+  ],
+  "has_master_audio": true,
+  "output/319_Display_2": {
+    "ref": "sys-HPYC1Wkbhb/319_Display_2",
+    "source": "MUTE",
+    "locked": false,
+    "name": "3.19 East Display 2",
+    "inputs": [
+      "ECP319_Document_Cam",
+      "ECP319_Wireless_Presenter",
+      "ECP319_Input_5_HDMI",
+      "ECP319_Input_2_HDMI",
+      "ECP319_Input_4_HDMI",
+      "ECP319_Input_1_HDMI",
+      "ECP319_Input_3_HDMI",
+      "ECP319_Lectern_Input_HDMI",
+      "ECP320_Input_1_HDMI",
+      "ECP320_Input_2_HDMI",
+      "ECP320_Input_3_HDMI",
+      "ECP320_Input_4_HDMI",
+      "ECP320_Input_5_HDMI",
+      "ECP320_Document_Cam",
+      "ECP320_Wireless_Presenter",
+      "ECP320_Lectern_Input_HDMI",
+      "Camera_1",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "output/320_Display_3": {
+    "ref": "sys-HPYC1Wkbhb/320_Display_3",
+    "locked": false,
+    "name": "3.20 East Display 1",
+    "inputs": [
+      "ECP319_Document_Cam",
+      "ECP319_Wireless_Presenter",
+      "ECP319_Input_5_HDMI",
+      "ECP319_Input_2_HDMI",
+      "ECP319_Input_4_HDMI",
+      "ECP319_Input_1_HDMI",
+      "ECP319_Input_3_HDMI",
+      "ECP319_Lectern_Input_HDMI",
+      "ECP320_Input_1_HDMI",
+      "ECP320_Input_2_HDMI",
+      "ECP320_Input_3_HDMI",
+      "ECP320_Input_4_HDMI",
+      "ECP320_Input_5_HDMI",
+      "ECP320_Document_Cam",
+      "ECP320_Wireless_Presenter",
+      "ECP320_Lectern_Input_HDMI",
+      "Camera_1",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "output/320_Display_6": {
+    "ref": "sys-HPYC1Wkbhb/320_Display_6",
+    "locked": false,
+    "name": "3.20 Main Display",
+    "inputs": [
+      "ECP319_Document_Cam",
+      "ECP319_Wireless_Presenter",
+      "ECP319_Input_5_HDMI",
+      "ECP319_Input_2_HDMI",
+      "ECP319_Input_4_HDMI",
+      "ECP319_Input_1_HDMI",
+      "ECP319_Input_3_HDMI",
+      "ECP319_Lectern_Input_HDMI",
+      "ECP320_Input_1_HDMI",
+      "ECP320_Input_2_HDMI",
+      "ECP320_Input_3_HDMI",
+      "ECP320_Input_4_HDMI",
+      "ECP320_Input_5_HDMI",
+      "ECP320_Document_Cam",
+      "ECP320_Wireless_Presenter",
+      "ECP320_Lectern_Input_HDMI",
+      "Camera_1",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "voice_control": false,
+  "local_tabs": [
+    {
+      "icon": "laptop",
+      "name": "Lectern Input",
+      "inputs": [
+        "ECP319_Lectern_Input_HDMI"
+      ],
+      "help": "laptop-help"
+    },
+    {
+      "icon": "settings_input_hdmi",
+      "name": "Wall Ports",
+      "inputs": [
+        "ECP319_Input_1_HDMI",
+        "ECP319_Input_2_HDMI",
+        "ECP319_Input_3_HDMI",
+        "ECP319_Input_4_HDMI",
+        "ECP319_Input_5_HDMI"
+      ],
+      "help": "wallports-help"
+    },
+    {
+      "icon": "image_search",
+      "name": "Doc Camera",
+      "inputs": [
+        "ECP319_Document_Cam"
+      ],
+      "help": "wallports-help"
+    },
+    {
+      "icon": "connected_tv",
+      "name": "Wireless",
+      "inputs": [
+        "ECP319_Wireless_Presenter"
+      ],
+      "help": "wireless-help"
+    }
+  ],
+  "tabs": [
+    {
+      "icon": "laptop",
+      "name": "Lectern Input",
+      "inputs": [
+        "ECP319_Lectern_Input_HDMI"
+      ],
+      "help": "laptop-help"
+    },
+    {
+      "icon": "settings_input_hdmi",
+      "name": "Wall Ports",
+      "inputs": [
+        "ECP319_Input_1_HDMI",
+        "ECP319_Input_2_HDMI",
+        "ECP319_Input_3_HDMI",
+        "ECP319_Input_4_HDMI",
+        "ECP319_Input_5_HDMI"
+      ],
+      "help": "wallports-help"
+    },
+    {
+      "icon": "image_search",
+      "name": "Doc Camera",
+      "inputs": [
+        "ECP319_Document_Cam"
+      ],
+      "help": "wallports-help"
+    },
+    {
+      "icon": "connected_tv",
+      "name": "Wireless",
+      "inputs": [
+        "ECP319_Wireless_Presenter"
+      ],
+      "help": "wireless-help"
+    }
+  ],
+  "lighting_scenes": [
+    {
+      "name": "Full",
+      "id": 0,
+      "icon": "lightbulb",
+      "opacity": 0
+    },
+    {
+      "name": "Medium",
+      "id": 1,
+      "icon": "lightbulb",
+      "opacity": 0.25
+    },
+    {
+      "name": "Presentation",
+      "id": 4,
+      "icon": "lightbulb",
+      "opacity": 0.4
+    },
+    {
+      "name": "Low",
+      "id": 2,
+      "icon": "lightbulb",
+      "opacity": 0.4
+    },
+    {
+      "name": "Off",
+      "id": 3,
+      "icon": "lightbulb",
+      "opacity": 1
+    }
+  ],
+  "output/320_Display_1": {
+    "ref": "sys-HPYC1Wkbhb/320_Display_1",
+    "locked": false,
+    "name": "3.20 West Display 2",
+    "inputs": [
+      "ECP319_Document_Cam",
+      "ECP319_Wireless_Presenter",
+      "ECP319_Input_5_HDMI",
+      "ECP319_Input_2_HDMI",
+      "ECP319_Input_4_HDMI",
+      "ECP319_Input_1_HDMI",
+      "ECP319_Input_3_HDMI",
+      "ECP319_Lectern_Input_HDMI",
+      "ECP320_Input_1_HDMI",
+      "ECP320_Input_2_HDMI",
+      "ECP320_Input_3_HDMI",
+      "ECP320_Input_4_HDMI",
+      "ECP320_Input_5_HDMI",
+      "ECP320_Document_Cam",
+      "ECP320_Wireless_Presenter",
+      "ECP320_Lectern_Input_HDMI",
+      "Camera_1",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "input/ECP319_Input_4_HDMI": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1:ECP319-W3HDMI-NVXE30",
+    "source": "sys-HPYC1Wkbhb/Switcher_1:ECP319-W3HDMI-NVXE30",
+    "locked": false,
+    "name": "3.19 West HDMI 3",
+    "icon": "input"
+  },
+  "input/ECP319_Input_1_HDMI": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1:ECP319-W1HDMI-NVXE30",
+    "source": "sys-HPYC1Wkbhb/Switcher_1:ECP319-W1HDMI-NVXE30",
+    "locked": false,
+    "name": "3.19 West HDMI 1",
+    "icon": "input"
+  },
+  "input/ECP319_Input_2_HDMI": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1:ECP319-E2HDMI-NVXE30",
+    "source": "sys-HPYC1Wkbhb/Switcher_1:ECP319-E2HDMI-NVXE30",
+    "locked": false,
+    "name": "3.19 East HDMI 2",
+    "icon": "input"
+  },
+  "input/ECP319_Document_Cam": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1:ECP319-DocCam-NVXE30",
+    "source": "sys-HPYC1Wkbhb/Switcher_1:ECP319-DocCam-NVXE30",
+    "locked": false,
+    "name": "3.19 Document Camera",
+    "type": "cam",
+    "icon": "videocam",
+    "mod": "Encoder_5"
+  },
+  "output/319_Display_1": {
+    "ref": "sys-HPYC1Wkbhb/319_Display_1",
+    "source": "MUTE",
+    "locked": false,
+    "name": "3.19 West Display 1",
+    "inputs": [
+      "ECP319_Document_Cam",
+      "ECP319_Wireless_Presenter",
+      "ECP319_Input_5_HDMI",
+      "ECP319_Input_2_HDMI",
+      "ECP319_Input_4_HDMI",
+      "ECP319_Input_1_HDMI",
+      "ECP319_Input_3_HDMI",
+      "ECP319_Lectern_Input_HDMI",
+      "ECP320_Input_1_HDMI",
+      "ECP320_Input_2_HDMI",
+      "ECP320_Input_3_HDMI",
+      "ECP320_Input_4_HDMI",
+      "ECP320_Input_5_HDMI",
+      "ECP320_Document_Cam",
+      "ECP320_Wireless_Presenter",
+      "ECP320_Lectern_Input_HDMI",
+      "Camera_1",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "input/Camera_2": {
+    "ref": "sys-HPYC1Wkbhb/Camera_2",
+    "source": "sys-HPYC1Wkbhb/Camera_2",
+    "locked": false,
+    "name": "3.19 Camera Rear",
+    "icon": "videocam",
+    "type": "cam",
+    "mod": "Camera_2"
+  },
+  "output/320_Display_2": {
+    "ref": "sys-HPYC1Wkbhb/320_Display_2",
+    "locked": false,
+    "name": "3.20 West Display 1",
+    "inputs": [
+      "ECP319_Document_Cam",
+      "ECP319_Wireless_Presenter",
+      "ECP319_Input_5_HDMI",
+      "ECP319_Input_2_HDMI",
+      "ECP319_Input_4_HDMI",
+      "ECP319_Input_1_HDMI",
+      "ECP319_Input_3_HDMI",
+      "ECP319_Lectern_Input_HDMI",
+      "ECP320_Input_1_HDMI",
+      "ECP320_Input_2_HDMI",
+      "ECP320_Input_3_HDMI",
+      "ECP320_Input_4_HDMI",
+      "ECP320_Input_5_HDMI",
+      "ECP320_Document_Cam",
+      "ECP320_Wireless_Presenter",
+      "ECP320_Lectern_Input_HDMI",
+      "Camera_1",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "outputs": [
+    "319_Display_1",
+    "319_Display_2",
+    "319_Display_3",
+    "319_Display_4",
+    "319_Display_5",
+    "319_Display_6",
+    "320_Display_1",
+    "320_Display_2",
+    "320_Display_3",
+    "320_Display_4",
+    "320_Display_5",
+    "320_Display_6",
+    "319_Preview_Monitor",
+    "320_Preview_Monitor"
+  ],
+  "connected": true,
+  "available_inputs": [
+    "ECP319_Lectern_Input_HDMI",
+    "ECP319_Input_1_HDMI",
+    "ECP319_Input_2_HDMI",
+    "ECP319_Input_3_HDMI",
+    "ECP319_Input_4_HDMI",
+    "ECP319_Input_5_HDMI",
+    "ECP319_Document_Cam",
+    "ECP319_Wireless_Presenter"
+  ],
+  "name": "Darwin City 3.19 Classroom",
+  "output/320_Display_4": {
+    "ref": "sys-HPYC1Wkbhb/320_Display_4",
+    "locked": false,
+    "name": "3.20 East Display 3",
+    "inputs": [
+      "ECP319_Document_Cam",
+      "ECP319_Wireless_Presenter",
+      "ECP319_Input_5_HDMI",
+      "ECP319_Input_2_HDMI",
+      "ECP319_Input_4_HDMI",
+      "ECP319_Input_1_HDMI",
+      "ECP319_Input_3_HDMI",
+      "ECP319_Lectern_Input_HDMI",
+      "ECP320_Input_1_HDMI",
+      "ECP320_Input_2_HDMI",
+      "ECP320_Input_3_HDMI",
+      "ECP320_Input_4_HDMI",
+      "ECP320_Input_5_HDMI",
+      "ECP320_Document_Cam",
+      "ECP320_Wireless_Presenter",
+      "ECP320_Lectern_Input_HDMI",
+      "Camera_1",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "input/ECP320_Input_4_HDMI": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1:ECP320-E3HDMI-NVXE30",
+    "source": "sys-HPYC1Wkbhb/Switcher_1:ECP320-E3HDMI-NVXE30",
+    "locked": false,
+    "name": "3.20 East HDMI 3",
+    "icon": "input"
+  },
+  "input/ECP320_Wireless_Presenter": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1:ECP320-ViaGo-NVXE30",
+    "source": "sys-HPYC1Wkbhb/Switcher_1:ECP320-ViaGo-NVXE30",
+    "locked": false,
+    "name": "3.20 ViaGo Wireless",
+    "icon": "connected_tv"
+  },
+  "join_confirmed": true,
+  "input/Camera_4": {
+    "ref": "sys-HPYC1Wkbhb/Camera_4",
+    "source": "sys-HPYC1Wkbhb/Camera_4",
+    "locked": false,
+    "name": "3.20 Camera Front",
+    "icon": "video_camera_front",
+    "type": "cam",
+    "mod": "Camera_4"
+  },
+  "room_accessories": [
+    {
+      "name": "3.19 Blinds",
+      "module": "Lighting_1",
+      "controls": [
+        {
+          "name": "Up",
+          "icon": "vertical_align_top",
+          "function_name": "switch_off",
+          "arguments": [
+            "319_blinds"
+          ]
+        },
+        {
+          "name": "Down",
+          "icon": "vertical_align_bottom",
+          "function_name": "switch_on",
+          "arguments": [
+            "319_blinds"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3.19 Main Display Power",
+      "module": "319_Display_6",
+      "controls": [
+        {
+          "name": "On",
+          "icon": "power",
+          "function_name": "power",
+          "arguments": [
+            true
+          ]
+        },
+        {
+          "name": "Off",
+          "icon": "power_off",
+          "function_name": "power",
+          "arguments": [
+            false
+          ]
+        }
+      ]
+    }
+  ],
+  "capabilities": "provides meeting room audio visual control such as controlling video source to be presented\ncheck for available inputs and outputs before switching to present a source to a display.\noutput volume and microphone fader controls are floats between 0.0 to 100.0\nquery output volume to change it by a relative amount, if asked to increase or decrease volume, change it by 10.0\naudio can be muted and you unroute video to blank displays.\nyou can also shutdown, startup, power off, power on, start or end the meeting using the set_power_state function available in this capability.\nsome rooms may have lighting control, make sure to check what levels are available before changing state\nsome rooms may have accessories such as blinds or projector screen controls. Check for available accessories when asked about something not explicitly controllable\n",
+  "input/ECP320_Input_2_HDMI": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1:ECP320-W1HDMI-NVXE30",
+    "source": "sys-HPYC1Wkbhb/Switcher_1:ECP320-W1HDMI-NVXE30",
+    "locked": false,
+    "name": "3.20 West HDMI 1",
+    "icon": "input"
+  },
+  "input/ECP320_Input_5_HDMI": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1:ECP320-E2HDMI-NVXE30",
+    "source": "sys-HPYC1Wkbhb/Switcher_1:ECP320-E2HDMI-NVXE30",
+    "locked": false,
+    "name": "3.20 East HDMI 2",
+    "icon": "input"
+  },
+  "qsc_dial_number": "",
+  "output/319_Display_6": {
+    "ref": "sys-HPYC1Wkbhb/319_Display_6",
+    "source": "MUTE",
+    "locked": false,
+    "name": "3.19 Main Display",
+    "inputs": [
+      "ECP319_Document_Cam",
+      "ECP319_Wireless_Presenter",
+      "ECP319_Input_5_HDMI",
+      "ECP319_Input_2_HDMI",
+      "ECP319_Input_4_HDMI",
+      "ECP319_Input_1_HDMI",
+      "ECP319_Input_3_HDMI",
+      "ECP319_Lectern_Input_HDMI",
+      "ECP320_Input_1_HDMI",
+      "ECP320_Input_2_HDMI",
+      "ECP320_Input_3_HDMI",
+      "ECP320_Input_4_HDMI",
+      "ECP320_Input_5_HDMI",
+      "ECP320_Document_Cam",
+      "ECP320_Wireless_Presenter",
+      "ECP320_Lectern_Input_HDMI",
+      "Camera_1",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "join_master": true,
+  "input/Camera_1": {
+    "ref": "sys-HPYC1Wkbhb/Camera_1",
+    "source": "sys-HPYC1Wkbhb/Camera_1",
+    "locked": false,
+    "name": "3.19 Camera Front",
+    "icon": "video_camera_front",
+    "type": "cam",
+    "mod": "Camera_1"
+  },
+  "join_modes": {
+    "unlinked": {
+      "id": "unlinked",
+      "name": "Independent",
+      "room_ids": [],
+      "join_actions": [
+        {
+          "module_id": "Mixer_1",
+          "function_name": "control_set",
+          "arguments": [
+            "roomLinkStatus",
+            0
+          ]
+        },
+        {
+          "module_id": "Mixer_2",
+          "function_name": "control_set",
+          "arguments": [
+            "roomLinkStatus",
+            0
+          ]
+        }
+      ],
+      "merge_outputs": false
+    },
+    "join_all": {
+      "id": "join_all",
+      "name": "All Rooms",
+      "room_ids": [
+        "sys-HPYC1Wkbhb",
+        "sys-HPYClBUw0b"
+      ],
+      "join_actions": [
+        {
+          "module_id": "Mixer_1",
+          "function_name": "control_set",
+          "arguments": [
+            "roomLinkStatus",
+            1
+          ]
+        },
+        {
+          "module_id": "Mixer_2",
+          "function_name": "control_set",
+          "arguments": [
+            "roomLinkStatus",
+            1
+          ]
+        }
+      ],
+      "merge_outputs": false
+    }
+  },
+  "input/ECP320_Lectern_Input_HDMI": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1:ECP320-LectHDMI-NVX363",
+    "source": "sys-HPYC1Wkbhb/Switcher_1:ECP320-LectHDMI-NVX363",
+    "locked": false,
+    "name": "3.20 Lectern HDMI 1",
+    "icon": "laptop"
+  },
+  "output/319_Display_4": {
+    "ref": "sys-HPYC1Wkbhb/319_Display_4",
+    "source": "MUTE",
+    "locked": false,
+    "name": "3.19 West Display 3",
+    "inputs": [
+      "ECP319_Document_Cam",
+      "ECP319_Wireless_Presenter",
+      "ECP319_Input_5_HDMI",
+      "ECP319_Input_2_HDMI",
+      "ECP319_Input_4_HDMI",
+      "ECP319_Input_1_HDMI",
+      "ECP319_Input_3_HDMI",
+      "ECP319_Lectern_Input_HDMI",
+      "ECP320_Input_1_HDMI",
+      "ECP320_Input_2_HDMI",
+      "ECP320_Input_3_HDMI",
+      "ECP320_Input_4_HDMI",
+      "ECP320_Input_5_HDMI",
+      "ECP320_Document_Cam",
+      "ECP320_Wireless_Presenter",
+      "ECP320_Lectern_Input_HDMI",
+      "Camera_1",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "output/320_Preview_Monitor": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1.15",
+    "locked": false,
+    "name": "3.20 Lectern Monitor",
+    "inputs": [
+      "ECP319_Document_Cam",
+      "ECP319_Wireless_Presenter",
+      "ECP319_Input_5_HDMI",
+      "ECP319_Input_2_HDMI",
+      "ECP319_Input_4_HDMI",
+      "ECP319_Input_1_HDMI",
+      "ECP319_Input_3_HDMI",
+      "ECP319_Lectern_Input_HDMI",
+      "ECP320_Input_1_HDMI",
+      "ECP320_Input_2_HDMI",
+      "ECP320_Input_3_HDMI",
+      "ECP320_Input_4_HDMI",
+      "ECP320_Input_5_HDMI",
+      "ECP320_Document_Cam",
+      "ECP320_Wireless_Presenter",
+      "ECP320_Lectern_Input_HDMI",
+      "Camera_1",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "local_outputs": [
+    "319_Display_6",
+    "319_Display_1",
+    "319_Display_2",
+    "319_Display_3",
+    "319_Display_4",
+    "319_Display_5",
+    "319_Preview_Monitor"
+  ],
+  "input/ECP320_Document_Cam": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1:ECP320-DocCam-NVXE30",
+    "source": "sys-HPYC1Wkbhb/Switcher_1:ECP320-DocCam-NVXE30",
+    "locked": false,
+    "name": "3.20 Document Camera",
+    "type": "cam",
+    "icon": "videocam",
+    "mod": "Encoder_3"
+  },
+  "output/320_Display_5": {
+    "ref": "sys-HPYC1Wkbhb/320_Display_5",
+    "locked": false,
+    "name": "3.20 East Display 2",
+    "inputs": [
+      "ECP319_Document_Cam",
+      "ECP319_Wireless_Presenter",
+      "ECP319_Input_5_HDMI",
+      "ECP319_Input_2_HDMI",
+      "ECP319_Input_4_HDMI",
+      "ECP319_Input_1_HDMI",
+      "ECP319_Input_3_HDMI",
+      "ECP319_Lectern_Input_HDMI",
+      "ECP320_Input_1_HDMI",
+      "ECP320_Input_2_HDMI",
+      "ECP320_Input_3_HDMI",
+      "ECP320_Input_4_HDMI",
+      "ECP320_Input_5_HDMI",
+      "ECP320_Document_Cam",
+      "ECP320_Wireless_Presenter",
+      "ECP320_Lectern_Input_HDMI",
+      "Camera_1",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "join_lockout_secondary": false,
+  "input/ECP319_Wireless_Presenter": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1:ECP319-ViaGo-NVXE30",
+    "source": "sys-HPYC1Wkbhb/Switcher_1:ECP319-ViaGo-NVXE30",
+    "locked": false,
+    "name": "3.19 ViaGo Wireless",
+    "icon": "connected_tv"
+  },
+  "output/319_Display_3": {
+    "ref": "sys-HPYC1Wkbhb/319_Display_3",
+    "source": "MUTE",
+    "locked": false,
+    "name": "3.19 West Display 2",
+    "inputs": [
+      "ECP319_Document_Cam",
+      "ECP319_Wireless_Presenter",
+      "ECP319_Input_5_HDMI",
+      "ECP319_Input_2_HDMI",
+      "ECP319_Input_4_HDMI",
+      "ECP319_Input_1_HDMI",
+      "ECP319_Input_3_HDMI",
+      "ECP319_Lectern_Input_HDMI",
+      "ECP320_Input_1_HDMI",
+      "ECP320_Input_2_HDMI",
+      "ECP320_Input_3_HDMI",
+      "ECP320_Input_4_HDMI",
+      "ECP320_Input_5_HDMI",
+      "ECP320_Document_Cam",
+      "ECP320_Wireless_Presenter",
+      "ECP320_Lectern_Input_HDMI",
+      "Camera_1",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "input/ECP320_Input_3_HDMI": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1:ECP320-E1HDMI-NVXE30",
+    "source": "sys-HPYC1Wkbhb/Switcher_1:ECP320-E1HDMI-NVXE30",
+    "locked": false,
+    "name": "3.20 East HDMI 1",
+    "icon": "input"
+  },
+  "input/ECP320_Input_1_HDMI": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1:ECP320-W2HDMI-NVXE30",
+    "source": "sys-HPYC1Wkbhb/Switcher_1:ECP320-W2HDMI-NVXE30",
+    "locked": false,
+    "name": "3.20 West HDMI 2",
+    "icon": "input"
+  },
+  "local_help": {
+    "phone-help": {
+      "icon": "phone",
+      "title": "Phone Numbers",
+      "content": "<li>For IT assistance, please contact the DTS Service Desk on <b>(08)&nbsp;7943&nbsp;6600 </b></li> <li>For AV assistance, please contact the DTS AV Team on <b>(08)&nbsp;8946&nbsp;6291</b></li> <li>For Collaborate/Learnline assistance, please Contact the Learnline CDU Staff Support team on <b>(08)&nbsp;8946&nbsp;6198</b> </li> <li>For assistance with Door Access or to report a Security concern, please contact CDU Security Office on <b>(08)&nbsp;8946&nbsp;7777</b> or Danala Security on <b>0407&nbsp;751&nbsp;336</b>.</li> <li>For Room Booking, Air Conditioning or Furniture assistance, please contact Facilities on <b>(08)&nbsp;8946&nbsp;6500</b> </li>"
+    },
+    "document-camera-help": {
+      "icon": "settings_input_hdmi",
+      "title": "HDMI Wall Ports",
+      "content": "<div style=\"display:block; width:100%;\"> <div style=\"width:50%;float:left;display:inline-block;\"> <li>PlaceHolder Help - Plug in Document Camera/Auxillary Input/ HDMI Input Device into HDMI Port above Credenza/Bench</li>\n\n<img src=\"https://placeos-img.cdu.edu.au/document_input_wide.jpg\" alt=\"Swytch\" title=\"Swytch help\" style=\"max-width:360px; max-height:270px\" /> </div> <div style=\"width:50%; float:left; display:inline-block;\"> <li>For IT assistance, please contact the DTS Service Desk on <b>(08)&nbsp;7943&nbsp;6600 </b></li> <li>For AV assistance, please contact the DTS AV Team on <b>(08)&nbsp;8946&nbsp;6291</b></li> <li>For Collaborate/Learnline assistance, please Contact the Learnline CDU Staff Support team on <b>(08)&nbsp;8946&nbsp;6198</b> </li> <li>For assistance with Door Access or to report a Security concern, please contact CDU Security Office on <b>(08)&nbsp;8946&nbsp;7777</b> or Danala Security on <b>0407&nbsp;751&nbsp;336</b>.</li> <li>For Room Booking, Air Conditioning or Furniture assistance, please contact Facilities on <b>(08)&nbsp;8946&nbsp;6500</b> </li> </div> </div>"
+    },
+    "wallports-help": {
+      "icon": "settings_input_hdmi",
+      "title": "HDMI Wall Ports",
+      "content": "<div style=\"display:block; width:100%;\"> <div style=\"width:50%;float:left;display:inline-block;\"> <li>PlaceHolder Help - Plug HDMI Cable into HDMI port on wall below screen</li>\n\n<img src=\"https://placeos-img.cdu.edu.au/wallport_input.png\" alt=\"Swytch\" title=\"Swytch help\" style=\"max-width:360px; max-height:270px\" /> </div> <div style=\"width:50%; float:left; display:inline-block;\"> <li>For IT assistance, please contact the DTS Service Desk on <b>(08)&nbsp;7943&nbsp;6600 </b></li> <li>For AV assistance, please contact the DTS AV Team on <b>(08)&nbsp;8946&nbsp;6291</b></li> <li>For Collaborate/Learnline assistance, please Contact the Learnline CDU Staff Support team on <b>(08)&nbsp;8946&nbsp;6198</b> </li> <li>For assistance with Door Access or to report a Security concern, please contact CDU Security Office on <b>(08)&nbsp;8946&nbsp;7777</b> or Danala Security on <b>0407&nbsp;751&nbsp;336</b>.</li> <li>For Room Booking, Air Conditioning or Furniture assistance, please contact Facilities on <b>(08)&nbsp;8946&nbsp;6500</b> </li> </div> </div>"
+    },
+    "laptop-help": {
+      "icon": "computer",
+      "title": "Laptop",
+      "content": "<div style=\"display:block; width:100%;\"> <div style=\"width:50%;float:left;display:inline-block;\"> <li>PlaceHolder Help - Please plug in the USB-C Cable into your device.</li>\n\n<li>Open up Teams Call, Zoom or collaborate</li>\n\n<li>Select INOGENI device for Microphone and Camera.</li>\n\n<li>Select CRESTRON Device for Speakers</li>\n\n<img src=\"https://placeos-img.cdu.edu.au/lectern_input.png\" alt=\"Swytch\" title=\"Swytch help\" style=\"max-width:360px; max-height:270px\" /> </div> <div style=\"width:50%; float:left; display:inline-block;\"> <li>For IT assistance, please contact the DTS Service Desk on <b>(08)&nbsp;7943&nbsp;6600 </b></li> <li>For AV assistance, please contact the DTS AV Team on <b>(08)&nbsp;8946&nbsp;6291</b></li> <li>For Collaborate/Learnline assistance, please Contact the Learnline CDU Staff Support team on <b>(08)&nbsp;8946&nbsp;6198</b> </li> <li>For assistance with Door Access or to report a Security concern, please contact CDU Security Office on <b>(08)&nbsp;8946&nbsp;7777</b> or Danala Security on <b>0407&nbsp;751&nbsp;336</b>.</li> <li>For Room Booking, Air Conditioning or Furniture assistance, please contact Facilities on <b>(08)&nbsp;8946&nbsp;6500</b> </li> </div> </div>"
+    },
+    "wireless-help": {
+      "icon": "connected_tv",
+      "title": "VIA Go Wireless",
+      "content": "<div style=\"display:block; width:100%;\"> <div style=\"width:50%;float:left;display:inline-block;\"> <li>Select Screen to Output Wireless Presenter to</li>\n\n<li>Follow Instructions displayed on Screen</li>\n\n<li>Use the code displayed on Screen</li> </div> <div style=\"width:50%; float:left; display:inline-block;\"> <li>For IT assistance, please contact the DTS Service Desk on <b>(08)&nbsp;7943&nbsp;6600 </b></li> <li>For AV assistance, please contact the DTS AV Team on <b>(08)&nbsp;8946&nbsp;6291</b></li> <li>For Collaborate/Learnline assistance, please Contact the Learnline CDU Staff Support team on <b>(08)&nbsp;8946&nbsp;6198</b> </li> <li>For assistance with Door Access or to report a Security concern, please contact CDU Security Office on <b>(08)&nbsp;8946&nbsp;7777</b> or Danala Security on <b>0407&nbsp;751&nbsp;336</b>.</li> <li>For Room Booking, Air Conditioning or Furniture assistance, please contact Facilities on <b>(08)&nbsp;8946&nbsp;6500</b> </li> </div> </div>"
+    }
+  },
+  "input/ECP319_Lectern_Input_HDMI": {
+    "ref": "sys-HPYC1Wkbhb/Switcher_1:ECP319-LectHDMI-NVX363",
+    "source": "sys-HPYC1Wkbhb/Switcher_1:ECP319-LectHDMI-NVX363",
+    "locked": false,
+    "name": "3.19 Lectern HDMI",
+    "icon": "laptop"
+  },
+  "mute": true,
+  "output/319_Display_5": {
+    "ref": "sys-HPYC1Wkbhb/319_Display_5",
+    "source": "MUTE",
+    "locked": false,
+    "name": "3.19 East Display 1",
+    "inputs": [
+      "ECP319_Document_Cam",
+      "ECP319_Wireless_Presenter",
+      "ECP319_Input_5_HDMI",
+      "ECP319_Input_2_HDMI",
+      "ECP319_Input_4_HDMI",
+      "ECP319_Input_1_HDMI",
+      "ECP319_Input_3_HDMI",
+      "ECP319_Lectern_Input_HDMI",
+      "ECP320_Input_1_HDMI",
+      "ECP320_Input_2_HDMI",
+      "ECP320_Input_3_HDMI",
+      "ECP320_Input_4_HDMI",
+      "ECP320_Input_5_HDMI",
+      "ECP320_Document_Cam",
+      "ECP320_Wireless_Presenter",
+      "ECP320_Lectern_Input_HDMI",
+      "Camera_1",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  }
+}
