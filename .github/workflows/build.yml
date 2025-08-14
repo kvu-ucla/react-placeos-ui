@@ -1,0 +1,63 @@
+name: BUILD
+
+on:
+  push:
+    branches: [ main, development ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  NODE_VERSION: '20'
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        env:
+          NODE_ENV: production
+          CI: true
+        run: npm run build
+
+      - name: Verify build output
+        run: |
+          test -d dist || (echo "dist/ not found"; exit 1)
+          echo "Built $(git rev-parse --short HEAD) on ${{ github.ref_name }}"
+
+      - name: Upload dist artifact (for debugging/previews)
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ github.ref_name }}-${{ github.sha }}
+          path: dist
+          retention-days: 7
+
+      # 🚀 Only deploy when pushing to main
+      - name: Deploy dist to build/prod
+        if: github.ref == 'refs/heads/main'
+        uses: MrYuion/git-publish-subdir-action@v3
+        env:
+          REPO: self
+          BRANCH: build/prod
+          FOLDER: dist
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MESSAGE: "build: CI build $(git rev-parse --short HEAD)"
