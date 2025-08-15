@@ -31,7 +31,7 @@ function BootstrapPage() {
             }
 
             // In a real app, you might have different routes
-            navigate(`/tabbed/${id}`, {replace: true});
+            navigate(`${id}`, {replace: true});
         },
         [navigate],
     );
