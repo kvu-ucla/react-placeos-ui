@@ -47,7 +47,7 @@ function BootstrapPage() {
             if (localStorage) {
                 const savedSystemId = localStorage.getItem(STORE_KEY);
                 if (savedSystemId) {
-                    navigate(`/tabbed/${savedSystemId}`, {replace: true});
+                    navigate(`${savedSystemId}`, {replace: true});
                     return;
                 }
             }
