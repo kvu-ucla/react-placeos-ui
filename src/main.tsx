@@ -9,8 +9,6 @@ createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <HashRouter>
             <AuthProvider>
-                {' '}
-                {/* 2. Wrap the App component */}
                 <App />
             </AuthProvider>
         </HashRouter>
