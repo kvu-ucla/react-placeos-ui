@@ -2,7 +2,6 @@ import {Header} from "./Header.tsx";
 import SessionDetails from "./SessionDetails.tsx";
 import Footer from "./Footer.tsx";
 import SessionControls from "./SessionControls.tsx";
-import {ModalProvider} from "../hooks/ModalContext.tsx";
 
 export default function MainScreen() {
 

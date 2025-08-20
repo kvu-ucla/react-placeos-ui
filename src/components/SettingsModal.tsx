@@ -352,41 +352,7 @@ export default function SettingsModal({
                   </div>
 
                   {/* Participants list */}
-                  <div className="divide-y">
-                    {[
-                      // { name: "Ruth Lee", muted: true, video: false },
-                      // { name: "Marissa Klymkiw", muted: false, video: true },
-                      // { name: "Juan Atachagua", muted: false, video: true },
-                      // { name: "Paola Rico Racah", muted: true, video: false },
-                    ].map((p, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-center justify-between py-3"
-                      >
-                        <span>{p.name}</span>
-                        <div className="flex gap-2">
-                          <button
-                            className={`px-4 py-1 rounded text-sm font-semibold ${
-                              p.muted
-                                ? "bg-gray-100 text-black"
-                                : "bg-black text-white"
-                            }`}
-                          >
-                            {p.muted ? "Unmute" : "Mute"}
-                          </button>
-                          <button
-                            className={`px-4 py-1 rounded text-sm font-semibold ${
-                              p.video
-                                ? "bg-black text-white"
-                                : "bg-gray-100 text-black"
-                            }`}
-                          >
-                            {p.video ? "Disable video" : "Enable video"}
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  //TODO participant list
                 </div>
               )}
 

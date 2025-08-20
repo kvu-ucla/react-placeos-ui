@@ -1,10 +1,8 @@
-import React, { useMemo } from 'react';
-import {TourProvider, type StepType, useTour} from '@reactour/tour';
+import {TourProvider, type StepType } from '@reactour/tour';
 import App from '../App';
 import { useModalContext } from '../hooks/ModalContext';
 export default function TourHost() {
     const { showModal } = useModalContext();
-    const { setCurrentStep } = useTour();
 
     function waitForSelector(sel: string, timeout = 5000) {
         return new Promise<HTMLElement>((resolve, reject) => {
@@ -27,8 +25,10 @@ export default function TourHost() {
         });
     }
 
+    // @ts-ignore
     const steps: StepType[] = [
         {
+            selector: '#settings',
             content: () => (
                 <div className="flex flex-col">
                     <h1 className="font-semibold">Welcome to your new classroom! Let’s take a tour.</h1>
@@ -197,7 +197,7 @@ export default function TourHost() {
             // Dots under the content
             dot: (base, state) => ({
                 ...base,
-                width: state.showNumber ? base.width : 16,
+                width: state?.showNumber ? base.width : 16,
                 height: 16,
                 transform: 'scale(1.15)',
             }),

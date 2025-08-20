@@ -1,5 +1,4 @@
 import {useEffect, useState} from "react";
-import {Clock3} from "lucide-react";
 import {useZoomModule} from "../hooks/useZoomModule.ts";
 import {Icon} from "@iconify/react";
 
@@ -14,8 +13,7 @@ interface meetingDetails {
 
 export function ClassInfoCard() {
     const {
-        nextMeeting,
-        currentMeeting
+        nextMeeting
     } = useZoomModule();
     const [meetingDetails, setMeetingDetails] = useState<meetingDetails>({
         classStart: "",
@@ -23,7 +21,7 @@ export function ClassInfoCard() {
         classTitle: "",
         instructor: ""
     });
-    const [upcomingTime, setUpcomingTime] = useState<string>();
+    const [ upcomingTime ] = useState<string>();
     
     const [countdown, setCountdown] = useState(() => getCountdownToTime(meetingDetails.classStart));
     
@@ -38,11 +36,10 @@ export function ClassInfoCard() {
     }, [meetingDetails.classStart]);
 
     useEffect(() => {
-
-        const start = getLocaleTime(nextMeeting?.event_start);
-        const end = getLocaleTime(nextMeeting?.event_end)
-        const title = nextMeeting?.title;
-        const instructor = nextMeeting?.host;
+        const start = nextMeeting ? getLocaleTime(nextMeeting.event_start) : '' ;
+        const end = nextMeeting ? getLocaleTime(nextMeeting.event_end) : '';
+        const title = nextMeeting ? nextMeeting.title : '';
+        const instructor = nextMeeting ? nextMeeting.host : '';
 
         const data = {
             classStart: start,

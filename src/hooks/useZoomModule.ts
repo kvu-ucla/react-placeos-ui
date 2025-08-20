@@ -22,32 +22,32 @@ interface Attendee {
     resource: boolean
 }
 
-interface ZoomBooking {
-    event_start: number,
-    event_end: number,
-    id: string,
-    host: string,
-    title: string,
-    body: string,
-    attendees: Attendee[],
-    hide_attendees: boolean,
-    location: string,
-    private: boolean,
-    all_day: boolean,
-    timezone: string,
-    recurring: boolean,
-    created: string,
-    updated: string,
-    attachments: [],
-    status: string,
-    creator: string,
-    ical_uid: string,
-    online_meeting_provider: string,
-    online_meeting_phones: string[],
-    online_meeting_url: string,
-    visibility: string,
-    mailbox: string
-}
+// interface ZoomBooking {
+//     event_start: number,
+//     event_end: number,
+//     id: string,
+//     host: string,
+//     title: string,
+//     body: string,
+//     attendees: Attendee[],
+//     hide_attendees: boolean,
+//     location: string,
+//     private: boolean,
+//     all_day: boolean,
+//     timezone: string,
+//     recurring: boolean,
+//     created: string,
+//     updated: string,
+//     attachments: [],
+//     status: string,
+//     creator: string,
+//     ical_uid: string,
+//     online_meeting_provider: string,
+//     online_meeting_phones: string[],
+//     online_meeting_url: string,
+//     visibility: string,
+//     mailbox: string
+// }
 
 interface Booking {
     event_start: number,
