@@ -1,54 +1,88 @@
 import {useEffect, useState} from "react";
 import {Clock3} from "lucide-react";
+import {useZoomModule} from "../hooks/useZoomModule.ts";
+import {Icon} from "@iconify/react";
 
 interface meetingDetails {
-    classTime: string,
+    classStart: string,
+    classEnd: string,
     classTitle: string,
     instructor: string
 
 }
 
-export function ClassInfoCard() {
-    const [meetingDetails, setMeetingDetails] = useState<meetingDetails>({
-        classTime: "",
-        classTitle: "",
-        instructor: "",
-    });
-    const [countdown, setCountdown] = useState(() => getCountdownToTime(meetingDetails.classTime));
 
+export function ClassInfoCard() {
+    const {
+        nextMeeting,
+        currentMeeting
+    } = useZoomModule();
+    const [meetingDetails, setMeetingDetails] = useState<meetingDetails>({
+        classStart: "",
+        classEnd: "",
+        classTitle: "",
+        instructor: ""
+    });
+    const [upcomingTime, setUpcomingTime] = useState<string>();
+    
+    const [countdown, setCountdown] = useState(() => getCountdownToTime(meetingDetails.classStart));
+    
+    const noMeeting: boolean = false;
+    
     useEffect(() => {
         const interval = setInterval(() => {
-            setCountdown(getCountdownToTime(meetingDetails.classTime));
+            setCountdown(getCountdownToTime(meetingDetails.classStart));
         }, 1000); // updates every second (can change to 60000 for 1 min)
 
         return () => clearInterval(interval); // cleanup
-    }, [meetingDetails.classTime]);
+    }, [meetingDetails.classStart]);
 
     useEffect(() => {
-        const dummyData = {
-            classTime: "12:30 PM",
-            classTitle: "Introduction to Psychology",
-            instructor: "Professor Jordan Davis",
+
+        const start = getLocaleTime(nextMeeting?.event_start);
+        const end = getLocaleTime(nextMeeting?.event_end)
+        const title = nextMeeting?.title;
+        const instructor = nextMeeting?.host;
+
+        const data = {
+            classStart: start,
+            classEnd: end,
+            classTitle: title,
+            instructor: instructor,
         }
 
-        //TODO insert live data from registrar API here
+        setMeetingDetails(data);
+    }, [nextMeeting])
+    
+    function getLocaleTime(unixTimeStamp: number) {
 
-        setMeetingDetails(dummyData);
-    }, [])
+        const date = new Date(unixTimeStamp * 1000);
 
-    useEffect(() => {
-
-    }, []);
+        const timeString = date.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true, 
+        });
+        
+        return timeString;
+    }
 
     function getCountdownToTime(timeString: string): string {
+        const now = new Date();
 
-        // Parse the input time string like "12:30"
-        const [hourStr, minuteStr] = timeString.split(':');
-        const inputHour = parseInt(hourStr, 10);
+        // Handle AM/PM if present
+        const isPM = timeString.toLowerCase().includes("pm");
+        const cleanTime = timeString.replace(/am|pm/i, "").trim();
+
+        const [hourStr, minuteStr] = cleanTime.split(':');
+        let inputHour = parseInt(hourStr, 10);
         const inputMinute = parseInt(minuteStr, 10);
 
+        // Convert to 24-hour format
+        if (isPM && inputHour < 12) inputHour += 12;
+        if (!isPM && inputHour === 12) inputHour = 0; // midnight edge case
+
         // Create a Date for the scheduled time today
-        const now = new Date();
         const scheduled = new Date(now);
         scheduled.setHours(inputHour, inputMinute, 0, 0);
 
@@ -65,24 +99,34 @@ export function ClassInfoCard() {
         return `Starts in ${diffMins} minutes`;
     }
 
-    return (
-        <div className="card bg-white mt-6 p-6 rounded shadow w-full max-w-4xl min-h-96 text-center">
-            <div className="mt-8 text-3xl flex items-center justify-center gap-2">
-                <Clock3 className="h-12 w-12"/>
-                <span>Next Class:</span>
-                <strong>{meetingDetails.classTime}</strong>
-                <span className="text-xs mx-2">●</span>
-                <div className="text-blue-600">{countdown}</div>
-            </div>
-            <h1 className="mt-8 text-6xl font-bold mt-2">{meetingDetails.classTitle}</h1>
-            <p className="mt-4 text-3xl">{meetingDetails.instructor}</p>
-            <div className="mt-8 text-3xl flex items-center justify-center gap-2">
-                <span>Ends at</span>
-                <span>{meetingDetails.classTime}</span>
-                <span className="text-xs mx-2">●</span>
-                <div>Upcoming class at 4:00 PM</div>
-            </div>
 
+    return (
+        <div className="card bg-white px-16 py-12 rounded shadow w-full max-w-4xl text-center">
+            {!noMeeting 
+                ? (<>
+                    <div className="text-3xl flex items-center justify-center gap-2">
+                        <Icon icon="material-symbols:schedule-outline-rounded" width={64} height={64}></Icon>
+                        <span>Next Class:</span>
+                        <strong>{meetingDetails.classStart}</strong>
+                        <span className="text-xs mx-2">●</span>
+                        <div className="text-blue-600">{countdown}</div>
+                    </div>
+                    <h1 className="mt-8 text-6xl font-bold mt-2">{meetingDetails.classTitle}</h1><p
+                    className="mt-4 text-3xl">{meetingDetails.instructor}</p>
+                    <div className="mt-8 text-3xl flex items-center justify-center gap-2">
+                        <span>Ends at</span>
+                        <span>{meetingDetails.classEnd}</span>
+                        <span className="text-xs mx-2">●</span>
+                        <div>Upcoming {upcomingTime}</div>
+                    </div>
+                </>)
+                :
+                <>
+                    <div className="p-6 text-3xl flex items-center justify-center gap-2">
+                        <span>No classes are currently scheduled. You can still start a session.</span>
+                    </div>
+                </>
+            }
         </div>
     );
 }

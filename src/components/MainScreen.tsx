@@ -7,8 +7,7 @@ import {ModalProvider} from "../hooks/ModalContext.tsx";
 export default function MainScreen() {
 
     return (
-        <ModalProvider>
-            <div className="flex flex-col min-h-screen bg-avit-bg">
+            <div className="first-step flex flex-col min-h-screen bg-avit-bg">
                 {/* Header with logo, system name, nav buttons */}
                 <Header/>
 
@@ -24,6 +23,5 @@ export default function MainScreen() {
                 {/* Footer with volume and session feedback */}
                 <Footer/>
             </div>
-        </ModalProvider>
     );
 }

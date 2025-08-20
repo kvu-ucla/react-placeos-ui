@@ -10,12 +10,12 @@ export const IconType = {
     Off: "material-symbols:mic-off-outline-rounded",
   },
   Camera: {
-    On: "material-symbols:video-camera-front-outline-rounded",
-    Off: "material-symbols:video-camera-front-off-outline-rounded",
+    On: "material-symbols:videocam-outline-rounded",
+    Off: "material-symbols:videocam-off-outline-rounded",
   },
   Share: {
-    On: "material-symbols:screen-share-outline-rounded",
-    Off: "material-symbols:stop-screen-share-outline-rounded",
+    On: "material-symbols:present-to-all-outline-rounded",
+    Off: "material-symbols:cancel-presentation-outline-rounded",
   }
 };
 
@@ -47,10 +47,20 @@ export default function SessionControls() {
             <span className="font-semibold">In Meeting</span>
           </div>
         )}
+        {!isJoined && (
+            <div className="inline-flex justify-evenly items-center bg-avit-blue rounded-lg py-4 px-8">
+              <div className="relative mr-4">
+                <div className="absolute inline-flex h-4 w-4 rounded-full bg-gray-400 opacity-75"></div>
+                <div className="relative h-4 w-4 bg-gray-400 rounded-full"></div>
+              </div>
+              <span className="font-semibold">Not Joined</span>
+            </div>
+        )}
       </div>
 
       <div className="flex justify-between items-center mb-4">
-        <ControlCard
+        <ControlCard 
+            id="microphone"
           label="Microphone: "
           icon={IconType.Mic}
           disabled={recording}
@@ -59,6 +69,7 @@ export default function SessionControls() {
           detailsButton={() => showModal("settings", { tab: "Volume" })}
         />
         <ControlCard
+            id="camera"
           label="Camera: "
           icon={IconType.Camera}
           disabled={recording}
@@ -67,19 +78,21 @@ export default function SessionControls() {
           detailsButton={() => showModal("settings", { tab: "Camera" })}
         />
         <ControlCard
+            id="screenshare"
           label="Screen Share: "
           icon={IconType.Share}
           buttonAction={() => toggleSharing()}
           buttonState={sharing}
         />
         <ControlCard
+            id="meeting-ctrls"
           label="Meeting Controls"
           buttonAction={() => showModal("settings", { tab: "Status" })}
         />
       </div>
 
       <h2 className="font-semibold mb-4">Join from your device</h2>
-      <div className="grid grid-cols-2 gap-4">
+      <div id="zoom-join" className="grid grid-cols-2 gap-4">
         <div className="collapse collapse-arrow p-2 bg-gray-200/20 border-base-200/20 backdrop-blur-xl">
           <input type="checkbox" name="my-accordion-1" defaultChecked />
           <div className="collapse-title font-semibold inline-flex">
@@ -137,6 +150,7 @@ export default function SessionControls() {
 }
 
 function ControlCard({
+    id,
   label,
   icon,
   disabled,
@@ -144,6 +158,7 @@ function ControlCard({
   buttonState,
   detailsButton,
 }: {
+  id: string;
   label: string;
   icon?: any;
   disabled?: boolean;
@@ -159,7 +174,7 @@ function ControlCard({
       onClick={() => {
         if (buttonAction) buttonAction();
       }}
-      className="btn btn-primary bg-white active:bg-gray-100 p-0 border-none h-[206px] w-[404px] rounded-lg text-avit-grey-80 "
+      id={id} className="btn btn-primary bg-white active:bg-gray-100 p-0 border-none h-[206px] w-[404px] rounded-lg text-avit-grey-80 "
     >
       <div className="px-8 py-6 w-full h-full flex flex-col items-center justify-center relative">
         {!disabled && detailsButton && (
@@ -182,7 +197,7 @@ function ControlCard({
         <div className="relative text-3xl mb-3.5">
           <div
             aria-disabled={disabled}
-            className="ui-disabled shadow-lg bg-avit-grey-button border-avit-grey rounded-2xl h-25 w-25 flex justify-center items-center"
+            className="ui-disabled bg-avit-grey-button border-avit-grey rounded-2xl h-25 w-25 flex justify-center items-center"
           >
             {hasButtonState &&
               (buttonState ? (

@@ -15,6 +15,67 @@ interface Participant {
     is_host: boolean;
 }
 
+interface Attendee {
+    name: string,
+    email: string,
+    response_status: string,
+    resource: boolean
+}
+
+interface ZoomBooking {
+    event_start: number,
+    event_end: number,
+    id: string,
+    host: string,
+    title: string,
+    body: string,
+    attendees: Attendee[],
+    hide_attendees: boolean,
+    location: string,
+    private: boolean,
+    all_day: boolean,
+    timezone: string,
+    recurring: boolean,
+    created: string,
+    updated: string,
+    attachments: [],
+    status: string,
+    creator: string,
+    ical_uid: string,
+    online_meeting_provider: string,
+    online_meeting_phones: string[],
+    online_meeting_url: string,
+    visibility: string,
+    mailbox: string
+}
+
+interface Booking {
+    event_start: number,
+    event_end: number,
+    id: string,
+    host: string,
+    title: string,
+    body: string,
+    attendees: Attendee[],
+    hide_attendees: boolean,
+    location: string,
+    private: boolean,
+    all_day: boolean,
+    timezone: string,
+    recurring: boolean,
+    created: string,
+    updated: string,
+    attachments: [],
+    status: string,
+    creator: string,
+    ical_uid: string,
+    online_meeting_provider: string,
+    online_meeting_phones: string[],
+    online_meeting_url: string,
+    visibility: string,
+    mailbox: string
+}
+
 let subscriptions: (() => void)[] = [];
 
 export function useZoomModule(mod = 'Zoom') {
@@ -24,8 +85,8 @@ export function useZoomModule(mod = 'Zoom') {
     const [joined, setJoined] = useState<number>(0);
     const [zoomJoined, setZoomJoined] = useState<boolean>(false);
     const [nextPending, setNextPending] = useState<boolean>(false);
-    const [currentMeeting, setCurrentMeeting] = useState<any>(null);
-    const [nextMeeting, setNextMeeting] = useState<any>(null);
+    const [currentMeeting, setCurrentMeeting] = useState<Booking>();
+    const [nextMeeting, setNextMeeting] = useState<Booking>();
     const [sharing, setSharing] = useState<boolean>(false);
     const [recording, setRecording] = useState(false);
     const [audioMuted, setAudioMuted] = useState<boolean>(false);
@@ -77,8 +138,6 @@ export function useZoomModule(mod = 'Zoom') {
     useEffect(() => {
         // Create the Zoom client
         zoomClientRef.current = ZoomMeeting.createClient();
-
-        console.log("Test Zoom:", zoomClientRef.current);
 
         if (outletRef.current) {
             zoomClientRef.current.init({
@@ -192,6 +251,7 @@ export function useZoomModule(mod = 'Zoom') {
             }
 
             if (payload.state === 'Connected') {
+                console.log('connection-connected', payload);
                 setJoined(currentMeeting?.event_start || 1);
                 setZoomJoined(true);
             }
