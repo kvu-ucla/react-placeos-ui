@@ -1,6 +1,7 @@
 // src/components/Header.tsx
 import Clock from "./Clock";
-import { useControlContext } from "../hooks/ControlStateContext.tsx";
+import { useControlContext } from "../hooks/ControlStateContext";
+
 import SupportModal from "../components/SupportModal";
 import SettingsModal from "./SettingsModal.tsx";
 import ShutdownModal from "./ShutdownModal.tsx";

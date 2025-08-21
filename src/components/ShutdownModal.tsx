@@ -1,6 +1,7 @@
 // src/components/ShutdownModal.tsx
 
-import {useControlContext} from "../hooks/ControlStateContext.tsx";
+import { useControlContext } from "../hooks/ControlStateContext";
+
 
 export default function ShutdownModal({onClose}: { onClose: () => void }) {
     

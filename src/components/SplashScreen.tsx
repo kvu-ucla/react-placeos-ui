@@ -1,6 +1,6 @@
 import {Header} from './Header';
 import {ClassInfoCard} from './ClassInfoCard';
-import {useControlContext} from "../hooks/ControlStateContext.tsx";
+import { useControlContext } from "../hooks/ControlStateContext";
 import {ModalProvider} from "../hooks/ModalContext.tsx";
 import {useZoomModule} from "../hooks/useZoomModule.ts";
 
