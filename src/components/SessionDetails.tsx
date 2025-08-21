@@ -41,6 +41,8 @@ export default function SessionDetails() {
     // Pull and normalize times
     const startMs = toMs(currentMeeting?.event_start);
     const endMs   = toMs(currentMeeting?.event_end);
+    const nextStartMs = toMs(nextMeeting?.event_start);
+    const nextEndMs = toMs(nextMeeting?.event_end);
 
     // Derived timeline values
     const {
@@ -149,7 +151,7 @@ export default function SessionDetails() {
 
                 {isClass && (
                     <div className="text-[24px]">
-                        Starts at {fmtTime(startMs)} • Ends at {fmtTime(endMs)}
+                        Starts at {fmtTime(nextStartMs)} • Ends at {fmtTime(nextEndMs)}
                     </div>
                 )}
             </div>

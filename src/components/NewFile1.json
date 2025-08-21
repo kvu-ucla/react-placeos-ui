@@ -1087,3 +1087,93 @@
     ]
   }
 }
+
+{
+  "ListParticipantsResult": {
+    "audio_status state": "AUDIO_MUTED", // AUDIO_MUTED || AUDIO_UNMUTED
+//    "audio_status type": "AUDIO_VOIP",
+//    "avatar_url": "",
+//    "camera_status am_i_controlling": false,
+//    "camera_status can_i_request_control": false,
+//    "camera_status can_move_camera": false,
+//    "camera_status can_switch_camera": false,
+//    "camera_status can_zoom_camera": false,
+//    "can_edit_closed_caption": false,
+//    "can_record": false,
+    "event": "ZRCUserChangedEventUserInfoUpdated", //appears only when any field in the JSON has changed, use to update participant
+    "hand_status": {
+      "is_raise_hand": true,
+      "is_valid": "on",
+      "time_stamp": "10354711"
+    },
+    "isCohost": false,
+//    "is_client_support_closed_caption": false,
+//    "is_client_support_coHost": true,
+//    "is_host": false,
+    "is_in_waiting_room": false,
+//    "is_myself": false,
+//    "is_recording": false,
+//    "is_video_can_mute_byHost": true,
+//    "is_video_can_unmute_byHost": true,
+//    "local_recording_disabled": true,
+    "user_id": 16784384,
+    "user_name": "KENNETH VU phone",
+//    "user_type": "NORMAL",
+    "video_status has_source": true, //if participant is connected to video
+//    "video_status is_receiving": false,
+    "video_status is_sending": false //if participant video is active and sending to others
+  },
+  "Status": {
+    "message": "",
+    "state": "OK"
+  },
+  "Sync": false,
+  "topKey": "ListParticipantsResult",
+  "type": "zCommand"
+}
+
+{
+  "ListParticipantsResult": {
+    "audio_status state": "AUDIO_MUTED", // AUDIO_MUTED || AUDIO_UNMUTED
+    "event": "ZRCUserChangedEventUserInfoUpdated", //appears only when any field in the JSON has changed
+    "hand_status": {
+      "is_raise_hand": true,
+      "is_valid": "on",
+      "time_stamp": "10354711"
+    },
+    "isCohost": false,
+    "is_host": false,
+    "is_in_waiting_room": false,
+    "user_id": 16784384,
+    "user_name": "KENNETH VU phone",
+    "video_status has_source": true, //if participant is connected to video
+    "video_status is_sending": false //if participant video is active and sending to others
+  },
+  "Status": {
+    "message": "",
+    "state": "OK"
+  },
+  "Sync": false,
+  "topKey": "ListParticipantsResult",
+  "type": "zCommand"
+}
+
+Participant {
+  "user_id": 16784384,
+  "user_name": "KENNETH VU phone",
+  "audio_status state": "AUDIO_MUTED", // AUDIO_MUTED || AUDIO_UNMUTED
+  "video_status has_source": true, //if participant is connected to video
+  "video_status is_sending": false, //if participant video is active and sending to others
+  "isCohost": false,
+  "is_host": false,
+  "is_in_waiting_room": false,
+  "event": "ZRCUserChangedEventUserInfoUpdated", //appears only when any field in the JSON has changed
+  "hand_status": {
+    "is_raise_hand": true,
+    "is_valid": "on",
+    "time_stamp": "10354711"
+  }
+
+
+}
+}

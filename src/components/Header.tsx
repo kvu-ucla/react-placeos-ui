@@ -24,7 +24,7 @@ export function Header() {
         <div ref={outletRef} className="h-full w-full"></div>
       </div>
       <div className="flex items-center space-x-6">
-        <img src="/assets/logo_dts.svg" alt="Logo" className="h-16" />
+        <img src="logo_dts.svg" alt="Logo" className="h-16" />
       </div>
       <div className="absolute left-1/2 transform -translate-x-1/2 flex flex-col justify-center items-center">
         <Clock format="12h" />

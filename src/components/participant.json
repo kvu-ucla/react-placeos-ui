@@ -1,0 +1,31 @@
+{
+  "Participants": [
+    {
+      "user_id": 16784384,
+      "user_name": "KENNETH VU phone",
+      "audio_status state": "AUDIO_MUTED", // AUDIO_MUTED || AUDIO_UNMUTED
+      "video_status has_source": true, //if participant is connected to video
+      "video_status is_sending": false, //if participant video is active and sending to others
+      "isCohost": false,
+      "is_host": false,
+      "is_in_waiting_room": false,
+      "event": "ZRCUserChangedEventUserInfoUpdated", //appears only when any field in the JSON has changed, do not include, but wanted to highlight it
+      "hand_status": {
+        "is_raise_hand": true,
+        "is_valid": "on",
+        "time_stamp": "10354711"
+      }
+    }
+  ],
+  "Bookings": [
+    {
+      "creatorName": "KENNETH VU",
+      "startTime": "2025-08-21T01:30:00Z",
+      "endTime": "2025-08-21T02:30:00Z",
+      "meetingName": "AV/IT Sandbox Site Testing 3",
+      "meetingNumber": "93261034935"
+    }
+  ]
+}
+  
+
