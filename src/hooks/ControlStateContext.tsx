@@ -1,5 +1,5 @@
 import React, {createContext, useContext} from 'react';
-import {type ControlState, useControlState} from '../hooks/useControlState';
+import {type ControlState, useControlState} from './useControlState.ts';
 
 const ControlContext = createContext<ControlState | null>(null);
 
@@ -8,14 +8,22 @@ interface ControlStateProviderProps {
     moduleAlias?: string;
     children: React.ReactNode;
 }
-
 export function ControlStateProvider({
                                          systemID,
                                          moduleAlias = 'System',
                                          children,
                                      }: ControlStateProviderProps) {
-    const state = useControlState(systemID, moduleAlias);
-    return <ControlContext.Provider value={state}>{children}</ControlContext.Provider>;
+    const state = useControlState(systemID, moduleAlias); // ControlState | null
+
+    if (state == null) {
+        return <div>NOW LOADING</div>
+    }
+
+    return (
+        <ControlContext.Provider value={state}>
+            {children}
+        </ControlContext.Provider>
+    );
 }
 
 export function useControlContext(): ControlState {
