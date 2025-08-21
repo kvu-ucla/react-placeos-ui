@@ -1,11 +1,12 @@
 // src/components/Footer.tsx
-import { useControlContext } from "../hooks/ControlStateContext.tsx";
 import { Icon } from "@iconify/react";
 import { useZoomModule } from "../hooks/useZoomModule.ts";
+import {useModalContext} from "../hooks/ModalContext.tsx";
 
 export default function Footer() {
-  const { togglePower } = useControlContext();
-  const { recording } = useZoomModule();
+  const { recording, isJoined } = useZoomModule();
+  const { showModal } = useModalContext();
+  
 
   console.log("Footer recording =", recording);
   return (
@@ -46,17 +47,17 @@ export default function Footer() {
           <div className="ml-4 w-full overflow-hidden">
             <input
               type="range"
-              className="w-full range rounded-3xl [--range-thumb:white] text-blue-300 range-xl touch-none"
+              className="w-full range rounded-3xl [--range-thumb:white] text-[#C8D7FF] range-xl touch-none"
             />
           </div>
         </div>
 
-        <button
-          onClick={togglePower}
+        {isJoined && (<button
+          onClick={ () => showModal('end-meeting')}
           className="btn btn-error text-white text-3xl p-8 rounded-lg font-medium"
         >
           End Meeting
-        </button>
+        </button>)}
       </div>
     </footer>
   );

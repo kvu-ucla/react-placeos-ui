@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Phone, XIcon } from "lucide-react";
 import type { TabSection } from "../models/Modal.tsx";
+import { Icon } from "@iconify/react";
 
 export default function SettingsModal({
   onClose,
@@ -17,13 +18,13 @@ export default function SettingsModal({
 
   return (
     <div className="modal modal-open bg-black/40">
-      <div className="modal-box bg-white p-8 w-[1547px] h-[1008px] max-w-full rounded-lg">
+      <div id="settings" className="modal-box bg-white p-8 w-[1547px] h-[1098px] max-w-full rounded-lg">
         <div className="">
           {/* Header */}
           <div className="flex justify-between items-center border-b border-avit-grey pb-8">
             <h2 className="text-4xl font-semibold">Settings</h2>
-            <button onClick={onClose} className="text-2xl font-bold ">
-              <XIcon className="h-8 w-8" />
+            <button onClick={onClose} className="btn-ghost text-2xl font-bold ">
+              <Icon icon="material-symbols:close-small-outline-rounded" width={48} height={48}></Icon>
             </button>
           </div>
 
@@ -51,27 +52,51 @@ export default function SettingsModal({
             </div>
 
             {/* Content */}
-            <div className="w-3/4 space-y-6 flex-col justify-end items-center">
+            <div className="w-full space-y-6 flex-col justify-end items-center">
               {activeTab === "Volume" && (
                 <>
-                  <h3 className="font-semibold mb-2">Speakers</h3>
-                  <div className="border border-color-[#99999] flex items-center justify-between p-4 rounded-lg">
-                    {/*<Volume className="h-24 w-24"></Volume>*/}
-                    <input
-                      type="range"
-                      className="range range-xl touch-none w-full mx-2"
-                      defaultValue={60}
-                    />
-                    {/*<Volume2 className="h-24 w-24"></Volume2>*/}
-                    <span className="text-sm text-blue-600 font-bold">60%</span>
-                    <button className="ml-4 bg-gray-100 px-4 py-2 rounded">
-                      Mute Mic
-                    </button>
+                  <h3 className="font-semibold mb-2">Volume</h3>
+
+                  {/* Make the row fill the parent width */}
+                  <div className="w-full border border-[#999] flex items-center justify-between p-4 rounded-lg">
+                    {/* Main column takes all remaining space */}
+                    <div className="flex flex-col w-full items-start">
+                      {/* Row spans full width */}
+                      <div className="flex w-full items-center justify-between">
+                        <p className="font-semibold">Output volume</p>
+                        <span className="text-blue-600 font-bold">60%</span>
+                      </div>
+
+                      {/* Slider row also spans full width */}
+                      <div className="flex w-full items-center">
+                        <Icon
+                          icon="material-symbols:volume-mute-outline-rounded"
+                          width={64}
+                          height={64}
+                        ></Icon>
+                        <input
+                          type="range"
+                          className="w-full range rounded-3xl [--range-thumb:white] text-blue-600 touch-none"
+                          defaultValue={60}
+                        />
+                        <Icon
+                          icon="material-symbols:volume-up-outline-rounded"
+                          width={64}
+                          height={64}
+                        ></Icon>
+                      </div>
+                    </div>
+                    <div className="flex justify-end items-end">
+                      <button className="btn w-[300px] h-[64px] ml-4 bg-gray-100 border-gray-100 px-9 py-6 rounded-lg text-xl text-avit-grey-80 font-medium">
+                        Mute Speaker
+                      </button>
+                    </div>
                   </div>
 
-                  <div>
+                  {/* Microphones section also fills width */}
+                  <div className="w-full">
                     <h3 className="font-semibold mb-2">Microphones</h3>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-4 w-full">
                       {[1, 2, 3, 4].map((mic) => (
                         <MicControl key={mic} mic={mic} />
                       ))}
@@ -79,17 +104,35 @@ export default function SettingsModal({
                   </div>
                 </>
               )}
+
               {activeTab === "Sources" && (
                 <>
+                  <h3 className="font-semibold mb-2">Sources</h3>
+                  
                   {/* Speaker Inputs */}
-                  <div className="border rounded-lg p-4 space-y-4">
+                  <div className="border border-[#999] rounded-lg p-4 space-y-4">
                     <h3 className="text-xl font-semibold flex items-center gap-2">
                       {/* Replace with an actual icon if desired */}
-                      <span>🔈</span> Speaker inputs
+                      <span>
+                        <Icon
+                          icon="material-symbols:volume-up-outline-rounded"
+                          width={48}
+                          height={48}
+                        ></Icon>
+                      </span>{" "}
+                      Speaker outputs
                     </h3>
                     <div className="bg-gray-100 text-gray-700 p-3 rounded flex items-center gap-2">
-                      <span className="text-blue-500 font-bold">ℹ️</span>
-                      <span>Sources are automatically connected via Zoom.</span>
+                      <span className="text-avit-grey-80">
+                        <Icon
+                          icon="material-symbols:info-rounded"
+                          width={48}
+                          height={48}
+                        ></Icon>
+                      </span>
+                      <span className="font-medium">
+                        Sources are automatically connected via Zoom.
+                      </span>
                     </div>
                     <div className="bg-blue-600 text-white p-4 rounded-lg flex items-center justify-between">
                       <span className="font-semibold">
@@ -100,7 +143,10 @@ export default function SettingsModal({
                           CONNECTED
                         </span>
                         <span className="flex items-center gap-1">
-                          <span className="h-2 w-2 bg-green-500 rounded-full" />
+                          <div className="relative">
+                            <div className="absolute inline-flex h-4 w-4 rounded-full bg-green-400 opacity-75 animate-ping"></div>
+                            <div className="relative h-4 w-4 bg-green-400 rounded-full mr-4"></div>
+                          </div>
                           Active
                         </span>
                       </div>
@@ -108,13 +154,29 @@ export default function SettingsModal({
                   </div>
 
                   {/* Microphone Inputs */}
-                  <div className="border rounded-lg p-4 space-y-4">
+                  <div className="border border-[#999] rounded-lg p-4 space-y-4">
                     <h3 className="text-xl font-semibold flex items-center gap-2">
-                      <span>🎤</span> Microphone inputs
+                      {/* Replace with an actual icon if desired */}
+                      <span>
+                        <Icon
+                            icon="material-symbols:mic-outline-rounded"
+                            width={48}
+                            height={48}
+                        ></Icon>
+                      </span>{" "}
+                      Microphone inputs
                     </h3>
                     <div className="bg-gray-100 text-gray-700 p-3 rounded flex items-center gap-2">
-                      <span className="text-blue-500 font-bold">ℹ️</span>
-                      <span>Sources are automatically connected via Zoom.</span>
+                      <span className="text-avit-grey-80">
+                        <Icon
+                            icon="material-symbols:info-rounded"
+                            width={48}
+                            height={48}
+                        ></Icon>
+                      </span>
+                      <span className="font-medium">
+                        Sources are automatically connected via Zoom.
+                      </span>
                     </div>
                     <div className="bg-blue-600 text-white p-4 rounded-lg flex items-center justify-between">
                       <span className="font-semibold">
@@ -125,7 +187,10 @@ export default function SettingsModal({
                           CONNECTED
                         </span>
                         <span className="flex items-center gap-1">
-                          <span className="h-2 w-2 bg-green-500 rounded-full" />
+                          <div className="relative">
+                            <div className="absolute inline-flex h-4 w-4 rounded-full bg-green-400 opacity-75 animate-ping"></div>
+                            <div className="relative h-4 w-4 bg-green-400 rounded-full mr-4"></div>
+                          </div>
                           Active
                         </span>
                       </div>
@@ -136,8 +201,10 @@ export default function SettingsModal({
 
               {activeTab === "Display" && (
                 <>
+                  <h3 className="font-semibold mb-2">Displays</h3>
+                  
                   {/* Toggle All Display Screens */}
-                  <div className="border rounded-lg p-4 flex items-center justify-between">
+                  <div className="border border-[#999] text-avit-grey-80 rounded-lg p-4 flex items-center justify-between">
                     <h3 className="text-xl font-semibold">
                       All display screens
                     </h3>
@@ -146,19 +213,35 @@ export default function SettingsModal({
                       <input
                         type="checkbox"
                         defaultChecked
-                        className="toggle toggle-primary"
+                        className="toggle border-gray-300 bg-gray-300 toggle-xl checked:border-blue-600 checked:bg-blue-600 checked:text-white"
                       />
                     </label>
                   </div>
 
                   {/* Left Display Screen */}
-                  <div className="border rounded-lg p-4 space-y-4">
+                  <div className="border border-[#999] rounded-lg p-4 space-y-4">
                     <h3 className="text-xl font-semibold flex items-center gap-2">
-                      <span>🖥️</span> Left display screen
+                      {/* Replace with an actual icon if desired */}
+                      <span>
+                        <Icon
+                            icon="material-symbols:tv-displays-outline-rounded"
+                            width={48}
+                            height={48}
+                        ></Icon>
+                      </span>{" "}
+                      Left display screen
                     </h3>
                     <div className="bg-gray-100 text-gray-700 p-3 rounded flex items-center gap-2">
-                      <span className="text-blue-500 font-bold">ℹ️</span>
-                      <span>Sources are automatically connected via Zoom.</span>
+                      <span className="text-avit-grey-80">
+                        <Icon
+                            icon="material-symbols:info-rounded"
+                            width={48}
+                            height={48}
+                        ></Icon>
+                      </span>
+                      <span className="font-medium">
+                        Sources are automatically connected via Zoom.
+                      </span>
                     </div>
                     <div className="bg-blue-600 text-white p-4 rounded-lg flex items-center justify-between">
                       <span className="font-semibold">
@@ -169,7 +252,10 @@ export default function SettingsModal({
                           CONNECTED
                         </span>
                         <span className="flex items-center gap-1">
-                          <span className="h-2 w-2 bg-green-500 rounded-full" />
+                          <div className="relative">
+                            <div className="absolute inline-flex h-4 w-4 rounded-full bg-green-400 opacity-75 animate-ping"></div>
+                            <div className="relative h-4 w-4 bg-green-400 rounded-full mr-4"></div>
+                          </div>
                           Active
                         </span>
                       </div>
@@ -177,13 +263,29 @@ export default function SettingsModal({
                   </div>
 
                   {/* Right Display Screen */}
-                  <div className="border rounded-lg p-4 space-y-4">
+                  <div className="border border-[#999] rounded-lg p-4 space-y-4">
                     <h3 className="text-xl font-semibold flex items-center gap-2">
-                      <span>🖥️</span> Right display screen
+                      {/* Replace with an actual icon if desired */}
+                      <span>
+                        <Icon
+                            icon="material-symbols:tv-displays-outline-rounded"
+                            width={48}
+                            height={48}
+                        ></Icon>
+                      </span>{" "}
+                      Right display screen
                     </h3>
                     <div className="bg-gray-100 text-gray-700 p-3 rounded flex items-center gap-2">
-                      <span className="text-blue-500 font-bold">ℹ️</span>
-                      <span>Sources are automatically connected via Zoom.</span>
+                      <span className="text-avit-grey-80">
+                        <Icon
+                            icon="material-symbols:info-rounded"
+                            width={48}
+                            height={48}
+                        ></Icon>
+                      </span>
+                      <span className="font-medium">
+                        Sources are automatically connected via Zoom.
+                      </span>
                     </div>
                     <div className="bg-blue-600 text-white p-4 rounded-lg flex items-center justify-between">
                       <span className="font-semibold">
@@ -194,7 +296,10 @@ export default function SettingsModal({
                           CONNECTED
                         </span>
                         <span className="flex items-center gap-1">
-                          <span className="h-2 w-2 bg-green-500 rounded-full" />
+                          <div className="relative">
+                            <div className="absolute inline-flex h-4 w-4 rounded-full bg-green-400 opacity-75 animate-ping"></div>
+                            <div className="relative h-4 w-4 bg-green-400 rounded-full mr-4"></div>
+                          </div>
                           Active
                         </span>
                       </div>
@@ -247,41 +352,7 @@ export default function SettingsModal({
                   </div>
 
                   {/* Participants list */}
-                  <div className="divide-y">
-                    {[
-                      { name: "Ruth Lee", muted: true, video: false },
-                      { name: "Marissa Klymkiw", muted: false, video: true },
-                      { name: "Juan Atachagua", muted: false, video: true },
-                      { name: "Paola Rico Racah", muted: true, video: false },
-                    ].map((p, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-center justify-between py-3"
-                      >
-                        <span>{p.name}</span>
-                        <div className="flex gap-2">
-                          <button
-                            className={`px-4 py-1 rounded text-sm font-semibold ${
-                              p.muted
-                                ? "bg-gray-100 text-black"
-                                : "bg-black text-white"
-                            }`}
-                          >
-                            {p.muted ? "Unmute" : "Mute"}
-                          </button>
-                          <button
-                            className={`px-4 py-1 rounded text-sm font-semibold ${
-                              p.video
-                                ? "bg-black text-white"
-                                : "bg-gray-100 text-black"
-                            }`}
-                          >
-                            {p.video ? "Disable video" : "Enable video"}
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  //TODO participant list
                 </div>
               )}
 
@@ -294,10 +365,10 @@ export default function SettingsModal({
                   <div className="flex gap-3">
                     <button className="flex items-center gap-2 px-4 py-3 rounded bg-blue-600 text-white font-semibold">
                       {/* Replace emoji with icon if needed */}
-                      <span>🔳</span> Gallery View <span>✔️</span>
+                      <span></span> Gallery View <span></span>
                     </button>
                     <button className="flex items-center gap-2 px-4 py-3 rounded bg-gray-100 text-gray-800 font-semibold">
-                      <span>🎞️</span> Speaker View
+                      <span></span> Speaker View
                     </button>
                   </div>
 
@@ -318,7 +389,7 @@ export default function SettingsModal({
                       Pin Video
                     </button>
                     <button className="bg-blue-600 text-white px-6 py-3 rounded font-medium flex items-center gap-2">
-                      Hide Self View <span>✔️</span>
+                      Hide Self View <span></span>
                     </button>
                   </div>
                 </div>
@@ -370,7 +441,7 @@ export default function SettingsModal({
                 <div className="bg-blue-100 text-blue-900 p-3 text-xl rounded flex items-center justify-left">
                   <div className="flex items-center">
                     <span className="mr-2">
-                      <Phone />
+                      <Icon icon="material-symbols:phone-enabled-outline" width={32} height={32}></Icon>
                     </span>
                     <span>
                       Need help? Call <strong>AV Technical Support</strong> for
@@ -436,24 +507,37 @@ function MicControl({ mic }: { mic: number }) {
   const volume = muted ? 0 : 65;
 
   return (
-    <div className="border rounded p-4">
-      <h4 className="text-sm font-semibold mb-2">Mic {mic} volume (output)</h4>
+    <div className="border border-[#999] rounded-lg p-4">
+      <div className="flex items-center justify-between">
+        <h4 className="font-semibold mb-2">Mic {mic} volume (output)</h4>
+        <span className="font-bold text-blue-600">{volume}%</span>
+      </div>
       <div className="flex items-center justify-between mb-2">
-        {/*<Volume className="h-24 w-24"></Volume>*/}
+        <Icon
+          icon="material-symbols:volume-mute-outline-rounded"
+          width={48}
+          height={48}
+        ></Icon>
         <input
           type="range"
-          className={`w-full mx-2 ${muted ? "" : "accent-blue-500"}`}
-          defaultValue={volume}
+          className="mr-2 w-full range rounded-3xl [--range-thumb:white] text-blue-600 touch-none"
+          defaultValue={60}
         />
-        <span className="text-sm font-bold text-blue-600">{volume}%</span>
+        <Icon
+          icon="material-symbols:volume-up-outline-rounded"
+          width={48}
+          height={48}
+        ></Icon>
         {/*<Volume2 className="h-24 w-24"></Volume2>*/}
       </div>
       <button
-        className={`w-full py-2 rounded text-sm font-medium ${
-          muted ? "bg-gray-800 text-white" : "bg-gray-100"
+        className={`btn w-full h-[64px] rounded-lg text-xl font-medium ${
+          muted
+            ? "bg-gray-800 text-white"
+            : "text-avit-grey-80 bg-gray-100 border-gray-100"
         }`}
       >
-        {muted ? "Mic Muted" : "Mute Mic"}
+        {muted ? "Unmute Mic" : "Mute Mic"}
       </button>
     </div>
   );

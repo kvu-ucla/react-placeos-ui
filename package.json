@@ -12,6 +12,7 @@
   "dependencies": {
     "@iconify/react": "^6.0.0",
     "@placeos/ts-client": "^4.1.9",
+    "@reactour/tour": "^3.8.0",
     "@tailwindcss/vite": "^4.1.11",
     "@zoom/meetingsdk": "^4.0.0",
     "daisyui": "^5.0.50",
@@ -21,12 +22,13 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.8.0",
     "rxjs": "^7.8.2",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.11",
+    "ucla-design-systems": "^2.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^4.6.0",
     "eslint": "^9.30.1",
     "eslint-plugin-react-hooks": "^5.2.0",
