@@ -1,5 +1,4 @@
 // src/components/SessionControls.tsx
-import { HdmiPort } from "lucide-react";
 import { useZoomModule } from "../hooks/useZoomModule.ts";
 import { Icon } from "@iconify/react";
 import { useModalContext } from "../hooks/ModalContext.tsx";
@@ -97,7 +96,7 @@ export default function SessionControls() {
           <input type="checkbox" name="my-accordion-1" defaultChecked />
           <div className="collapse-title font-semibold inline-flex">
             <img
-              src="/assets/zoom_logo_white.svg"
+              src={import.meta.env.BASE_URL + "zoom_logo_white.svg"}
               alt="zoom logo"
               className="h-16"
             />
@@ -124,7 +123,7 @@ export default function SessionControls() {
         <div className="collapse collapse-arrow p-2 bg-gray-200/20 border-base-200/20 backdrop-blur-xl">
           <input type="checkbox" name="my-accordion-1" defaultChecked />
           <div className="collapse-title font-semibold inline-flex">
-            <HdmiPort className="h-16 w-16"></HdmiPort>
+            <Icon icon="material-symbols:cable-rounded" width={64} height={64}></Icon>
             <div className="flex flex-col ml-4">
               Connect with USB-C / HDMI
               <div className="text-2xl font-extralight mt-2">
@@ -219,8 +218,8 @@ function ControlCard({
               ))}
             {icon == null && (
               <img
-                src="/assets/zoom_logo.svg"
-                alt="Logo"
+                src={import.meta.env.BASE_URL + "zoom_logo.svg"}
+                alt="Zoom logo"
                 className="h-16 w-16"
               />
             )}

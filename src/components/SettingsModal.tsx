@@ -23,8 +23,8 @@ export default function SettingsModal({
           {/* Header */}
           <div className="flex justify-between items-center border-b border-avit-grey pb-8">
             <h2 className="text-4xl font-semibold">Settings</h2>
-            <button onClick={onClose} className="text-2xl font-bold ">
-              <XIcon className="h-8 w-8" />
+            <button onClick={onClose} className="btn-ghost text-2xl font-bold ">
+              <Icon icon="material-symbols:close-small-outline-rounded" width={48} height={48}></Icon>
             </button>
           </div>
 
@@ -441,7 +441,7 @@ export default function SettingsModal({
                 <div className="bg-blue-100 text-blue-900 p-3 text-xl rounded flex items-center justify-left">
                   <div className="flex items-center">
                     <span className="mr-2">
-                      <Phone />
+                      <Icon icon="material-symbols:phone-enabled-outline" width={32} height={32}></Icon>
                     </span>
                     <span>
                       Need help? Call <strong>AV Technical Support</strong> for
