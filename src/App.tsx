@@ -4,7 +4,6 @@ import {getModule, querySystems, setAPI_Key, setup} from '@placeos/ts-client';
 import {ControlStateProvider} from "./hooks/ControlStateContext.tsx";
 import MainView from "./components/MainView.tsx";
 
-
 function App() {
 
 const [ready, setReady] = useState(false);
