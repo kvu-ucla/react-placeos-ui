@@ -4,8 +4,9 @@ import { useZoomModule } from "../hooks/useZoomModule.ts";
 import {useModalContext} from "../hooks/ModalContext.tsx";
 
 export default function Footer() {
-  const { recording, isJoined } = useZoomModule();
+  const { recording } = useZoomModule();
   const { showModal } = useModalContext();
+  const isJoined = false;
   
 
   console.log("Footer recording =", recording);

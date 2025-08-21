@@ -1,19 +1,17 @@
 // src/hooks/useZoomState.ts
-
-import ZoomMeeting, {type ExecutedResult} from "@zoom/meetingsdk/embedded";
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {getModule, PlaceModuleBinding} from "@placeos/ts-client";
 
-type DeviceState = 'NONE' | 'MUTED' | 'UNMUTED';
-type CallState = 'NOT_IN_MEETING' | 'CONNECTING_MEETING' | 'IN_MEETING' | 'LOGGED_OUT' | 'UNKNOWN';
-interface Participant {
-    id: string;
-    name: string;
-    video_muted: DeviceState;
-    audio_muted: DeviceState;
-    speaking: boolean;
-    is_host: boolean;
-}
+// type DeviceState = 'NONE' | 'MUTED' | 'UNMUTED';
+// type CallState = 'NOT_IN_MEETING' | 'CONNECTING_MEETING' | 'IN_MEETING' | 'LOGGED_OUT' | 'UNKNOWN';
+// interface Participant {
+//     id: string;
+//     name: string;
+//     video_muted: DeviceState;
+//     audio_muted: DeviceState;
+//     speaking: boolean;
+//     is_host: boolean;
+// }
 
 interface Attendee {
     name: string,
@@ -22,11 +20,11 @@ interface Attendee {
     resource: boolean
 }
 
-interface CallStatus {
-    status: CallState,
-    isMicMuted: boolean,
-    isCamMuted: boolean,
-}
+// interface CallStatus {
+//     status: CallState,
+//     isMicMuted: boolean,
+//     isCamMuted: boolean,
+// }
 
 // interface ZoomBooking {
 //     event_start: number,
@@ -87,38 +85,21 @@ let subscriptions: (() => void)[] = [];
 export function useZoomModule(mod = 'ZoomCSAPI') {
     const systemId: string = 'sys-I-_pptn4a5';
     const [module, setModule] = useState<PlaceModuleBinding>();
-    const [inProgress, setInProgress] = useState<string>('');
-    const [joined, setJoined] = useState<number>(0);
-    const [zoomJoined, setZoomJoined] = useState<boolean>(false);
-    const [nextPending, setNextPending] = useState<boolean>(false);
+    // const [inProgress, setInProgress] = useState<string>('');
+    // const [joined, setJoined] = useState<number>(0);
+    // const [zoomJoined, setZoomJoined] = useState<boolean>(false);
+    // const [nextPending, setNextPending] = useState<boolean>(false);
     const [currentMeeting, setCurrentMeeting] = useState<Booking>();
     const [nextMeeting, setNextMeeting] = useState<Booking>();
-    const [sharing, setSharing] = useState<boolean>(false);
+    // const [sharing, setSharing] = useState<boolean>(false);
     const [recording, setRecording] = useState(false);
-    const [audioMuted, setAudioMuted] = useState<boolean>(false);
-    const [videoMuted, setVideoMuted] = useState<boolean>(false);
-    const [participants, setParticipants] = useState<Participant[]>([]);
-    const [user, setUser] = useState<any>(null);
-    const [callStatus, setCallStatus] = useState<CallStatus>();
+    const [callStatus, setCallStatus] = useState<any>();
 
     const handleActiveRecordings = (data: string[] | null | undefined) => {
         const value = !!(data && data.length > 0)
         console.log("new recording value: ", value);
         setRecording(value);
     }
-    
-    const clearTimeoutsRef = useRef<Record<string, number>>({});
-
-    const timeoutsRef = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
-
-    const timeout = (id: string, fn: () => void, delay = 1000) => {
-        if (timeoutsRef.current[id]) clearTimeout(timeoutsRef.current[id]);
-        timeoutsRef.current[id] = setTimeout(fn, delay);
-    };
-
-    const isJoined = useMemo(() => {
-        return !!joined && zoomJoined;
-    }, [joined, zoomJoined]);
 
     const outletRef = useRef<HTMLDivElement>(null);
     const zoomClientRef = useRef<any>(null); // persistent ref across renders
@@ -155,11 +136,11 @@ export function useZoomModule(mod = 'ZoomCSAPI') {
 
     };
 
-    const join = async (time: number) => {
-
-        if (!module) return;
-        
-    }
+    // const join = async (time: number) => {
+    //
+    //     if (!module) return;
+    //    
+    // }
 
     const toggleAudioMuteAll = async () => {
         if (!module) return;
@@ -174,14 +155,7 @@ export function useZoomModule(mod = 'ZoomCSAPI') {
     const toggleSharing = async () => {
 
     };
-
-    const toggleUserAudio = async (user: Participant) => {
-
-    };
-
-    const removeParticipant = async (participant: Participant) => {
-
-    }
+    
     const listenToBindings = () => {
         clearSubs();
 
@@ -233,32 +207,19 @@ export function useZoomModule(mod = 'ZoomCSAPI') {
         if (!recordingsMod) return;
 
         bindAndListen('active_recordings', recordingsMod, handleActiveRecordings);
-
     };
 
 
     return {
         outletRef,
         zoomClient: zoomClientRef.current,
-        inProgress,
-        joined,
-        zoomJoined,
-        isJoined,
-        nextPending,
         currentMeeting,
         nextMeeting,
-        sharing,
         recording,
-        audioMuted,
-        videoMuted,
-        participants,
-        user,
+        callStatus,
         leave,
-        join,
         toggleAudioMuteAll,
         toggleVideoMuteAll,
-        toggleSharing,
-        toggleUserAudio,
-        removeParticipant
+        toggleSharing
     };
 }

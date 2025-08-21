@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Phone, XIcon } from "lucide-react";
 import type { TabSection } from "../models/Modal.tsx";
 import { Icon } from "@iconify/react";
 

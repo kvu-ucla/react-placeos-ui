@@ -6,13 +6,14 @@ import {useZoomModule} from "../hooks/useZoomModule.ts";
 
 export default function SplashScreen() {
     const {system, togglePower} = useControlContext();
-    const { join, currentMeeting} = useZoomModule();
+    const { currentMeeting } = useZoomModule();
     
     function Start() {
        togglePower();
-       if (currentMeeting != null)
-        join(currentMeeting?.event_start);
-       
+       if (currentMeeting) {
+           //todo 
+       }
+        // join(currentMeeting?.event_start);
     }
 
     const innerWidth = window.innerWidth;
