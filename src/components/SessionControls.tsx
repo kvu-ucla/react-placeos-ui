@@ -22,15 +22,16 @@ export default function SessionControls() {
   const {
     callStatus,
     recording,
+    sharing,
     toggleSharing,
     toggleAudioMuteAll,
     toggleVideoMuteAll,
   } = useZoomContext();
   const { showModal } = useModalContext();
-  const sharing = false;
-  const videoMuted = false;
-  const audioMuted = false;
-  const isJoined = false;
+  const isSharing = sharing?.isDirectPresentationConnected || sharing?.isSharingBlackMagic
+  const isVideoMuted = callStatus?.isCamMuted;
+  const isMicAudioMuted = callStatus?.isMicMuted;
+  const isJoined = callStatus?.status === "IN_MEETING";
 
   console.log('SessionControls recording =', recording);
   console.log("Call Status =", callStatus);
@@ -66,7 +67,7 @@ export default function SessionControls() {
           icon={IconType.Mic}
           disabled={recording}
           buttonAction={() => toggleAudioMuteAll()}
-          buttonState={audioMuted}
+          buttonState={isMicAudioMuted}
           detailsButton={() => showModal("settings", { tab: "Volume" })}
         />
         <ControlCard
@@ -75,7 +76,7 @@ export default function SessionControls() {
           icon={IconType.Camera}
           disabled={recording}
           buttonAction={() => toggleVideoMuteAll()}
-          buttonState={videoMuted}
+          buttonState={isVideoMuted}
           detailsButton={() => showModal("settings", { tab: "Camera" })}
         />
         <ControlCard
@@ -83,7 +84,7 @@ export default function SessionControls() {
           label="Screen Share: "
           icon={IconType.Share}
           buttonAction={() => toggleSharing()}
-          buttonState={sharing}
+          buttonState={isSharing}
         />
         <ControlCard
             id="meeting-ctrls"

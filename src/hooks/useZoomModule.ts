@@ -26,6 +26,20 @@ interface CallStatus {
     isCamMuted: boolean,
 }
 
+interface SharingStatus {
+    "directPresentationPairingCode": string,
+    "directPresentationSharingKey": string,
+    "dispState": string,
+    "isAirHostClientConnected": boolean, //
+    "isBlackMagicConnected": boolean,
+    "isBlackMagicDataAvailable": boolean,
+    "isDirectPresentationConnected": boolean, //wireless sharing
+    "isSharingBlackMagic": boolean, //wired sharing
+    "password": string,
+    "serverName": string,
+    "wifiName": string,
+}
+
 // interface ZoomBooking {
 //     event_start: number,
 //     event_end: number,
@@ -87,7 +101,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
     const [module, setModule] = useState<PlaceModuleBinding>();
     const [currentMeeting, setCurrentMeeting] = useState<Booking>();
     const [nextMeeting, setNextMeeting] = useState<Booking>();
-    // const [sharing, setSharing] = useState<boolean>(false);
+    const [sharing, setSharing] = useState<SharingStatus>();
     const [recording, setRecording] = useState(false);
     const [callStatus, setCallStatus] = useState<CallStatus>();
 
@@ -121,27 +135,42 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
     }, [module]);
 
     const leave = async () => {
-
+        if (!module) return;
+        
+        if (callStatus?.status === "IN_MEETING")
+            await module.execute('call_disconnect');
     };
 
-    // const join = async (time: number) => {
-    //
-    //     if (!module) return;
-    //    
-    // }
+    const joinPmi = async (time = 15) => {
+        if (!module) return;
+
+        await module.execute('dial_start_pmi', [time]);
+    }
+
+    const joinMeetingId = async (meetingId: string) => {
+        if (!module) return;
+
+        await module.execute('dial_join', [meetingId]);
+    }
 
     const toggleAudioMuteAll = async () => {
         if (!module) return;
-        
+
+        const newState = !callStatus?.isMicMuted;
+        await module.execute('call_mute_self', [newState]);
     }
 
     const toggleVideoMuteAll = async () => {
         if (!module) return;
 
+        const newState = !callStatus?.isCamMuted;
+        await module.execute('call_mute_camera', [newState]);
     }
 
     const toggleSharing = async () => {
-
+        if (!module) return;
+        
+        
     };
     
     const listenToBindings = () => {
@@ -181,6 +210,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         // bindAndListen('mic_mute', module, setAudioMuted);
         // bindAndListen('camera_mute', module, setVideoMuted);
         
+        //bind call state for zoom, including mic and cam
         bindAndListen('Call', module, (val) => {
             let tempMic = null;
             let tempCam = null;
@@ -201,6 +231,9 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
             
             setCallStatus(data);
         });
+        
+        //bind sharing status for wireless and wired sharing
+        bindAndListen('Sharing', module,  setSharing);
 
         //bind to Bookings module in placeOS
         const bookingsMod = getModule(systemId, 'Bookings');
@@ -222,7 +255,10 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         nextMeeting,
         recording,
         callStatus,
+        sharing,
         leave,
+        joinPmi,
+        joinMeetingId,
         toggleAudioMuteAll,
         toggleVideoMuteAll,
         toggleSharing
