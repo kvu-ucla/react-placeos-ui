@@ -4,16 +4,16 @@ import {type ControlState, useControlState} from './useControlState';
 const ControlContext = createContext<ControlState | null>(null);
 
 interface ControlStateProviderProps {
-    systemID: string;
+    systemId: string;
     moduleAlias?: string;
     children: React.ReactNode;
 }
 export function ControlStateProvider({
-                                         systemID,
+                                         systemId,
                                          moduleAlias = 'System',
                                          children,
                                      }: ControlStateProviderProps) {
-    const state = useControlState(systemID, moduleAlias); // ControlState | null
+    const state = useControlState(systemId, moduleAlias); // ControlState | null
 
     if (state == null) {
         return <div>NOW LOADING</div>

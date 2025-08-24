@@ -93,7 +93,7 @@ export interface ControlState {
 }
 
 
-export function useControlState(systemID: string, moduleAlias = 'System'): ControlState {
+export function useControlState(systemId: string, moduleAlias = 'System'): ControlState {
     const [power, setPower] = useState(false);
     const [active, setActive] = useState(false);
     const [volume, setVolumeState] = useState(0);
@@ -114,12 +114,12 @@ export function useControlState(systemID: string, moduleAlias = 'System'): Contr
             console.log(res!.data);
         });
 
-        showSystem(systemID).subscribe(sys => {
+        showSystem(systemId).subscribe(sys => {
             console.log("System object: ", sys);
         });
 
 
-        const nvxMod = getModule(systemID, "Decoder_1");
+        const nvxMod = getModule(systemId, "Decoder_1");
 
         const nvxBinding = nvxMod.binding('subscriptions');
         const nvxSub = nvxBinding.listen().subscribe(val => {
@@ -129,7 +129,7 @@ export function useControlState(systemID: string, moduleAlias = 'System'): Contr
         const nvxUnbind = nvxBinding.bind();
         subs.current.push(new Subscription(nvxUnbind));
 
-        const camMod = getModule(systemID, "Display_2");
+        const camMod = getModule(systemId, "Display_2");
 
 
         const camBinding = camMod.binding('connected');
@@ -140,7 +140,7 @@ export function useControlState(systemID: string, moduleAlias = 'System'): Contr
         const camUnbind = camBinding.bind();
         subs.current.push(new Subscription(camUnbind));
         
-        const recMod = getModule(systemID, "Recording_1");
+        const recMod = getModule(systemId, "Recording_1");
         
         const recBinding = recMod.binding('active_recordings');
         const recSub = recBinding.listen().subscribe(val => {
@@ -150,7 +150,7 @@ export function useControlState(systemID: string, moduleAlias = 'System'): Contr
         const recUnbind = camBinding.bind();
         subs.current.push(new Subscription(recUnbind));
 
-        const mod = getModule(systemID, moduleAlias);
+        const mod = getModule(systemId, moduleAlias);
 
         const bind = (name: keyof SystemState, onChange: (val: any) => void) => {
             const binding = mod.binding(name);
@@ -211,22 +211,22 @@ export function useControlState(systemID: string, moduleAlias = 'System'): Contr
             subs.current.forEach((s) => s.unsubscribe());
             subs.current = [];
         };
-    }, [systemID, moduleAlias]);
+    }, [systemId, moduleAlias]);
 
     const togglePower = async () => {
-        const mod = getModule(systemID, moduleAlias);
+        const mod = getModule(systemId, moduleAlias);
         await mod.execute('power', [!activeRef.current]);
 
         console.log('activeRef State', activeRef.current);
     };
 
     const setVolume = async (val: number) => {
-        const mod = getModule(systemID, moduleAlias);
+        const mod = getModule(systemId, moduleAlias);
         await mod.execute('volume', [val]);
     };
 
     const toggleMute = async () => {
-        const mod = getModule(systemID, moduleAlias);
+        const mod = getModule(systemId, moduleAlias);
         await mod.execute('mute', [!mutedRef.current]);
     };
 

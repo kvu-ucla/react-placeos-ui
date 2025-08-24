@@ -1,9 +1,9 @@
-// src/hooks/useZoomState.ts
-import {useEffect, useRef, useState} from "react";
+// src/hooks/useZoomModule.ts
+import {useEffect, useState} from "react";
 import {getModule, PlaceModuleBinding} from "@placeos/ts-client";
 
 // type DeviceState = 'NONE' | 'MUTED' | 'UNMUTED';
-// type CallState = 'NOT_IN_MEETING' | 'CONNECTING_MEETING' | 'IN_MEETING' | 'LOGGED_OUT' | 'UNKNOWN';
+type CallState = 'NOT_IN_MEETING' | 'CONNECTING_MEETING' | 'IN_MEETING' | 'LOGGED_OUT' | 'UNKNOWN';
 // interface Participant {
 //     id: string;
 //     name: string;
@@ -20,11 +20,11 @@ interface Attendee {
     resource: boolean
 }
 
-// interface CallStatus {
-//     status: CallState,
-//     isMicMuted: boolean,
-//     isCamMuted: boolean,
-// }
+interface CallStatus {
+    status: CallState,
+    isMicMuted: boolean,
+    isCamMuted: boolean,
+}
 
 // interface ZoomBooking {
 //     event_start: number,
@@ -82,27 +82,20 @@ interface Booking {
 
 let subscriptions: (() => void)[] = [];
 
-export function useZoomModule(mod = 'ZoomCSAPI') {
-    const systemId: string = 'sys-I-_pptn4a5';
+export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
+   
     const [module, setModule] = useState<PlaceModuleBinding>();
-    // const [inProgress, setInProgress] = useState<string>('');
-    // const [joined, setJoined] = useState<number>(0);
-    // const [zoomJoined, setZoomJoined] = useState<boolean>(false);
-    // const [nextPending, setNextPending] = useState<boolean>(false);
     const [currentMeeting, setCurrentMeeting] = useState<Booking>();
     const [nextMeeting, setNextMeeting] = useState<Booking>();
     // const [sharing, setSharing] = useState<boolean>(false);
     const [recording, setRecording] = useState(false);
-    const [callStatus, setCallStatus] = useState<any>();
+    const [callStatus, setCallStatus] = useState<CallStatus>();
 
     const handleActiveRecordings = (data: string[] | null | undefined) => {
         const value = !!(data && data.length > 0)
         console.log("new recording value: ", value);
         setRecording(value);
     }
-
-    const outletRef = useRef<HTMLDivElement>(null);
-    const zoomClientRef = useRef<any>(null); // persistent ref across renders
 
     //clear subscriptions to PlaceOS Zoom driver
     const clearSubs = () => {
@@ -112,15 +105,10 @@ export function useZoomModule(mod = 'ZoomCSAPI') {
 
     // get zoom module instance from PlaceOS
     useEffect(() => {
-        async function getZoomModule() {
-
-            //TODO replace with value from ControlState
-            // const system_id = await getSystemId();
-            const zoomModule = await getModule(systemId, mod);
-            setModule(zoomModule);
-        }
-
-        getZoomModule();
+        
+        const zoomModule =  getModule(systemId, mod);
+        setModule(zoomModule);
+ 
     }, [systemId, mod]);
 
     useEffect(() => {
@@ -193,7 +181,16 @@ export function useZoomModule(mod = 'ZoomCSAPI') {
         // bindAndListen('mic_mute', module, setAudioMuted);
         // bindAndListen('camera_mute', module, setVideoMuted);
         
-        bindAndListen('Call', module, setCallStatus);
+        bindAndListen('Call', module, (val) => {
+            
+            const data = {
+                status: val.Status,
+                isMicMuted: val.Microphone.Mute,
+                isCamMuted: val.Microphone.Mute,
+            }
+            
+            setCallStatus(data);
+        });
 
         //bind to Bookings module in placeOS
         const bookingsMod = getModule(systemId, 'Bookings');
@@ -211,8 +208,6 @@ export function useZoomModule(mod = 'ZoomCSAPI') {
 
 
     return {
-        outletRef,
-        zoomClient: zoomClientRef.current,
         currentMeeting,
         nextMeeting,
         recording,

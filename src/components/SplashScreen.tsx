@@ -2,11 +2,11 @@ import {Header} from './Header';
 import {ClassInfoCard} from './ClassInfoCard';
 import { useControlContext } from "../hooks/ControlStateContext";
 import {ModalProvider} from "../hooks/ModalContext.tsx";
-import {useZoomModule} from "../hooks/useZoomModule.ts";
+import {useZoomContext} from "../hooks/ZoomContext.tsx";
 
 export default function SplashScreen() {
     const {system, togglePower} = useControlContext();
-    const { currentMeeting } = useZoomModule();
+    const { currentMeeting } = useZoomContext();
     
     function Start() {
        togglePower();

@@ -1,7 +1,8 @@
 import {ControlStateProvider, useControlContext} from "../hooks/ControlStateContext";
-import SplashScreen from "./SplashScreen.tsx";
-import MainScreen from "./MainScreen.tsx";
+import SplashScreen from "./SplashScreen";
+import MainScreen from "./MainScreen";
 import {Navigate, useParams} from "react-router-dom";
+import {ZoomProvider} from "../hooks/ZoomContext";
 
 export default function MainView() {
     const { system_id } = useParams();
@@ -10,8 +11,10 @@ export default function MainView() {
 
 
     return (
-        <ControlStateProvider systemID={system_id}>
-            <MainViewInner />
+        <ControlStateProvider systemId={system_id}>
+            <ZoomProvider systemId={system_id}>
+                <MainViewInner />
+            </ZoomProvider>
         </ControlStateProvider>
     );
 }

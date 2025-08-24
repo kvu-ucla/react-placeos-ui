@@ -6,7 +6,6 @@ import SupportModal from "../components/SupportModal";
 import SettingsModal from "./SettingsModal.tsx";
 import ShutdownModal from "./ShutdownModal.tsx";
 import { Icon } from "@iconify/react";
-import { useZoomModule } from "../hooks/useZoomModule.ts";
 import { useModalContext } from "../hooks/ModalContext.tsx";
 import EndMeetingModal from "./EndMeetingModal.tsx";
 import { useTour } from "@reactour/tour";
@@ -14,7 +13,6 @@ import { useTour } from "@reactour/tour";
 export function Header() {
   const { active, system } = useControlContext();
   const { modalType, initialTab, showModal, closeModal } = useModalContext();
-  const { outletRef } = useZoomModule();
   const { setIsOpen } = useTour();
 
   return (
@@ -22,7 +20,7 @@ export function Header() {
       className={`first-step min-h-42 w-screen flex justify-between items-center px-13 py-6 ${active ? "bg-avit-grey shadow-lg" : ""}`}
     >
       <div className="pointer-events-none absolute inset-2 overflow-hidden rounded bg-base-200 opacity-0">
-        <div ref={outletRef} className="h-full w-full"></div>
+        <div className="h-full w-full"></div>
       </div>
       <div className="flex items-center space-x-6">
         <img src={import.meta.env.BASE_URL + 'logo_dts.svg'} alt="UCLA Digital Technology Solutions logo" className="h-16" />

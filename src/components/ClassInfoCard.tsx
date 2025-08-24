@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
-import {useZoomModule} from "../hooks/useZoomModule.ts";
 import {Icon} from "@iconify/react";
+import {useZoomContext} from "../hooks/ZoomContext.tsx";
 
 interface meetingDetails {
     classStart: string,
@@ -14,7 +14,7 @@ interface meetingDetails {
 export function ClassInfoCard() {
     const {
         nextMeeting
-    } = useZoomModule();
+    } = useZoomContext();
     const [meetingDetails, setMeetingDetails] = useState<meetingDetails>({
         classStart: "",
         classEnd: "",

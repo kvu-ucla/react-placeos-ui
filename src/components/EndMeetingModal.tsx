@@ -1,8 +1,8 @@
 // src/components/EndMeetingModal.tsx
-import {useZoomModule} from "../hooks/useZoomModule.ts";
+import {useZoomContext} from "../hooks/ZoomContext.tsx";
 
 export default function EndMeetingModal({onClose}: { onClose: () => void }) {
-    const { leave } = useZoomModule();
+    const { leave } = useZoomContext();
     
     const test = () => {
         leave();

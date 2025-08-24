@@ -1,6 +1,6 @@
 // src/components/SessionDetails.tsx
 import {useEffect, useMemo, useState} from "react";
-import {useZoomModule} from "../hooks/useZoomModule";
+import {useZoomContext} from "../hooks/ZoomContext.tsx";
 
 function toMs(v?: number | null) {
     if (v == null) return NaN;
@@ -29,7 +29,7 @@ function fmtTime(ms: number) {
 }
 
 export default function SessionDetails() {
-    const { nextMeeting, currentMeeting } = useZoomModule();
+    const { nextMeeting, currentMeeting } = useZoomContext();
 
     // Tick every second so progress/remaining update live
     const [now, setNow] = useState(() => Date.now());

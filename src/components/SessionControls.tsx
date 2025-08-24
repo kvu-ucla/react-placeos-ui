@@ -1,7 +1,7 @@
 // src/components/SessionControls.tsx
-import { useZoomModule } from "../hooks/useZoomModule.ts";
 import { Icon } from "@iconify/react";
 import { useModalContext } from "../hooks/ModalContext.tsx";
+import {useZoomContext} from "../hooks/ZoomContext.tsx";
 
 export const IconType = {
   Mic: {
@@ -25,7 +25,7 @@ export default function SessionControls() {
     toggleSharing,
     toggleAudioMuteAll,
     toggleVideoMuteAll,
-  } = useZoomModule();
+  } = useZoomContext();
   const { showModal } = useModalContext();
   const sharing = false;
   const videoMuted = false;

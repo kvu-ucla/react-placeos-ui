@@ -1,10 +1,10 @@
 // src/components/Footer.tsx
 import { Icon } from "@iconify/react";
-import { useZoomModule } from "../hooks/useZoomModule.ts";
 import {useModalContext} from "../hooks/ModalContext.tsx";
+import {useZoomContext} from "../hooks/ZoomContext.tsx";
 
 export default function Footer() {
-  const { recording } = useZoomModule();
+  const { recording } = useZoomContext();
   const { showModal } = useModalContext();
   const isJoined = false;
   
