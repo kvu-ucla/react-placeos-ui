@@ -186,9 +186,9 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
             let tempCam = null;
             
             console.log("Call status val from zoom module: ", val);
-            if(val.Microphone.Mute)
+            if(val.Microphone.Mute != null)
                 tempMic = val.Microphone.Mute;
-            if(val.Camera.Mute)
+            if(val.Microphone.Mute != null)
                 tempCam = val.Camera.Mute;
                 
             const data = {
