@@ -1,19 +1,22 @@
 import {Header} from './Header';
 import {ClassInfoCard} from './ClassInfoCard';
 import { useControlContext } from "../hooks/ControlStateContext";
-import {ModalProvider} from "../hooks/ModalContext.tsx";
-import {useZoomContext} from "../hooks/ZoomContext.tsx";
+import {ModalProvider} from "../hooks/ModalContext";
+import {useZoomContext} from "../hooks/ZoomContext";
 
 export default function SplashScreen() {
     const {system, togglePower} = useControlContext();
-    const { currentMeeting } = useZoomContext();
+    const { joinPmi, joinMeetingId, currentMeeting } = useZoomContext();
     
-    function Start() {
+    function startScheduled() {
        togglePower();
        if (currentMeeting) {
-           //todo 
+           joinMeetingId(currentMeeting.id);
        }
-        // join(currentMeeting?.event_start);
+    }
+    function startAdHoc() {
+        togglePower();
+        joinPmi();
     }
 
     const innerWidth = window.innerWidth;
@@ -35,8 +38,12 @@ export default function SplashScreen() {
                 </main>
 
                 <footer className="p-6">
-                    <button onClick={Start}
-                            className="btn btn-primary min-w-64 min-h-24 mt-9 mb-9 text-white px-6 py-2 rounded-lg text-3xl">Start
+                    <button onClick={startAdHoc}
+                            className="btn btn-primary min-w-64 min-h-24 mt-9 mb-9 text-white px-6 py-2 rounded-lg text-3xl">Start Ad-Hoc
+                        Meeting
+                    </button>
+                    <button onClick={startScheduled}
+                            className="btn btn-primary min-w-64 min-h-24 mt-9 mb-9 text-white px-6 py-2 rounded-lg text-3xl">Start Scheduled
                         Class
                     </button>
                     <p className="max-w-6xl text-3xl text-gray-500">

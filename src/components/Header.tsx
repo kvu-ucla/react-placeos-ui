@@ -3,11 +3,11 @@ import Clock from "./Clock";
 import { useControlContext } from "../hooks/ControlStateContext";
 
 import SupportModal from "../components/SupportModal";
-import SettingsModal from "./SettingsModal.tsx";
-import ShutdownModal from "./ShutdownModal.tsx";
+import SettingsModal from "./SettingsModal";
+import ShutdownModal from "./ShutdownModal";
 import { Icon } from "@iconify/react";
-import { useModalContext } from "../hooks/ModalContext.tsx";
-import EndMeetingModal from "./EndMeetingModal.tsx";
+import { useModalContext } from "../hooks/ModalContext";
+import EndMeetingModal from "./EndMeetingModal";
 import { useTour } from "@reactour/tour";
 
 export function Header() {

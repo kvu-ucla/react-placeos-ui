@@ -1,12 +1,12 @@
 // src/components/Footer.tsx
 import { Icon } from "@iconify/react";
-import {useModalContext} from "../hooks/ModalContext.tsx";
-import {useZoomContext} from "../hooks/ZoomContext.tsx";
+import {useModalContext} from "../hooks/ModalContext";
+import {useZoomContext} from "../hooks/ZoomContext";
 
 export default function Footer() {
-  const { recording } = useZoomContext();
+  const { callStatus, recording } = useZoomContext();
   const { showModal } = useModalContext();
-  const isJoined = false;
+  const isJoined = callStatus?.status === "IN_MEETING";
   
 
   console.log("Footer recording =", recording);

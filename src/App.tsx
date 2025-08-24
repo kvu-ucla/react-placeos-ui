@@ -2,10 +2,10 @@
 // import {useEffect, useState} from 'react';
 // import {getModule, querySystems, setAPI_Key, setup} from '@placeos/ts-client';
 // import {ControlStateProvider} from "./hooks/ControlStateContext.tsx";
-import MainView from "./components/MainView.tsx";
-import {useAuth} from "./AuthContext.tsx";
+import MainView from "./components/MainView";
+import {useAuth} from "./AuthContext";
 import {Route, Routes } from 'react-router-dom';
-import BootstrapPage from "./BootstrapPage.tsx";
+import BootstrapPage from "./BootstrapPage";
 
 function App() {
 

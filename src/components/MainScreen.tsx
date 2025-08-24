@@ -1,7 +1,7 @@
-import {Header} from "./Header.tsx";
-import SessionDetails from "./SessionDetails.tsx";
-import Footer from "./Footer.tsx";
-import SessionControls from "./SessionControls.tsx";
+import {Header} from "./Header";
+import SessionDetails from "./SessionDetails";
+import Footer from "./Footer";
+import SessionControls from "./SessionControls";
 
 export default function MainScreen() {
 

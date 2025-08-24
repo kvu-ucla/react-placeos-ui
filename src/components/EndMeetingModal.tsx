@@ -1,10 +1,10 @@
 // src/components/EndMeetingModal.tsx
-import {useZoomContext} from "../hooks/ZoomContext.tsx";
+import {useZoomContext} from "../hooks/ZoomContext";
 
 export default function EndMeetingModal({onClose}: { onClose: () => void }) {
     const { leave } = useZoomContext();
     
-    const test = () => {
+    const endMeeting = () => {
         leave();
         onClose();
     }
@@ -18,7 +18,7 @@ export default function EndMeetingModal({onClose}: { onClose: () => void }) {
                         <button className="btn text-3xl min-w-64 min-h-24 rounded-lg btn-outline px-3 py-6" onClick={() => onClose()}>
                             Go back
                         </button>
-                        <button className="btn text-3xl min-w-64 min-h-24 rounded-lg bg-avit-blue px-3 py-6" onClick={test}>
+                        <button className="btn text-3xl min-w-64 min-h-24 rounded-lg bg-avit-blue px-3 py-6" onClick={endMeeting}>
                             End class
                         </button>
                 </div>

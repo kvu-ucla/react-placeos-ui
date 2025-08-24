@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {Icon} from "@iconify/react";
-import {useZoomContext} from "../hooks/ZoomContext.tsx";
+import {useZoomContext} from "../hooks/ZoomContext";
 
 interface meetingDetails {
     classStart: string,

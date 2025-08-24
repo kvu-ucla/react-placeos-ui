@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { TabSection } from "../models/Modal.tsx";
+import type { TabSection } from "../models/Modal";
 import { Icon } from "@iconify/react";
 
 export default function SettingsModal({

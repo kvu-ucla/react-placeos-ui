@@ -1,6 +1,6 @@
 // src/components/SessionDetails.tsx
 import {useEffect, useMemo, useState} from "react";
-import {useZoomContext} from "../hooks/ZoomContext.tsx";
+import {useZoomContext} from "../hooks/ZoomContext";
 
 function toMs(v?: number | null) {
     if (v == null) return NaN;

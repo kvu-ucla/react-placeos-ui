@@ -1,7 +1,7 @@
 // src/components/SessionControls.tsx
 import { Icon } from "@iconify/react";
-import { useModalContext } from "../hooks/ModalContext.tsx";
-import {useZoomContext} from "../hooks/ZoomContext.tsx";
+import { useModalContext } from "../hooks/ModalContext";
+import {useZoomContext} from "../hooks/ZoomContext";
 
 export const IconType = {
   Mic: {
@@ -84,7 +84,7 @@ export default function SessionControls() {
           label="Screen Share: "
           icon={IconType.Share}
           buttonAction={() => toggleSharing()}
-          buttonState={isSharing}
+          buttonState={!isSharing}
         />
         <ControlCard
             id="meeting-ctrls"
