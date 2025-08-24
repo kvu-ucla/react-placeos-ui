@@ -170,7 +170,15 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
     const toggleSharing = async () => {
         if (!module) return;
         
-        
+        if (sharing?.isDirectPresentationConnected) {
+            //zCommand Call Sharing Disconnect
+            //TODO add command into zoom mod
+        }
+        else if (sharing?.isSharingBlackMagic) {
+            await module.execute('sharing_stop');
+        }
+        else 
+            await module.execute('sharing_start_hdmi');
     };
     
     const listenToBindings = () => {
