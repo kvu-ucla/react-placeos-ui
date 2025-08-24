@@ -182,12 +182,19 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         // bindAndListen('camera_mute', module, setVideoMuted);
         
         bindAndListen('Call', module, (val) => {
+            let tempMic = null;
+            let tempCam = null;
             
             console.log("Call status val from zoom module: ", val);
+            if(val.Microphone.Mute)
+                tempMic = val.Microphone.Mute;
+            if(val.Camera.Mute)
+                tempCam = val.Camera.Mute;
+                
             const data = {
                 status: val.Status,
-                isMicMuted: val.Microphone.Mute ? val.Microphone.Mute : null,
-                isCamMuted: val.Camera.Mute ? val.Camera.Mute : null
+                isMicMuted: tempMic,
+                isCamMuted: tempCam
             }
 
             console.log("Call status data from zoom module: ", data);
