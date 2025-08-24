@@ -25,7 +25,7 @@ export function ClassInfoCard() {
     
     const [countdown, setCountdown] = useState(() => getCountdownToTime(meetingDetails.classStart));
     
-    const noMeeting: boolean = false;
+    const noMeeting = nextMeeting == null;
     
     useEffect(() => {
         const interval = setInterval(() => {
