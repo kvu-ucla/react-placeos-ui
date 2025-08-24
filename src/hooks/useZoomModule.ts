@@ -183,6 +183,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         
         bindAndListen('Call', module, (val) => {
             
+            console.log("Call status val from zoom module: ", val);
             const data = {
                 status: val.Status,
                 isMicMuted: val.Microphone.Mute,
