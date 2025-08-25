@@ -54,7 +54,7 @@ export function ClassInfoCard() {
     }, [currentMeeting])
 
     useEffect(() => {
-        const start = currentMeeting ? "Upcoming " + getLocaleTime(Number(currentMeeting.startTime)) : 'No upcoming classes' ;
+        const start = nextMeeting ? "Upcoming " + getLocaleTime(Number(nextMeeting.startTime)) : 'No upcoming classes' ;
         
         setUpcoming(start);
     }, [nextMeeting])

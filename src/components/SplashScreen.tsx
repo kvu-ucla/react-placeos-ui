@@ -19,12 +19,12 @@ export default function SplashScreen() {
         joinPmi();
     }
 
-    const innerWidth = window.innerWidth;
-    const innerHeight = window.innerHeight;
-    
-    const screenWidth = screen.width;
-    const screenHeight = screen.height;
-    const devicePixelRatio = window.devicePixelRatio;
+    // const innerWidth = window.innerWidth;
+    // const innerHeight = window.innerHeight;
+    //
+    // const screenWidth = screen.width;
+    // const screenHeight = screen.height;
+    // const devicePixelRatio = window.devicePixelRatio;
 
 
     return (
@@ -39,7 +39,7 @@ export default function SplashScreen() {
 
                 <footer className="p-6">
                     <button onClick={startAdHoc}
-                            className="btn btn-primary min-w-64 min-h-24 mt-9 mb-9 text-white px-6 py-2 rounded-lg text-3xl">Start Ad-Hoc
+                            className="btn btn-primary min-w-64 min-h-24 mt-9 mb-9 mr-2 text-white px-6 py-2 rounded-lg text-3xl">Start Ad-Hoc
                         Meeting
                     </button>
                     <button onClick={startScheduled}
@@ -51,9 +51,9 @@ export default function SplashScreen() {
                         Once started, you can <b className="text-avit-blue">join wirelessly from your personal device</b> to
                         present.
                         Instructions on next screen.
-                        Window Resolution is {innerWidth} x {innerHeight}
-                        Screen Resolution is {screenWidth} x {screenHeight}
-                        Pixel Ratio is {devicePixelRatio}
+                        {/*Window Resolution is {innerWidth} x {innerHeight}*/}
+                        {/*Screen Resolution is {screenWidth} x {screenHeight}*/}
+                        {/*Pixel Ratio is {devicePixelRatio}*/}
                         
                     </p>
                 </footer>
