@@ -13,6 +13,7 @@ interface meetingDetails {
 
 export function ClassInfoCard() {
     const {
+        nextMeeting,
         currentMeeting,
     } = useZoomContext();
     const [meetingDetails, setMeetingDetails] = useState<meetingDetails>({
@@ -21,7 +22,8 @@ export function ClassInfoCard() {
         classTitle: "",
         instructor: ""
     });
-    const [ upcomingTime ] = useState<string>();
+    
+    const [ upcoming, setUpcoming ] = useState<string>();
     
     const [countdown, setCountdown] = useState(() => getCountdownToTime(meetingDetails.classStart));
     
@@ -50,6 +52,12 @@ export function ClassInfoCard() {
 
         setMeetingDetails(data);
     }, [currentMeeting])
+
+    useEffect(() => {
+        const start = currentMeeting ? "Upcoming " + getLocaleTime(Number(currentMeeting.startTime)) : 'No upcoming classes' ;
+        
+        setUpcoming(start);
+    }, [nextMeeting])
     
     function getLocaleTime(unixTimeStamp: number) {
 
@@ -114,7 +122,7 @@ export function ClassInfoCard() {
                         <span>Ends at</span>
                         <span>{meetingDetails.classEnd}</span>
                         <span className="text-xs mx-2">●</span>
-                        <div>Upcoming {upcomingTime}</div>
+                        <div>{upcoming}</div>
                     </div>
                 </>)
                 :

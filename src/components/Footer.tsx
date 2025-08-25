@@ -4,7 +4,7 @@ import {useModalContext} from "../hooks/ModalContext";
 import {useZoomContext} from "../hooks/ZoomContext";
 
 export default function Footer() {
-  const { callStatus, recording } = useZoomContext();
+  const { volume, volumeMute, adjustMasterVolume, toggleMasterMute, callStatus, recording } = useZoomContext();
   const { showModal } = useModalContext();
   const isJoined = callStatus?.status === "IN_MEETING";
   
@@ -48,6 +48,16 @@ export default function Footer() {
           <div className="ml-4 w-full overflow-hidden">
             <input
               type="range"
+              min={600}
+              max={1200}
+              value={volume}
+              onChange={(e) => {
+                if (e <= 600) {
+                  onMute?.(); // trigger mute if slider hits 600
+                } else {
+                  onChange?.(val); // send the raw value (600–1200)
+                }
+              }}
               className="w-full range rounded-3xl [--range-thumb:white] text-[#C8D7FF] range-xl touch-none"
             />
           </div>

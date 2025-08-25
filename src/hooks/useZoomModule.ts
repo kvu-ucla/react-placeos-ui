@@ -1,6 +1,6 @@
 // src/hooks/useZoomModule.ts
 import {useEffect, useState} from "react";
-import {getModule, PlaceModuleBinding} from "@placeos/ts-client";
+import {bind, getModule, PlaceModuleBinding} from "@placeos/ts-client";
 
 // type DeviceState = 'NONE' | 'MUTED' | 'UNMUTED';
 type CallState = 'NOT_IN_MEETING' | 'CONNECTING_MEETING' | 'IN_MEETING' | 'LOGGED_OUT' | 'UNKNOWN';
@@ -87,6 +87,8 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
     const [recording, setRecording] = useState(false);
     const [callStatus, setCallStatus] = useState<CallStatus>();
     const [bookings, setBookings] = useState<ZoomBooking[]>();
+    const [volume, setVolume] = useState<number>();
+    const [volumeMute, setVolumute] = useState<boolean>();
 
     const handleActiveRecordings = (data: string[] | null | undefined) => {
         const value = !!(data && data.length > 0)
@@ -169,6 +171,28 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         else 
             await module.execute('sharing_start_hdmi');
     };
+    
+    const adjustMasterVolume = async (value: number) => {
+        const volumeMod = getModule(systemId, 'Mixer');
+        if (!volumeMod) return;
+        
+        await volumeMod.execute('set_audio_gain_hi_res', [27, value])
+    }
+    
+    const toggleMasterMute = async () => {
+        const volumeMod = getModule(systemId, 'Mixer');
+        if (!volumeMod) return;
+
+        const newState = !volumeMute;
+        await volumeMod.execute('set_audio_mute', [27, newState]);
+    }
+    
+    const setMasterMute = () => {
+        const volumeMod = getModule(systemId, 'Mixer');
+        if (!volumeMod) return;
+
+        volumeMod.execute('set_audio_mute', [27, ]);
+    }
     
     const listenToBindings = () => {
         clearSubs();
@@ -267,10 +291,28 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         if (!recordingsMod) return;
 
         bindAndListen('active_recordings', recordingsMod, handleActiveRecordings);
+        
+        const volumeMod = getModule(systemId, 'Mixer');
+        if (!volumeMod) return;
+        
+        bindAndListen('audio_gain_hi_res_27', volumeMod, (val) => {
+            const vol = Number(val);
+            setVolume(vol);
+            
+        });
+        
+        bindAndListen('audio_mute_27', volumeMod, (val) => {
+            const muteVal = val.toString();
+            setVolume(muteVal);
+        })
     };
 
 
     return {
+        volume,
+        volumeMute,
+        adjustMasterVolume,
+        toggleMasterMute,
         currentMeeting,
         nextMeeting,
         recording,
