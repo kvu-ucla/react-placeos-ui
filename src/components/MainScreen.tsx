@@ -6,21 +6,26 @@ import SessionControls from "./SessionControls";
 export default function MainScreen() {
 
     return (
-            <div className="first-step flex flex-col min-h-screen bg-avit-bg">
-                {/* Header with logo, system name, nav buttons */}
-                <Header/>
+            <div className="first-step relative w-[1920px] h-[1200px] bg-avit-bg overflow-hidden">
+                <div className="flex flex-col w-full h-full">
+                    {/* Header */}
+                    <div className="shrink-0">
+                        <Header />
+                    </div>
 
-                {/* Content body */}
-                <main className="flex-1 mx-12 my-8 space-y-4">
-                    {/* Top section with progress bar and class info */}
-                    <SessionDetails/>
+                    {/* Content body (fills remaining height) */}
+                    <main className="grow flex flex-col px-12 py-8 gap-4">
+                        {/* Top section */}
+                        <SessionDetails />
+                        {/* Controls */}
+                        <SessionControls />
+                    </main>
 
-                    {/* Control panel for mic, camera, zoom, etc. */}
-                    <SessionControls/>
-                </main>
-
-                {/* Footer with volume and session feedback */}
-                <Footer/>
+                    {/* Footer */}
+                    <div className="shrink-0">
+                        <Footer />
+                    </div>
+                </div>
             </div>
     );
 }
