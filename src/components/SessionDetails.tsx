@@ -39,10 +39,10 @@ export default function SessionDetails() {
     }, []);
 
     // Pull and normalize times
-    const startMs = toMs(currentMeeting?.event_start);
-    const endMs   = toMs(currentMeeting?.event_end);
-    const nextStartMs = toMs(nextMeeting?.event_start);
-    const nextEndMs = toMs(nextMeeting?.event_end);
+    const startMs = toMs(Number(currentMeeting?.startTime));
+    const endMs   = toMs(Number(currentMeeting?.endTime));
+    const nextStartMs = toMs(Number(nextMeeting?.startTime));
+    const nextEndMs = toMs(Number(nextMeeting?.endTime));
 
     // Derived timeline values
     const {
@@ -81,8 +81,8 @@ export default function SessionDetails() {
     const remainingMinutes = Math.ceil(remainingMs / 60000);
     const elapsedLabel = fmtHM(elapsedMs);
 
-    const currentClassName = currentMeeting?.title ?? "—";
-    const nextClassName = nextMeeting?.title ?? "—";
+    const currentClassName = currentMeeting?.meetingName ?? "—";
+    const nextClassName = nextMeeting?.meetingName ?? "—";
 
     return (
         <div id="details" className="first-step grid grid-cols-8 gap-4">

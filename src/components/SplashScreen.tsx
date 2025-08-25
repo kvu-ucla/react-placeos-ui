@@ -11,7 +11,7 @@ export default function SplashScreen() {
     function startScheduled() {
        togglePower();
        if (nextMeeting) {
-           joinMeetingId(nextMeeting.id);
+           joinMeetingId(nextMeeting.meetingNumber);
        }
     }
     function startAdHoc() {

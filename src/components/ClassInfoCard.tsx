@@ -36,10 +36,10 @@ export function ClassInfoCard() {
     }, [meetingDetails.classStart]);
 
     useEffect(() => {
-        const start = nextMeeting ? getLocaleTime(nextMeeting.event_start) : '' ;
-        const end = nextMeeting ? getLocaleTime(nextMeeting.event_end) : '';
-        const title = nextMeeting ? nextMeeting.title : '';
-        const instructor = nextMeeting ? nextMeeting.host : '';
+        const start = nextMeeting ? getLocaleTime(Number(nextMeeting.startTime)) : '' ;
+        const end = nextMeeting ? getLocaleTime(Number(nextMeeting.endTime)) : '';
+        const title = nextMeeting ? nextMeeting.meetingName : '';
+        const instructor = nextMeeting ? nextMeeting.creatorName : '';
 
         const data = {
             classStart: start,

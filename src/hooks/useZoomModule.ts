@@ -13,12 +13,12 @@ type CallState = 'NOT_IN_MEETING' | 'CONNECTING_MEETING' | 'IN_MEETING' | 'LOGGE
 //     is_host: boolean;
 // }
 
-interface Attendee {
-    name: string,
-    email: string,
-    response_status: string,
-    resource: boolean
-}
+// interface Attendee {
+//     name: string,
+//     email: string,
+//     response_status: string,
+//     resource: boolean
+// }
 
 interface CallStatus {
     status: CallState,
@@ -40,7 +40,16 @@ interface SharingStatus {
     "wifiName": string,
 }
 
-// interface ZoomBooking {
+
+interface ZoomBooking {
+    creatorName: string,
+    "startTime": string, //"2025-08-24T23:27:47Z", ISO8601 need to convert to epoch (unix) seconds
+    "endTime": string, //"2025-08-24T23:46:50Z",
+    "meetingName": string,
+    "meetingNumber": string
+}
+
+// interface Booking {
 //     event_start: number,
 //     event_end: number,
 //     id: string,
@@ -67,43 +76,17 @@ interface SharingStatus {
 //     mailbox: string
 // }
 
-interface Booking {
-    event_start: number,
-    event_end: number,
-    id: string,
-    host: string,
-    title: string,
-    body: string,
-    attendees: Attendee[],
-    hide_attendees: boolean,
-    location: string,
-    private: boolean,
-    all_day: boolean,
-    timezone: string,
-    recurring: boolean,
-    created: string,
-    updated: string,
-    attachments: [],
-    status: string,
-    creator: string,
-    ical_uid: string,
-    online_meeting_provider: string,
-    online_meeting_phones: string[],
-    online_meeting_url: string,
-    visibility: string,
-    mailbox: string
-}
-
 let subscriptions: (() => void)[] = [];
 
 export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
    
     const [module, setModule] = useState<PlaceModuleBinding>();
-    const [currentMeeting, setCurrentMeeting] = useState<Booking>();
-    const [nextMeeting, setNextMeeting] = useState<Booking>();
+    const [currentMeeting, setCurrentMeeting] = useState<ZoomBooking>();
+    const [nextMeeting, setNextMeeting] = useState<ZoomBooking>();
     const [sharing, setSharing] = useState<SharingStatus>();
     const [recording, setRecording] = useState(false);
     const [callStatus, setCallStatus] = useState<CallStatus>();
+    const [bookings, setBookings] = useState<ZoomBooking[]>();
 
     const handleActiveRecordings = (data: string[] | null | undefined) => {
         const value = !!(data && data.length > 0)
@@ -133,6 +116,12 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
 
         return () => clearSubs();
     }, [module]);
+
+    useEffect(() => {
+        const [first, second] = bookings ?? [];
+        setCurrentMeeting(first);
+        setNextMeeting(second);
+    }, [bookings]);
 
     const leave = async () => {
         if (!module) return;
@@ -243,12 +232,29 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         //bind sharing status for wireless and wired sharing
         bindAndListen('Sharing', module,  setSharing);
 
-        //bind to Bookings module in placeOS
-        const bookingsMod = getModule(systemId, 'Bookings');
-        if (!bookingsMod) return;
+        //bind and get bookings from Zoom Rooms
+        bindAndListen('Bookings', module, ( val:ZoomBooking[] ) => {
+            const nowMs = Date.now();
 
-        bindAndListen('current_booking', bookingsMod, setCurrentMeeting);
-        bindAndListen('next_booking', bookingsMod, setNextMeeting);
+            const updatedBookings : ZoomBooking[] = val
+                .flatMap<ZoomBooking>( zBooking => {
+                    const ms = Date.parse(zBooking.startTime);
+                    if (Number.isNaN(ms) || ms <= nowMs) return []; // skip invalid or past
+                    return [{
+                        ...zBooking,
+                        startTime: Math.floor(ms / 1000).toString(), // Unix seconds
+                    }];
+                });
+
+            setBookings(updatedBookings);
+        });
+        
+        //bind to Bookings module in placeOS
+        // const bookingsMod = getModule(systemId, 'Bookings');
+        // if (!bookingsMod) return;
+
+        // bindAndListen('current_booking', bookingsMod, setCurrentMeeting);
+        // bindAndListen('next_booking', bookingsMod, setNextMeeting);
         
         //bind to Recording module in placeOS
         const recordingsMod = getModule(systemId, 'Recording');
@@ -264,6 +270,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         recording,
         callStatus,
         sharing,
+        bookings,
         leave,
         joinPmi,
         joinMeetingId,
