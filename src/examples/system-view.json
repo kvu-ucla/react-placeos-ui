@@ -1,0 +1,756 @@
+{
+  "function_schemas": [
+    {
+      "function": "set_power_state",
+      "description": "power on or off the meeting room. Send true for power on (startup) or false for power off (shutdown)",
+      "parameters": {
+        "state": {
+          "type": "boolean",
+          "title": "Bool"
+        }
+      }
+    },
+    {
+      "function": "power?",
+      "description": "query the system power state?",
+      "parameters": {}
+    },
+    {
+      "function": "inputs_and_outputs",
+      "description": "available inputs and outputs. Route using id keys",
+      "parameters": {}
+    },
+    {
+      "function": "route_input",
+      "description": "route to present an input to an output / display. Don't guess, look up available input and output ids",
+      "parameters": {
+        "input_id": {
+          "type": "string",
+          "title": "String"
+        },
+        "output_id": {
+          "type": "string",
+          "title": "String"
+        }
+      }
+    },
+    {
+      "function": "route_all",
+      "description": "route an input for presentation to all displays. Don't guess, look up available input ids",
+      "parameters": {
+        "input_id": {
+          "type": "string",
+          "title": "String"
+        }
+      }
+    },
+    {
+      "function": "unroute",
+      "description": "blank a display / output, sometimes called a video mute",
+      "parameters": {
+        "output": {
+          "type": "string",
+          "title": "String"
+        }
+      }
+    },
+    {
+      "function": "unroute_all",
+      "description": "blank all displays / outputs",
+      "parameters": {}
+    },
+    {
+      "function": "set_volume",
+      "description": "change the room volume",
+      "parameters": {
+        "level": {
+          "anyOf": [
+            {
+              "type": "number",
+              "format": "Float64"
+            },
+            {
+              "type": "integer",
+              "format": "Int32"
+            }
+          ],
+          "title": "(Float64|Int32)"
+        }
+      }
+    },
+    {
+      "function": "volume?",
+      "description": "query the current volume, useful to know when asked to change the volume relatively",
+      "parameters": {}
+    },
+    {
+      "function": "audio_mute",
+      "description": "mute or unmute the room audio",
+      "parameters": {
+        "state": {
+          "type": "boolean",
+          "title": "Bool"
+        }
+      }
+    },
+    {
+      "function": "audio_muted?",
+      "description": "check if the room audio is muted",
+      "parameters": {}
+    },
+    {
+      "function": "lighting_scenes",
+      "description": "returns the list of available lighting scenes",
+      "parameters": {}
+    },
+    {
+      "function": "lighting_scene?",
+      "description": "query the current lighting scene",
+      "parameters": {}
+    },
+    {
+      "function": "set_lighting_scene",
+      "description": "set a new lighting scene. Remember to list available lighting scenes before calling",
+      "parameters": {
+        "scene": {
+          "type": "string",
+          "title": "String"
+        }
+      }
+    }
+  ],
+  "active": true,
+  "available_cameras": [],
+  "local_inputs": [
+    "Lectern_Input_HDMI",
+    "Signage_Player",
+    "Wireless_Presenter"
+  ],
+  "selected_camera": "Camera_3",
+  "local_preview_outputs": [],
+  "inputs": [
+    "Lectern_Input_HDMI",
+    "Signage_Player",
+    "Wireless_Presenter",
+    "Camera_1",
+    "Camera_2",
+    "Camera_3",
+    "Camera_4",
+    "Camera_5"
+  ],
+  "help": {
+    "laptop-help": {
+      "icon": "computer",
+      "title": "Laptop",
+      "content": "<li>PlaceHolder Help - Please plug in the USB-C Cable into your device.</li>\n<li>Open up Teams Call, Zoom or collaborate</li>\n<li>Select INOGENI device for Microphone and Camera.</li>\n<li>Select CRESTRON Device for Speakers</li>\n<img src=\"https://placeos-img.cdu.edu.au/lectern_input.png\" alt=\"Swytch\" title=\"Swytch help\" style=\"max-width:360px; max-height:270px\" />"
+    },
+    "wireless-help": {
+      "icon": "connected_tv",
+      "title": "VIA Go Wireless",
+      "content": "<li>Select Screen to Output Wireless Presenter to</li>\n<li>Follow Instructions displayed on Screen</li>\n<li>Use the code displayed on Screen</li>"
+    }
+  },
+  "output/Display_2": {
+    "ref": "sys-HWr2VJZ~-M/Display_2",
+    "source": "sys-HWr2VJZ~-M/Switcher_1:ECP101-LectHDMI-NVXE30",
+    "locked": false,
+    "name": "West Display 1",
+    "inputs": [
+      "Wireless_Presenter",
+      "Lectern_Input_HDMI",
+      "Signage_Player",
+      "Camera_1",
+      "Camera_5",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "preview_outputs": [],
+  "join_hide_button": false,
+  "microphones": [
+    {
+      "name": "Handheld Mic 1",
+      "level_id": [
+        "handheld1Gain"
+      ],
+      "mute_id": [
+        "handheld1Mute"
+      ],
+      "level_index": null,
+      "mute_index": null,
+      "level_feedback": "faderhandheld1Gain",
+      "mute_feedback": "faderhandheld1Mute_mute",
+      "module_id": "Mixer_1",
+      "min_level": 0,
+      "max_level": 100,
+      "rooms": null
+    },
+    {
+      "name": "Handheld Mic 2",
+      "level_id": [
+        "handheld2Gain"
+      ],
+      "mute_id": [
+        "handheld2Mute"
+      ],
+      "level_index": null,
+      "mute_index": null,
+      "level_feedback": "faderhandheld2Gain",
+      "mute_feedback": "faderhandheld2Mute_mute",
+      "module_id": "Mixer_1",
+      "min_level": 0,
+      "max_level": 100,
+      "rooms": null
+    },
+    {
+      "name": "Lapel Mic 1",
+      "level_id": [
+        "lapel1Gain"
+      ],
+      "mute_id": [
+        "lapel1Mute"
+      ],
+      "level_index": null,
+      "mute_index": null,
+      "level_feedback": "faderlapel1Gain",
+      "mute_feedback": "faderlapel1Mute_mute",
+      "module_id": "Mixer_1",
+      "min_level": 0,
+      "max_level": 100,
+      "rooms": null
+    },
+    {
+      "name": "Lapel Mic 2",
+      "level_id": [
+        "lapel2Gain"
+      ],
+      "mute_id": [
+        "lapel2Mute"
+      ],
+      "level_index": null,
+      "mute_index": null,
+      "level_feedback": "faderlapel2Gain",
+      "mute_feedback": "faderlapel2Mute_mute",
+      "module_id": "Mixer_1",
+      "min_level": 0,
+      "max_level": 100,
+      "rooms": null
+    },
+    {
+      "name": "Catchbox Lapel",
+      "level_id": [
+        "catchLapelGain"
+      ],
+      "mute_id": [
+        "catchLapelMute"
+      ],
+      "level_index": null,
+      "mute_index": null,
+      "level_feedback": "fadercatchLapelGain",
+      "mute_feedback": "fadercatchLapelMute_mute",
+      "module_id": "Mixer_1",
+      "min_level": 0,
+      "max_level": 100,
+      "rooms": null
+    },
+    {
+      "name": "Catchbox Handheld",
+      "level_id": [
+        "catchHHGain"
+      ],
+      "mute_id": [
+        "catchHHMute"
+      ],
+      "level_index": null,
+      "mute_index": null,
+      "level_feedback": "fadercatchHHGain",
+      "mute_feedback": "fadercatchHHMute_mute",
+      "module_id": "Mixer_1",
+      "min_level": 0,
+      "max_level": 100,
+      "rooms": null
+    }
+  ],
+  "available_outputs": [
+    "Display_1",
+    "Display_2",
+    "Display_3",
+    "Preview_Monitor"
+  ],
+  "input/Camera_3": {
+    "ref": "sys-HWr2VJZ~-M/Camera_3",
+    "source": "sys-HWr2VJZ~-M/Camera_3",
+    "locked": false,
+    "name": "Camera Middle Right",
+    "icon": "videocam",
+    "type": "cam",
+    "mod": "Camera_3"
+  },
+  "local_cameras": [],
+  "mute": false,
+  "has_master_audio": true,
+  "output/Ex_Display_1": {
+    "ref": "sys-HWr2VJZ~-M/Ex_Display_1",
+    "locked": false,
+    "name": "REAR LED WALL (EXTERNAL WALL)",
+    "inputs": [
+      "Wireless_Presenter",
+      "Lectern_Input_HDMI",
+      "Signage_Player",
+      "Camera_1",
+      "Camera_5",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "selected_input": "Lectern_Input_HDMI",
+  "voice_control": false,
+  "local_tabs": [
+    {
+      "icon": "laptop",
+      "name": "Lectern Input",
+      "inputs": [
+        "Lectern_Input_HDMI"
+      ],
+      "help": "laptop-help"
+    },
+    {
+      "icon": "laptop",
+      "name": "Signage Player",
+      "inputs": [
+        "Signage_Player"
+      ],
+      "help": "laptop-help"
+    },
+    {
+      "icon": "connected_tv",
+      "name": "Wireless",
+      "inputs": [
+        "Wireless_Presenter"
+      ],
+      "help": "wireless-help"
+    }
+  ],
+  "tabs": [
+    {
+      "icon": "laptop",
+      "name": "Lectern Input",
+      "inputs": [
+        "Lectern_Input_HDMI"
+      ],
+      "help": "laptop-help"
+    },
+    {
+      "icon": "laptop",
+      "name": "Signage Player",
+      "inputs": [
+        "Signage_Player"
+      ],
+      "help": "laptop-help"
+    },
+    {
+      "icon": "connected_tv",
+      "name": "Wireless",
+      "inputs": [
+        "Wireless_Presenter"
+      ],
+      "help": "wireless-help"
+    }
+  ],
+  "lighting_scenes": [
+    {
+      "name": "Full",
+      "id": 0,
+      "icon": "lightbulb",
+      "opacity": 1
+    },
+    {
+      "name": "Medium",
+      "id": 1,
+      "icon": "lightbulb",
+      "opacity": 0.8
+    },
+    {
+      "name": "Presentation",
+      "id": 4,
+      "icon": "lightbulb",
+      "opacity": 0.5
+    },
+    {
+      "name": "Low",
+      "id": 2,
+      "icon": "lightbulb",
+      "opacity": 0.2
+    },
+    {
+      "name": "Off",
+      "id": 3,
+      "icon": "lightbulb_outline",
+      "opacity": 0.8
+    }
+  ],
+  "output/Display_1": {
+    "ref": "sys-HWr2VJZ~-M/Display_1",
+    "source": "sys-HWr2VJZ~-M/Switcher_1:ECP101-LectHDMI-NVXE30",
+    "locked": false,
+    "name": "Front LED Wall",
+    "inputs": [
+      "Wireless_Presenter",
+      "Lectern_Input_HDMI",
+      "Signage_Player",
+      "Camera_1",
+      "Camera_5",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "output/Preview_Monitor": {
+    "ref": "sys-HWr2VJZ~-M/Switcher_1.4",
+    "source": "sys-HWr2VJZ~-M/Switcher_1:ECP101-LectHDMI-NVXE30",
+    "locked": false,
+    "name": "Lectern Display 1",
+    "inputs": [
+      "Wireless_Presenter",
+      "Lectern_Input_HDMI",
+      "Signage_Player",
+      "Camera_1",
+      "Camera_5",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "input/Camera_2": {
+    "ref": "sys-HWr2VJZ~-M/Camera_2",
+    "source": "sys-HWr2VJZ~-M/Camera_2",
+    "locked": false,
+    "name": "Camera Right",
+    "icon": "video_camera_front",
+    "type": "cam",
+    "mod": "Camera_2"
+  },
+  "selected_tab": "Lectern Input",
+  "outputs": [
+    "Display_1",
+    "Display_2",
+    "Display_3",
+    "Ex_Display_1",
+    "Preview_Monitor"
+  ],
+  "connected": true,
+  "input/Wireless_Presenter": {
+    "ref": "sys-HWr2VJZ~-M/Switcher_1:ECP101-ViaGo-NVXE30",
+    "source": "sys-HWr2VJZ~-M/Switcher_1:ECP101-ViaGo-NVXE30",
+    "locked": false,
+    "name": "ViaGo Wireless Presenter",
+    "icon": "connected_tv"
+  },
+  "available_inputs": [
+    "Lectern_Input_HDMI",
+    "Signage_Player",
+    "Wireless_Presenter"
+  ],
+  "name": "Darwin City 1.01 Community Learning ",
+  "input/Signage_Player": {
+    "ref": "sys-HWr2VJZ~-M/Switcher_1:ECP-Level1Brightsign-NVXE30",
+    "source": "sys-HWr2VJZ~-M/Switcher_1:ECP-Level1Brightsign-NVXE30",
+    "locked": false,
+    "name": "Digital Signage Player 1",
+    "icon": "laptop"
+  },
+  "join_confirmed": true,
+  "input/Camera_4": {
+    "ref": "sys-HWr2VJZ~-M/Camera_4",
+    "source": "sys-HWr2VJZ~-M/Camera_4",
+    "locked": false,
+    "name": "Camera Rear",
+    "icon": "videocam",
+    "type": "cam",
+    "mod": "Camera_4"
+  },
+  "room_accessories": [
+    {
+      "name": "Blockout Blinds All",
+      "module": "Lighting_1",
+      "controls": [
+        {
+          "name": "Up",
+          "icon": "vertical_align_top",
+          "function_name": "switch_off",
+          "arguments": [
+            "blockout_blinds_all"
+          ]
+        },
+        {
+          "name": "Down",
+          "icon": "vertical_align_bottom",
+          "function_name": "switch_on",
+          "arguments": [
+            "blockout_blinds_all"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Blockout Blinds Stage",
+      "module": "Lighting_1",
+      "controls": [
+        {
+          "name": "Up",
+          "icon": "vertical_align_top",
+          "function_name": "switch_off",
+          "arguments": [
+            "blockout_blinds_stage"
+          ]
+        },
+        {
+          "name": "Down",
+          "icon": "vertical_align_bottom",
+          "function_name": "switch_on",
+          "arguments": [
+            "blockout_blinds_stage"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Blockout Blinds Viewing",
+      "module": "Lighting_1",
+      "controls": [
+        {
+          "name": "Up",
+          "icon": "vertical_align_top",
+          "function_name": "switch_off",
+          "arguments": [
+            "blockout_blinds_viewing"
+          ]
+        },
+        {
+          "name": "Down",
+          "icon": "vertical_align_bottom",
+          "function_name": "switch_on",
+          "arguments": [
+            "blockout_blinds_viewing"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Sheer Blinds All",
+      "module": "Lighting_1",
+      "controls": [
+        {
+          "name": "Up",
+          "icon": "vertical_align_top",
+          "function_name": "switch_off",
+          "arguments": [
+            "sheer_blinds_all"
+          ]
+        },
+        {
+          "name": "Down",
+          "icon": "vertical_align_bottom",
+          "function_name": "switch_on",
+          "arguments": [
+            "sheer_blinds_all"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Sheer Blinds Stage",
+      "module": "Lighting_1",
+      "controls": [
+        {
+          "name": "Up",
+          "icon": "vertical_align_top",
+          "function_name": "switch_off",
+          "arguments": [
+            "sheer_blinds_stage"
+          ]
+        },
+        {
+          "name": "Down",
+          "icon": "vertical_align_bottom",
+          "function_name": "switch_on",
+          "arguments": [
+            "sheer_blinds_stage"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Sheer Blinds Viewing",
+      "module": "Lighting_1",
+      "controls": [
+        {
+          "name": "Up",
+          "icon": "vertical_align_top",
+          "function_name": "switch_off",
+          "arguments": [
+            "sheer_blinds_viewing"
+          ]
+        },
+        {
+          "name": "Down",
+          "icon": "vertical_align_bottom",
+          "function_name": "switch_on",
+          "arguments": [
+            "sheer_blinds_viewing"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Front LED Wall Power",
+      "module": "Display_1",
+      "controls": [
+        {
+          "name": "On",
+          "icon": "power",
+          "function_name": "power",
+          "arguments": [
+            true
+          ]
+        },
+        {
+          "name": "Off",
+          "icon": "power_off",
+          "function_name": "power",
+          "arguments": [
+            false
+          ]
+        }
+      ]
+    },
+    {
+      "name": "West Display 1 Power",
+      "module": "Display_2",
+      "controls": [
+        {
+          "name": "On",
+          "icon": "power",
+          "function_name": "power",
+          "arguments": [
+            true
+          ]
+        },
+        {
+          "name": "Off",
+          "icon": "power_off",
+          "function_name": "power",
+          "arguments": [
+            false
+          ]
+        }
+      ]
+    },
+    {
+      "name": "East Display 1 Power",
+      "module": "Display_3",
+      "controls": [
+        {
+          "name": "On",
+          "icon": "power",
+          "function_name": "power",
+          "arguments": [
+            true
+          ]
+        },
+        {
+          "name": "Off",
+          "icon": "power_off",
+          "function_name": "power",
+          "arguments": [
+            false
+          ]
+        }
+      ]
+    }
+  ],
+  "capabilities": "provides meeting room audio visual control such as controlling video source to be presented\ncheck for available inputs and outputs before switching to present a source to a display.\noutput volume and microphone fader controls are floats between 0.0 to 100.0\nquery output volume to change it by a relative amount, if asked to increase or decrease volume, change it by 10.0\naudio can be muted and you unroute video to blank displays.\nyou can also shutdown, startup, power off, power on, start or end the meeting using the set_power_state function available in this capability.\nsome rooms may have lighting control, make sure to check what levels are available before changing state\nsome rooms may have accessories such as blinds or projector screen controls. Check for available accessories when asked about something not explicitly controllable\n",
+  "qsc_dial_number": "",
+  "output/Display_3": {
+    "ref": "sys-HWr2VJZ~-M/Display_3",
+    "source": "sys-HWr2VJZ~-M/Switcher_1:ECP101-LectHDMI-NVXE30",
+    "locked": false,
+    "name": "East Display 1",
+    "inputs": [
+      "Wireless_Presenter",
+      "Lectern_Input_HDMI",
+      "Signage_Player",
+      "Camera_1",
+      "Camera_5",
+      "Camera_2",
+      "Camera_3",
+      "Camera_4"
+    ]
+  },
+  "join_master": true,
+  "input/Camera_1": {
+    "ref": "sys-HWr2VJZ~-M/Camera_1",
+    "source": "sys-HWr2VJZ~-M/Camera_1",
+    "locked": false,
+    "name": "Camera Left",
+    "icon": "videocam",
+    "type": "cam",
+    "mod": "Camera_1"
+  },
+  "join_modes": {
+    "unlinked": {
+      "id": "unlinked",
+      "name": "Independent",
+      "room_ids": [],
+      "merge_outputs": false
+    },
+    "join_all": {
+      "id": "join_all",
+      "name": "All Rooms",
+      "room_ids": [
+        "sys-HWr2VJZ~-M",
+        "sys-HczIXSKJaU"
+      ],
+      "merge_outputs": false
+    }
+  },
+  "joined": "unlinked",
+  "volume": 60.000001999999995,
+  "local_outputs": [
+    "Display_1",
+    "Display_2",
+    "Display_3",
+    "Preview_Monitor"
+  ],
+  "join_lockout_secondary": false,
+  "input/Lectern_Input_HDMI": {
+    "ref": "sys-HWr2VJZ~-M/Switcher_1:ECP101-LectHDMI-NVXE30",
+    "source": "sys-HWr2VJZ~-M/Switcher_1:ECP101-LectHDMI-NVXE30",
+    "locked": false,
+    "name": "Lectern HDMI Port 1",
+    "icon": "laptop"
+  },
+  "input/Camera_5": {
+    "ref": "sys-HWr2VJZ~-M/Camera_5",
+    "source": "sys-HWr2VJZ~-M/Camera_5",
+    "locked": false,
+    "name": "Camera Middle Left",
+    "icon": "videocam",
+    "type": "cam",
+    "mod": "Camera_5"
+  },
+  "local_help": {
+    "laptop-help": {
+      "icon": "computer",
+      "title": "Laptop",
+      "content": "<li>PlaceHolder Help - Please plug in the USB-C Cable into your device.</li>\n<li>Open up Teams Call, Zoom or collaborate</li>\n<li>Select INOGENI device for Microphone and Camera.</li>\n<li>Select CRESTRON Device for Speakers</li>\n<img src=\"https://placeos-img.cdu.edu.au/lectern_input.png\" alt=\"Swytch\" title=\"Swytch help\" style=\"max-width:360px; max-height:270px\" />"
+    },
+    "wireless-help": {
+      "icon": "connected_tv",
+      "title": "VIA Go Wireless",
+      "content": "<li>Select Screen to Output Wireless Presenter to</li>\n<li>Follow Instructions displayed on Screen</li>\n<li>Use the code displayed on Screen</li>"
+    }
+  }
+}

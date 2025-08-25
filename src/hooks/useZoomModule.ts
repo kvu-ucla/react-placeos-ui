@@ -233,23 +233,25 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         bindAndListen('Sharing', module,  setSharing);
 
         //bind and get bookings from Zoom Rooms
-        bindAndListen('Bookings', module, ( val:ZoomBooking[] ) => {
+        bindAndListen('Bookings', module, (val: ZoomBooking[]) => {
             const nowMs = Date.now();
 
-            const updatedBookings : ZoomBooking[] = val
-                .flatMap<ZoomBooking>( zBooking => {
-                    const startMs = Date.parse(zBooking.startTime);
-                    const endMs = Date.parse(zBooking.endTime);
-                    if (Number.isNaN(startMs) || startMs <= nowMs) return []; // skip invalid or past
-                    return [{
-                        ...zBooking,
-                        startTime: Math.floor(startMs / 1000).toString(), //unix seconds startTime
-                        endTime: Math.floor(endMs / 1000). toString( )// Unix seconds endTime
-                    }];
-                });
-            
-            console.log("Updated bookings in epoch", updatedBookings);
+            const updatedBookings: ZoomBooking[] = val
+                .flatMap<ZoomBooking>(z => {
+                    const startMs = Date.parse(z.startTime);
+                    const endMs   = Date.parse(z.endTime);
+                    if (Number.isNaN(startMs) || Number.isNaN(endMs)) return [];
+                    if (endMs <= nowMs) return []; // only drop meetings that already ended
 
+                    return [{
+                        ...z,
+                        startTime: String(Math.floor(startMs / 1000)),
+                        endTime:   String(Math.floor(endMs   / 1000)),
+                    }];
+                })
+
+            console.log("Updated bookings in epoch", updatedBookings);
+            
             setBookings(updatedBookings);
         });
         
