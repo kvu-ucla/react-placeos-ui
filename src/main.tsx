@@ -5,7 +5,7 @@ import TourHost from "./components/TourHost";
 import {ModalProvider} from "./hooks/ModalContext";
 import {HashRouter} from "react-router-dom";
 import {AuthProvider} from "./AuthContext";
-import AppFrame from "./components/AppFrame.tsx";
+import AppFrame, {DebugOverlay} from "./components/AppFrame.tsx";
 
 const container = document.getElementById('root')
 if (container) {
@@ -13,6 +13,7 @@ if (container) {
     root.render(
         <React.StrictMode>
             <AppFrame>
+                <DebugOverlay/>
                 <HashRouter>
                     <AuthProvider>
                         <ModalProvider>
