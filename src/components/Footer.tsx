@@ -25,7 +25,6 @@ export default function Footer() {
     }
   };
 
-  console.log("Footer recording =", recording);
   return (
     <footer className="min-h-38 bg-blue-900 text-white py-4 px-8 flex justify-between items-center">
       {recording && (

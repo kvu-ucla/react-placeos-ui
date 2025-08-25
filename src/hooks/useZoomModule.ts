@@ -191,7 +191,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         const volumeMod = getModule(systemId, 'Mixer');
         if (!volumeMod) return;
 
-        volumeMod.execute('set_audio_mute', [27, ]);
+        volumeMod.execute('set_audio_mute', [27, true]);
     }
     
     const listenToBindings = () => {
