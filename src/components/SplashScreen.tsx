@@ -39,7 +39,7 @@ export default function SplashScreen() {
 
                 <footer className="p-6">
                     <button onClick={startAdHoc}
-                            className="btn btn-primary min-w-64 min-h-24 mt-9 mb-9 mr-2 text-white px-6 py-2 rounded-lg text-3xl">Start Ad-Hoc
+                            className="btn btn-primary min-w-64 min-h-24 mt-9 mb-9 mr-9 text-white px-6 py-2 rounded-lg text-3xl">Start Ad-Hoc
                         Meeting
                     </button>
                     <button onClick={startScheduled}
