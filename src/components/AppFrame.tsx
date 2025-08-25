@@ -15,11 +15,15 @@ export default function AppFrame({ children }: PropsWithChildren) {
     const scale = useMemo(() => Math.min(vw / DESIGN_W, vh / DESIGN_H), [vw, vh]);
 
     const style: React.CSSProperties = {
-        width: DESIGN_W, height: DESIGN_H,
-        transform: `scale(${scale})`,
+        width: DESIGN_W,
+        height: DESIGN_H,
+        transform: `translate(-50%, -50%) scale(${scale})`,
         transformOrigin: "top left",
-        position: "fixed", inset: 0, margin: "auto",
-        overflow: "hidden", background: "black"
+        position: "fixed",
+        top: "50%",
+        left: "50%",
+        overflow: "hidden",
+        background: "black",
     };
 
     return <div id="app-frame" style={style}>{children}</div>;
