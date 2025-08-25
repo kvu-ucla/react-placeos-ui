@@ -17,9 +17,7 @@ export function Header() {
 
   return (
       <header
-          className={`first-step relative min-h-42 w-full flex justify-between items-center px-13 py-6 ${
-              active ? "bg-avit-grey shadow-lg" : ""
-          }`}
+          className={`first-step relative min-h-42 w-full flex justify-between items-center px-13 py-6`}
       >
         {/* decorative bg overlay */}
         <div className="pointer-events-none absolute inset-2 overflow-hidden rounded bg-base-200 opacity-0" />
@@ -105,8 +103,8 @@ export function Header() {
         {modalType == "shutdown" && <ShutdownModal onClose={() => closeModal()} />}
         {modalType == "end-meeting" && <EndMeetingModal onClose={() => closeModal()} />}
 
-        <div className="pointer-events-none absolute left-0 right-0 -bottom-px h-4
-                      bg-gradient-to-b from-black/20 to-transparent" />
+        {active && (<div className="pointer-events-none absolute left-0 right-0 -bottom-px h-4
+                      bg-gradient-to-b from-black/20 to-transparent" />)}
       </header>
   );
 }
