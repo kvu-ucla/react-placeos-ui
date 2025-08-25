@@ -19,12 +19,12 @@ export default function SplashScreen() {
         joinPmi();
     }
 
-    // const innerWidth = window.innerWidth;
-    // const innerHeight = window.innerHeight;
-    //
-    // const screenWidth = screen.width;
-    // const screenHeight = screen.height;
-    // const devicePixelRatio = window.devicePixelRatio;
+    const innerWidth = window.innerWidth;
+    const innerHeight = window.innerHeight;
+
+    const screenWidth = screen.width;
+    const screenHeight = screen.height;
+    const devicePixelRatio = window.devicePixelRatio;
 
 
     return (
@@ -51,9 +51,10 @@ export default function SplashScreen() {
                         Once started, you can <b className="text-avit-blue">join wirelessly from your personal device</b> to
                         present.
                         Instructions on next screen.
-                        {/*Window Resolution is {innerWidth} x {innerHeight}*/}
-                        {/*Screen Resolution is {screenWidth} x {screenHeight}*/}
-                        {/*Pixel Ratio is {devicePixelRatio}*/}
+                        <div>Window Resolution is {innerWidth} x {innerHeight}</div>
+                        <div>Screen Resolution is {screenWidth} x {screenHeight}</div>
+                        <div>Pixel Ratio is {devicePixelRatio}</div>
+                        
                         
                     </p>
                 </footer>

@@ -24,3 +24,5 @@ export default function AppFrame({ children }: PropsWithChildren) {
 
     return <div id="app-frame" style={style}>{children}</div>;
 }
+
+
