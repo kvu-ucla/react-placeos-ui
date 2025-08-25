@@ -1,13 +1,19 @@
 // src/components/Footer.tsx
 import { Icon } from "@iconify/react";
-import {useModalContext} from "../hooks/ModalContext";
-import {useZoomContext} from "../hooks/ZoomContext";
+import { useModalContext } from "../hooks/ModalContext";
+import { useZoomContext } from "../hooks/ZoomContext";
 
 export default function Footer() {
-  const { volume, volumeMute, adjustMasterVolume, toggleMasterMute, callStatus, recording } = useZoomContext();
+  const {
+    volume,
+    volumeMute,
+    adjustMasterVolume,
+    setMasterMute,
+    callStatus,
+    recording,
+  } = useZoomContext();
   const { showModal } = useModalContext();
   const isJoined = callStatus?.status === "IN_MEETING";
-  
 
   console.log("Footer recording =", recording);
   return (
@@ -40,6 +46,13 @@ export default function Footer() {
       <div className="flex items-center space-x-2">
         <div className="flex items-center mr-8">
           <div className="text-3xl">Speaker Volume</div>
+            {volumeMute} ??
+          <Icon
+            icon="material-symbols:volume-up-outline-rounded"
+            width={128}
+            height={128}
+          />
+          :
           <Icon
             icon="material-symbols:volume-up-outline-rounded"
             width={128}
@@ -52,10 +65,10 @@ export default function Footer() {
               max={1200}
               value={volume}
               onChange={(e) => {
-                if (e <= 600) {
-                  onMute?.(); // trigger mute if slider hits 600
+                if (Number(e.target.value) <= 600) {
+                  setMasterMute(); // trigger mute if slider hits 600
                 } else {
-                  onChange?.(val); // send the raw value (600–1200)
+                  adjustMasterVolume(Number(e.target.value)); // send the raw value (600–1200)
                 }
               }}
               className="w-full range rounded-3xl [--range-thumb:white] text-[#C8D7FF] range-xl touch-none"
@@ -63,12 +76,14 @@ export default function Footer() {
           </div>
         </div>
 
-        {isJoined && (<button
-          onClick={ () => showModal('end-meeting')}
-          className="btn btn-error text-white text-3xl p-8 rounded-lg font-medium"
-        >
-          End Meeting
-        </button>)}
+        {isJoined && (
+          <button
+            onClick={() => showModal("end-meeting")}
+            className="btn btn-error text-white text-3xl p-8 rounded-lg font-medium"
+          >
+            End Meeting
+          </button>
+        )}
       </div>
     </footer>
   );

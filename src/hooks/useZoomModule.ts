@@ -1,6 +1,6 @@
 // src/hooks/useZoomModule.ts
 import {useEffect, useState} from "react";
-import {bind, getModule, PlaceModuleBinding} from "@placeos/ts-client";
+import { getModule, PlaceModuleBinding} from "@placeos/ts-client";
 
 // type DeviceState = 'NONE' | 'MUTED' | 'UNMUTED';
 type CallState = 'NOT_IN_MEETING' | 'CONNECTING_MEETING' | 'IN_MEETING' | 'LOGGED_OUT' | 'UNKNOWN';
@@ -88,7 +88,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
     const [callStatus, setCallStatus] = useState<CallStatus>();
     const [bookings, setBookings] = useState<ZoomBooking[]>();
     const [volume, setVolume] = useState<number>();
-    const [volumeMute, setVolumute] = useState<boolean>();
+    const [volumeMute, setVolumeMute] = useState<boolean>();
 
     const handleActiveRecordings = (data: string[] | null | undefined) => {
         const value = !!(data && data.length > 0)
@@ -302,8 +302,8 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         });
         
         bindAndListen('audio_mute_27', volumeMod, (val) => {
-            const muteVal = val.toString();
-            setVolume(muteVal);
+            const muteVal = val.toBoolean();
+            setVolumeMute(muteVal);
         })
     };
 
@@ -311,6 +311,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
     return {
         volume,
         volumeMute,
+        setMasterMute,
         adjustMasterVolume,
         toggleMasterMute,
         currentMeeting,
