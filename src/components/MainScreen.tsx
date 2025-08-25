@@ -6,7 +6,7 @@ import SessionControls from "./SessionControls";
 export default function MainScreen() {
 
     return (
-            <div className="first-step relative w-[1920px] h-[1200px] bg-avit-bg overflow-hidden">
+            <div className="first-step relative isolate w-[1920px] h-[1200px] bg-avit-bg overflow-hidden">
                 <div className="flex flex-col w-full h-full">
                     {/* Header */}
                     <div className="z-10 shrink-0">

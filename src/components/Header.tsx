@@ -104,6 +104,9 @@ export function Header() {
         {modalType == "settings" && <SettingsModal initialTab={initialTab} onClose={() => closeModal()} />}
         {modalType == "shutdown" && <ShutdownModal onClose={() => closeModal()} />}
         {modalType == "end-meeting" && <EndMeetingModal onClose={() => closeModal()} />}
+
+        <div className="pointer-events-none absolute left-0 right-0 -bottom-px h-4
+                      bg-gradient-to-b from-black/20 to-transparent" />
       </header>
   );
 }
