@@ -49,7 +49,7 @@ export function ClassInfoCard() {
         }
 
         setMeetingDetails(data);
-    }, [nextMeeting])
+    }, [currentMeeting])
     
     function getLocaleTime(unixTimeStamp: number) {
 
