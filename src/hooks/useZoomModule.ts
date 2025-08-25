@@ -302,8 +302,9 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         });
         
         bindAndListen('audio_mute_27', volumeMod, (val) => {
-            const muteVal = val.toBoolean();
-            setVolumeMute(muteVal);
+            const muteVal = val.toLowerCase();
+            
+            muteVal == 'on' ? setVolumeMute(true) : setVolumeMute(false)
         })
     };
 
