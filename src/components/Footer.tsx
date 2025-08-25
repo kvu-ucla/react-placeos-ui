@@ -18,11 +18,9 @@ export default function Footer() {
   const [value, setValue] = useState(volume); //local value, start wherever volume is polled
   const handleRelease = () => {
     if (!value) return;
-    if (value === 600) {
-      setMasterMute();
-    } else {
-      adjustMasterVolume(value);
-    }
+    
+    value === 600 ? setMasterMute(true) : setMasterMute(false);
+    adjustMasterVolume(value);
   };
 
   return (
@@ -57,7 +55,7 @@ export default function Footer() {
           <div className="text-3xl">Speaker Volume</div>
           {volumeMute ?
           <Icon
-            icon="material-symbols:volume-up-outline-rounded"
+            icon="material-symbols:volume-off-outline-rounded"
             width={128}
             height={128}
           />
