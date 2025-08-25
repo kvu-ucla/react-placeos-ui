@@ -13,7 +13,7 @@ interface meetingDetails {
 
 export function ClassInfoCard() {
     const {
-        nextMeeting
+        currentMeeting,
     } = useZoomContext();
     const [meetingDetails, setMeetingDetails] = useState<meetingDetails>({
         classStart: "",
@@ -25,7 +25,7 @@ export function ClassInfoCard() {
     
     const [countdown, setCountdown] = useState(() => getCountdownToTime(meetingDetails.classStart));
     
-    const noMeeting = nextMeeting == null;
+    const noMeeting = currentMeeting == null;
     
     useEffect(() => {
         const interval = setInterval(() => {
@@ -36,10 +36,10 @@ export function ClassInfoCard() {
     }, [meetingDetails.classStart]);
 
     useEffect(() => {
-        const start = nextMeeting ? getLocaleTime(Number(nextMeeting.startTime)) : '' ;
-        const end = nextMeeting ? getLocaleTime(Number(nextMeeting.endTime)) : '';
-        const title = nextMeeting ? nextMeeting.meetingName : '';
-        const instructor = nextMeeting ? nextMeeting.creatorName : '';
+        const start = currentMeeting ? getLocaleTime(Number(currentMeeting.startTime)) : '' ;
+        const end = currentMeeting ? getLocaleTime(Number(currentMeeting.endTime)) : '';
+        const title = currentMeeting ? currentMeeting.meetingName : '';
+        const instructor = currentMeeting ? currentMeeting.creatorName : '';
 
         const data = {
             classStart: start,
