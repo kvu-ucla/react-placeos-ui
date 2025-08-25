@@ -265,6 +265,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
                     const startMs = Date.parse(z.startTime);
                     const endMs   = Date.parse(z.endTime);
                     if (Number.isNaN(startMs) || Number.isNaN(endMs)) return [];
+                    if (z.meetingName === "Instant Meeting") return [];
                     if (endMs <= nowMs) return []; // only drop meetings that already ended
 
                     return [{
