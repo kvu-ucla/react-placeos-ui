@@ -2,6 +2,7 @@
 import { Icon } from "@iconify/react";
 import { useModalContext } from "../hooks/ModalContext";
 import { useZoomContext } from "../hooks/ZoomContext";
+import {useState} from "react";
 
 export default function Footer() {
   const {
@@ -14,6 +15,15 @@ export default function Footer() {
   } = useZoomContext();
   const { showModal } = useModalContext();
   const isJoined = callStatus?.status === "IN_MEETING";
+  const [value, setValue] = useState(volume); //local value, start wherever volume is polled
+  const handleRelease = () => {
+    if (!value) return;
+    if (value === 600) {
+      setMasterMute();
+    } else {
+      adjustMasterVolume(value);
+    }
+  };
 
   console.log("Footer recording =", recording);
   return (
@@ -46,7 +56,7 @@ export default function Footer() {
       <div className="flex items-center space-x-2">
         <div className="flex items-center mr-8">
           <div className="text-3xl">Speaker Volume</div>
-            {volumeMute} ??
+          {volumeMute ?
           <Icon
             icon="material-symbols:volume-up-outline-rounded"
             width={128}
@@ -57,20 +67,15 @@ export default function Footer() {
             icon="material-symbols:volume-up-outline-rounded"
             width={128}
             height={128}
-          />
+          />}
           <div className="ml-4 w-full overflow-hidden">
             <input
               type="range"
               min={600}
               max={1200}
-              value={volume}
-              onChange={(e) => {
-                if (Number(e.target.value) <= 600) {
-                  setMasterMute(); // trigger mute if slider hits 600
-                } else {
-                  adjustMasterVolume(Number(e.target.value)); // send the raw value (600–1200)
-                }
-              }}
+              value={value}
+              onChange={(e) => setValue(Number(e.target.value))}
+              onPointerUp={handleRelease}
               className="w-full range rounded-3xl [--range-thumb:white] text-[#C8D7FF] range-xl touch-none"
             />
           </div>

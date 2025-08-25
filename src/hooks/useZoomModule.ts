@@ -172,19 +172,19 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
             await module.execute('sharing_start_hdmi');
     };
     
-    const adjustMasterVolume = async (value: number) => {
+    const adjustMasterVolume = (value: number ) => {
         const volumeMod = getModule(systemId, 'Mixer');
         if (!volumeMod) return;
         
-        await volumeMod.execute('set_audio_gain_hi_res', [27, value])
+        volumeMod.execute('set_audio_gain_hi_res', [27, value])
     }
     
-    const toggleMasterMute = async () => {
+    const toggleMasterMute = () => {
         const volumeMod = getModule(systemId, 'Mixer');
         if (!volumeMod) return;
 
         const newState = !volumeMute;
-        await volumeMod.execute('set_audio_mute', [27, newState]);
+         volumeMod.execute('set_audio_mute', [27, newState]);
     }
     
     const setMasterMute = () => {
