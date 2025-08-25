@@ -232,22 +232,49 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         //bind sharing status for wireless and wired sharing
         bindAndListen('Sharing', module,  setSharing);
 
-        //bind and get bookings from Zoom Rooms
-        bindAndListen('Bookings', module, ( val:ZoomBooking[] ) => {
-            const nowMs = Date.now();
+        const toUnixSeconds = (s: string): number => {
+            if (/^\d+$/.test(s)) {                 // already numeric
+                return s.length > 10                 // millis?
+                    ? Math.floor(Number(s) / 1000)
+                    : Number(s);                       // seconds
+            }
+            const ms = Date.parse(s);              // ISO8601
+            return Number.isNaN(ms) ? NaN : Math.floor(ms / 1000);
+        };
 
-            const updatedBookings : ZoomBooking[] = val
-                .flatMap<ZoomBooking>( zBooking => {
-                    const ms = Date.parse(zBooking.startTime);
-                    if (Number.isNaN(ms) || ms <= nowMs) return []; // skip invalid or past
-                    return [{
-                        ...zBooking,
-                        startTime: Math.floor(ms / 1000).toString(), // Unix seconds
-                    }];
-                });
+        bindAndListen('Bookings', module, (val: ZoomBooking[]) => {
+            const nowSec = Math.floor(Date.now() / 1000);
 
+            const updatedBookings: ZoomBooking[] = val
+                .map(z => {
+                    const sec = toUnixSeconds(z.startTime);
+                    return Number.isNaN(sec) ? null : { ...z, startTime: String(sec) };
+                })
+                .filter((z): z is ZoomBooking => z !== null && Number(z.startTime) > nowSec);
+
+            console.log("Updated bookings in epoch", updatedBookings);
+            
             setBookings(updatedBookings);
         });
+
+        //bind and get bookings from Zoom Rooms
+        // bindAndListen('Bookings', module, ( val:ZoomBooking[] ) => {
+        //     const nowMs = Date.now();
+        //
+        //     const updatedBookings : ZoomBooking[] = val
+        //         .flatMap<ZoomBooking>( zBooking => {
+        //             const ms = Date.parse(zBooking.startTime);
+        //             if (Number.isNaN(ms) || ms <= nowMs) return []; // skip invalid or past
+        //             return [{
+        //                 ...zBooking,
+        //                 startTime: Math.floor(ms / 1000).toString(), // Unix seconds
+        //             }];
+        //         });
+        //    
+        //     console.log("Updated bookings in epoch", updatedBookings);
+        //
+        //     setBookings(updatedBookings);
+        // });
         
         //bind to Bookings module in placeOS
         // const bookingsMod = getModule(systemId, 'Bookings');
