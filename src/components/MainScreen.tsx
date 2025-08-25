@@ -9,12 +9,12 @@ export default function MainScreen() {
             <div className="first-step relative w-[1920px] h-[1200px] bg-avit-bg overflow-hidden">
                 <div className="flex flex-col w-full h-full">
                     {/* Header */}
-                    <div className="shrink-0">
+                    <div className="z-10 shrink-0">
                         <Header />
                     </div>
 
                     {/* Content body (fills remaining height) */}
-                    <main className="grow flex flex-col px-12 py-8 gap-4">
+                    <main className="z-0 grow flex flex-col px-12 py-8 gap-4">
                         {/* Top section */}
                         <SessionDetails />
                         {/* Controls */}
