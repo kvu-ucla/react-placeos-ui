@@ -1,14 +1,12 @@
+
+
 // TourHost.tsx
-import * as React from "react";
 import { TourProvider, type StepType } from "@reactour/tour";
+import FramePortal from "./FramePortal";
 import App from "../App";
-import { useModalContext } from "../hooks/ModalContext";
-import { useFrameMetrics } from "../hooks/useFrameMetrics";
 
 export default function TourHost() {
-    const { showModal } = useModalContext();
 
-    // your existing steps (unchanged)
     const steps: StepType[] = [
         {
             selector: '#settings',
@@ -89,115 +87,52 @@ export default function TourHost() {
                     <div>To bring up other settings, you can click here.</div>
                 </div>
             ),
-            actionAfter: async () => {
-                showModal('settings');
-                await waitForSelector("#settings");
-            }
-        },
-        {
-            selector: '#settings',
-            content: () => (
-                <div >
-                    <h1 className="font-semibold">Settings</h1>
-                    <div>Click on the settings icon at any time to manage controls like your audio input and output levels,
-                        your displays, and other meeting controls.</div>
-                </div>
-            ),
-            actionAfter: () => showModal('none')
-        },
+        }
 
 
     ]
 
-    function waitForSelector(sel: string, timeout = 5000) {
-        return new Promise<HTMLElement>((resolve, reject) => {
-            const found = document.querySelector<HTMLElement>(sel);
-            if (found) return resolve(found);
-
-            const obs = new MutationObserver(() => {
-                const el = document.querySelector<HTMLElement>(sel);
-                if (el) {
-                    obs.disconnect();
-                    resolve(el);
-                }
-            });
-            obs.observe(document.documentElement, { childList: true, subtree: true });
-
-            setTimeout(() => {
-                obs.disconnect();
-                reject(new Error(`Timeout waiting for ${sel}`));
-            }, timeout);
-        });
-    }
-    
-    const M = useFrameMetrics(1920, 1200);
-
-    // Optional tiny manual nudge if panel is still a few px off:
-    const [nudge, setNudge] = React.useState({ x: 0, y: 0 }); // change on panel if needed
-
-    // Live diag shown on panel (toggle with a long-press or leave visible while testing)
-    const Diag = () => (
-        <div
-            style={{
-                position: "fixed", left: M.left, top: M.top, zIndex: 100000,
-                background: "rgba(0,0,0,.6)", color: "#0f0", fontFamily: "monospace",
-                fontSize: 12, padding: "6px 8px", borderRadius: 8,
-            }}
-        >
-            <div>frame: {Math.round(M.left)},{Math.round(M.top)} · {Math.round(M.width)}×{Math.round(M.height)}</div>
-            <div>scale: {M.SCALE.toFixed(3)} (w {M.scaleW.toFixed(3)}, h {M.scaleH.toFixed(3)})</div>
-            <div>nudge: {nudge.x},{nudge.y}</div>
-            <button onClick={() => setNudge(s => ({...s, y: s.y + 1}))}>↓</button>
-            <button onClick={() => setNudge(s => ({...s, y: s.y - 1}))}>↑</button>
-            <button onClick={() => setNudge(s => ({...s, x: s.x - 1}))}>←</button>
-            <button onClick={() => setNudge(s => ({...s, x: s.x + 1}))}>→</button>
-        </div>
-    );
-
     return (
         <TourProvider
             steps={steps}
+            Wrapper={FramePortal}         // <- the important part
             scrollSmooth={false}
-            // Key: rebase everything into the frame box using offsets ONLY.
             styles={{
-                // 1) put the overlay exactly over the frame box
+                // Fill the frame exactly (no offsets, no scale)
                 maskWrapper: (base) => ({
                     ...base,
-                    position: "fixed",
-                    left: M.left + nudge.x,
-                    top:  M.top  + nudge.y,
-                    width: M.width,
-                    height: M.height,
+                    position: "absolute",
+                    inset: 0,                 // top:0 right:0 bottom:0 left:0
+                    width: "100%",
+                    height: "100%",
                     transform: "none",
                     zIndex: 10000,
                 }),
-                // 2) ensure internal rects use the same box size
-                maskRect:  (b) => ({ ...b, width: M.width, height: M.height }),
-                clickArea: (b) => ({ ...b, width: M.width, height: M.height }),
+                maskRect:  (b) => ({ ...b, width: "100%", height: "100%" }),
+                clickArea: (b) => ({ ...b, width: "100%", height: "100%" }),
 
-                // 3) rebase the spotlight from viewport coords to frame-local coords
-                highlightedArea: (b, a) => ({
-                    ...b,
-                    x: a?.x - (M.left + nudge.x),
-                    y: a?.y - (M.top  + nudge.y),
-                    width: a?.width,
-                    height: a?.height,
-                }),
-
-                // 4) shift popover into the frame (no extra scale)
+                // Popover also frame-relative
                 popover: (base) => ({
                     ...base,
-                    position: "fixed",
-                    transform: `translate(${- (M.left + nudge.x)}px, ${- (M.top + nudge.y)}px)`,
-                    transformOrigin: "top left",
+                    position: "absolute",
+                    // no translate/scale here
+                    maxWidth: 660,
+                    padding: 32,
+                    borderRadius: 16,
                     zIndex: 10001,
-                    maxWidth: 660, padding: 32, borderRadius: 16,
                 }),
+
+                // (your cosmetic overrides are fine to keep)
+                controls: (b) => ({ ...b, gap: 12 }),
+                button:   (b) => ({ ...b, fontSize: "1.125rem", padding: "0.75rem 1rem", borderRadius: 12 }),
+                close:    (b) => ({ ...b, width: 56, height: 56 }),
+                arrow:    (b) => ({ ...b, width: 48, height: 48 }),
+                dot:      (b, s) => ({ ...b, width: s?.showNumber ? b.width : 16, height: 16, transform: "scale(1.15)" }),
+                badge:    (b) => ({ ...b, width: 48, height: 48, fontSize: "1.5rem" }),
             }}
         >
-            {/* keep this visible while testing; remove later */}
-            <Diag />
             <App />
         </TourProvider>
     );
 }
+
