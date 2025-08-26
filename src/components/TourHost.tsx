@@ -98,32 +98,29 @@ export default function TourHost() {
             Wrapper={FramePortal}
             scrollSmooth={false}
             styles={{
-                // Fill the tour-layer exactly
                 maskWrapper: (base) => ({
                     ...base,
-                    position: "absolute",
-                    inset: 0,
+                    position: "absolute" as const,
+                    inset: "0",                // <-- string, not number
                     width: "100%",
                     height: "100%",
-                    margin: 0,
-                    padding: 0,                 // <- important
-                    boxSizing: "border-box",    // <- important
-                    transform: "none",
+                    transformOrigin: "top left",
+                    transform: "scale(1.11)",   // string is fine
                     zIndex: 10000,
                 }),
                 popover: (base) => ({
                     ...base,
                     position: "absolute",
-                    // no translate/scale here
+                    zIndex: 10001,
                     maxWidth: 660,
                     padding: 32,
                     borderRadius: 16,
-                    zIndex: 10001,
                 }),
             }}
         >
             <App />
         </TourProvider>
+
     );
 }
 
