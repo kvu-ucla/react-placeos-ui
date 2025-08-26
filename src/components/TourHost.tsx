@@ -95,23 +95,22 @@ export default function TourHost() {
     return (
         <TourProvider
             steps={steps}
-            Wrapper={FramePortal}         // <- the important part
+            Wrapper={FramePortal}
             scrollSmooth={false}
             styles={{
-                // Fill the frame exactly (no offsets, no scale)
+                // Fill the tour-layer exactly
                 maskWrapper: (base) => ({
                     ...base,
                     position: "absolute",
-                    inset: 0,                 // top:0 right:0 bottom:0 left:0
+                    inset: 0,
                     width: "100%",
                     height: "100%",
+                    margin: 0,
+                    padding: 0,                 // <- important
+                    boxSizing: "border-box",    // <- important
                     transform: "none",
                     zIndex: 10000,
                 }),
-                maskRect:  (b) => ({ ...b, width: "100%", height: "100%" }),
-                clickArea: (b) => ({ ...b, width: "100%", height: "100%" }),
-
-                // Popover also frame-relative
                 popover: (base) => ({
                     ...base,
                     position: "absolute",
@@ -121,14 +120,6 @@ export default function TourHost() {
                     borderRadius: 16,
                     zIndex: 10001,
                 }),
-
-                // (your cosmetic overrides are fine to keep)
-                controls: (b) => ({ ...b, gap: 12 }),
-                button:   (b) => ({ ...b, fontSize: "1.125rem", padding: "0.75rem 1rem", borderRadius: 12 }),
-                close:    (b) => ({ ...b, width: 56, height: 56 }),
-                arrow:    (b) => ({ ...b, width: 48, height: 48 }),
-                dot:      (b, s) => ({ ...b, width: s?.showNumber ? b.width : 16, height: 16, transform: "scale(1.15)" }),
-                badge:    (b) => ({ ...b, width: 48, height: 48, fontSize: "1.5rem" }),
             }}
         >
             <App />
