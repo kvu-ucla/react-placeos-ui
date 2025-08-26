@@ -3,33 +3,12 @@ import * as React from "react";
 import { TourProvider, type StepType } from "@reactour/tour";
 import App from "../App";
 import { useModalContext } from "../hooks/ModalContext";
-
-function useFrameMetrics(designW = 1920, designH = 1200) {
-    const read = () => {
-        const el = document.getElementById("app-frame");
-        if (!el) return { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight, SCALE: 1 };
-        const r = el.getBoundingClientRect();                 // scaled box on screen
-        const scaleW = r.width / designW, scaleH = r.height / designH;
-        const SCALE = Math.min(scaleW, scaleH);               // same math as your AppFrame
-        return { left: r.left, top: r.top, width: r.width, height: r.height, SCALE };
-    };
-
-    const [m, setM] = React.useState(read);
-    React.useEffect(() => {
-        const onResize = () => setM(read());
-        window.addEventListener("resize", onResize);
-        window.visualViewport?.addEventListener("resize", onResize);
-        return () => {
-            window.removeEventListener("resize", onResize);
-            window.visualViewport?.removeEventListener("resize", onResize);
-        };
-    }, []);
-    return m;
-}
+import { useFrameMetrics } from "../hooks/useFrameMetrics";
 
 export default function TourHost() {
     const { showModal } = useModalContext();
 
+    // your existing steps (unchanged)
     const steps: StepType[] = [
         {
             selector: '#settings',
@@ -129,7 +108,6 @@ export default function TourHost() {
 
 
     ]
-    const M = useFrameMetrics(1920, 1200);
 
     function waitForSelector(sel: string, timeout = 5000) {
         return new Promise<HTMLElement>((resolve, reject) => {
@@ -151,60 +129,74 @@ export default function TourHost() {
             }, timeout);
         });
     }
+    
+    const M = useFrameMetrics(1920, 1200);
+
+    // Optional tiny manual nudge if panel is still a few px off:
+    const [nudge, setNudge] = React.useState({ x: 0, y: 0 }); // change on panel if needed
+
+    // Live diag shown on panel (toggle with a long-press or leave visible while testing)
+    const Diag = () => (
+        <div
+            style={{
+                position: "fixed", left: M.left, top: M.top, zIndex: 100000,
+                background: "rgba(0,0,0,.6)", color: "#0f0", fontFamily: "monospace",
+                fontSize: 12, padding: "6px 8px", borderRadius: 8,
+            }}
+        >
+            <div>frame: {Math.round(M.left)},{Math.round(M.top)} · {Math.round(M.width)}×{Math.round(M.height)}</div>
+            <div>scale: {M.SCALE.toFixed(3)} (w {M.scaleW.toFixed(3)}, h {M.scaleH.toFixed(3)})</div>
+            <div>nudge: {nudge.x},{nudge.y}</div>
+            <button onClick={() => setNudge(s => ({...s, y: s.y + 1}))}>↓</button>
+            <button onClick={() => setNudge(s => ({...s, y: s.y - 1}))}>↑</button>
+            <button onClick={() => setNudge(s => ({...s, x: s.x - 1}))}>←</button>
+            <button onClick={() => setNudge(s => ({...s, x: s.x + 1}))}>→</button>
+        </div>
+    );
 
     return (
         <TourProvider
             steps={steps}
             scrollSmooth={false}
-            // KEY PART: rebase the overlay into the frame’s box (offset only; no extra scaling)
+            // Key: rebase everything into the frame box using offsets ONLY.
             styles={{
-                // Put the mask wrapper exactly over the frame box
+                // 1) put the overlay exactly over the frame box
                 maskWrapper: (base) => ({
                     ...base,
                     position: "fixed",
-                    left: M.left,
-                    top: M.top,
+                    left: M.left + nudge.x,
+                    top:  M.top  + nudge.y,
                     width: M.width,
                     height: M.height,
                     transform: "none",
                     zIndex: 10000,
                 }),
-                // Make the full-screen rects match the frame box, not window
-                maskRect: (base) => ({ ...base, width: M.width, height: M.height }),
-                clickArea: (base) => ({ ...base, width: M.width, height: M.height }),
+                // 2) ensure internal rects use the same box size
+                maskRect:  (b) => ({ ...b, width: M.width, height: M.height }),
+                clickArea: (b) => ({ ...b, width: M.width, height: M.height }),
 
-                // Rebase highlighted area from viewport -> frame coords
-                // (Reactour gives x/y/width/height in *viewport* px of the SCALED element)
-                highlightedArea: (base, a) => ({
-                    ...base,
-                    x: a?.x - M.left,
-                    y: a?.y - M.top,
+                // 3) rebase the spotlight from viewport coords to frame-local coords
+                highlightedArea: (b, a) => ({
+                    ...b,
+                    x: a?.x - (M.left + nudge.x),
+                    y: a?.y - (M.top  + nudge.y),
                     width: a?.width,
                     height: a?.height,
                 }),
 
-                // Popover: move from viewport coords into the frame box (offset only)
-                // Reactour’s base computes top/left already for the scaled target.
+                // 4) shift popover into the frame (no extra scale)
                 popover: (base) => ({
                     ...base,
-                    // shift the whole popover by the negative frame offset so it aligns in the rebased box
-                    transform: `translate(${-M.left}px, ${-M.top}px)`,
+                    position: "fixed",
+                    transform: `translate(${- (M.left + nudge.x)}px, ${- (M.top + nudge.y)}px)`,
                     transformOrigin: "top left",
                     zIndex: 10001,
-                    maxWidth: 660,
-                    borderRadius: 16,
-                    padding: 32,
+                    maxWidth: 660, padding: 32, borderRadius: 16,
                 }),
-
-                // (Optional cosmetics you already had)
-                controls: (b) => ({ ...b, gap: 12 }),
-                button:   (b) => ({ ...b, fontSize: "1.125rem", padding: "0.75rem 1rem", borderRadius: 12 }),
-                close:    (b) => ({ ...b, width: 56, height: 56 }),
-                arrow:    (b) => ({ ...b, width: 48, height: 48 }),
-                dot:      (b, s) => ({ ...b, width: s?.showNumber ? b.width : 16, height: 16, transform: "scale(1.15)" }),
-                badge:    (b) => ({ ...b, width: 48, height: 48, fontSize: "1.5rem" }),
             }}
         >
+            {/* keep this visible while testing; remove later */}
+            <Diag />
             <App />
         </TourProvider>
     );
