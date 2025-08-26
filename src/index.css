@@ -65,6 +65,21 @@ html, body, #root {
     @apply m-0 p-0 h-full bg-black;
 }
 
+.btn:focus,
+.btn:focus-visible,
+button:focus,
+button:focus-visible {
+    outline: none !important;
+    box-shadow: none !important; /* DaisyUI ring uses box-shadow */
+}
+
+/* Remove default platform appearance that can add borders */
+.btn,
+button {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
 @layer utilities {
     /* Works for native controls (disabled) and custom widgets (aria-disabled) */
     .ui-disabled {
