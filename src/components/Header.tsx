@@ -17,7 +17,7 @@ export function Header() {
 
   return (
     <header
-      className={`first-step min-h-42 w-screen flex justify-between items-center px-13 py-6 ${active ? "bg-avit-grey shadow-[0_10px_15px_-3px_rgba(0,0,0,0.15),0_4px_6px_-4px_rgba(0,0,0,0.15)]" : ""}`}
+      className={`first-step relative min-h-42 w-full flex justify-between items-center px-13 py-6 ${active ? "bg-avit-grey [filter:drop-shadow(0_4px_6px_rgba(0,0,0,0.1))]" : ""}`}
     >
       <div className="pointer-events-none absolute inset-2 overflow-hidden rounded bg-base-200 opacity-0">
         <div className="h-full w-full"></div>
