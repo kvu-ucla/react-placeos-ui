@@ -17,13 +17,17 @@ export function Header() {
 
   return (
     <header
-      className={`first-step relative min-h-42 w-full flex justify-between items-center px-13 py-6 ${active ? "bg-avit-grey [filter:drop-shadow(0_4px_6px_rgba(0,0,0,0.1))]" : ""}`}
+      className={`first-step relative min-h-42 w-full flex justify-between items-center px-13 py-6 ${active ? "bg-avit-grey shadow-lg" : ""}`}
     >
       <div className="pointer-events-none absolute inset-2 overflow-hidden rounded bg-base-200 opacity-0">
         <div className="h-full w-full"></div>
       </div>
       <div className="flex items-center space-x-6">
-        <img src={import.meta.env.BASE_URL + 'logo_dts.svg'} alt="UCLA Digital Technology Solutions logo" className="h-16" />
+        <img
+          src={import.meta.env.BASE_URL + "logo_dts.svg"}
+          alt="UCLA Digital Technology Solutions logo"
+          className="h-16"
+        />
       </div>
       <div className="absolute left-1/2 transform -translate-x-1/2 flex flex-col justify-center items-center">
         <Clock format="12h" />
@@ -66,7 +70,8 @@ export function Header() {
           <span className="text-xl font-semibold">Support</span>
         </button>
         {active && (
-          <button id="settings-btn"
+          <button
+            id="settings-btn"
             onClick={() => {
               showModal("settings", { tab: "Volume" });
             }}
