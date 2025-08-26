@@ -1,6 +1,7 @@
 import {TourProvider, type StepType } from '@reactour/tour';
 import App from '../App';
 import { useModalContext } from '../hooks/ModalContext';
+import FramePortal from "./FramePortal.tsx";
 export default function TourHost() {
     const { showModal } = useModalContext();
 
@@ -24,8 +25,7 @@ export default function TourHost() {
             }, timeout);
         });
     }
-
-    // @ts-ignore
+    
     const steps: StepType[] = [
         {
             selector: '#settings',
@@ -126,90 +126,29 @@ export default function TourHost() {
 
     ]
 
-    // const steps = useMemo<StepType[]>(
-    //     () => [
-    //         {
-    //             content: () => (
-    //                 <div>
-    //                     <h1 className="font-semibold">Welcome to your new classroom! Let’s take a tour.</h1>
-    //                     <div>We’ll walk you through the most important features to get started.</div>
-    //                 </div>
-    //             ),
-    //             position: 'center',
-    //         },
-    //         { selector: '#details', content: () => (<div>…</div>) },
-    //         { selector: '#microphone', content: () => (<div>…</div>) },
-    //         { selector: '#camera', content: () => (<div>…</div>) },
-    //         { selector: '#screenshare', content: () => (<div>…</div>) },
-    //         { selector: '#meeting-ctrls', content: () => (<div>…</div>) },
-    //         {
-    //             selector: '#zoom-join',
-    //             content: () => (<div>…</div>),
-    //         },
-    //         {
-    //             selector: '#settings',
-    //             // Option A: open when entering this step
-    //             action: () => showModal('settings'),
-    //
-    //             // Option B: also provide a button inside the popover
-    //             content: ({ setIsOpen }) => (
-    //                 <div>
-    //                     <h1 className="font-semibold">Settings</h1>
-    //                     <p>Manage audio levels, displays, and other controls.</p>
-    //                     <button
-    //                         className="mt-3 px-4 py-2 rounded bg-blue-600 text-white"
-    //                         onClick={() => {
-    //                             showModal('settings');
-    //                             setIsOpen(false); // optional: close tour to avoid focus traps
-    //                         }}
-    //                     >
-    //                         Open Settings
-    //                     </button>
-    //                 </div>
-    //             ),
-    //         },
-    //     ],
-    //     [showModal]
-    // );
-
     return (
-        <TourProvider steps={steps} className="rounded-lg" styles={{
-            // Popover (the card)
-            popover: (base) => ({
-                ...base,
-                maxWidth: 660,         // wider card
-                padding: 32,           // more inner space
-                borderRadius: 16,      // bigger rounding
-            }),
-            // Controls row (prev/next + dots)
-            controls: (base) => ({ ...base, gap: 12 }),
-            // Prev/Next buttons
-            button: (base) => ({
-                ...base,
-                fontSize: '1.125rem',  // ~ text-lg
-                padding: '0.75rem 1rem',
-                borderRadius: 12,
-            }),
-            // Close “X”
-            close: (base) => ({ ...base, width: 56, height: 56 }),
-            // Step arrows (the little chevrons inside buttons)
-            arrow: (base) => ({ ...base, width: 48, height: 48 }),
-            // Dots under the content
-            dot: (base, state) => ({
-                ...base,
-                width: state?.showNumber ? base.width : 16,
-                height: 16,
-                transform: 'scale(1.15)',
-            }),
-            // Step badge (1/8)
-            badge: (base) => ({
-                ...base,
-                width: 48,
-                height: 48,
-                fontSize: '1.5rem',
-                
-            }),
-        }}>
+        <TourProvider
+            steps={steps}
+            Wrapper={FramePortal}
+            styles={{
+                // keep your existing styles...
+                popover: (base) => ({
+                    ...base,
+                    maxWidth: 660,
+                    padding: 32,
+                    borderRadius: 16,
+                    zIndex: 10001,       // ensure over app UI
+                }),
+                controls: (base) => ({ ...base, gap: 12 }),
+                button: (base) => ({ ...base, fontSize: '1.125rem', padding: '0.75rem 1rem', borderRadius: 12 }),
+                close:  (base) => ({ ...base, width: 56, height: 56 }),
+                arrow:  (base) => ({ ...base, width: 48, height: 48 }),
+                dot:    (base, s) => ({ ...base, width: s?.showNumber ? base.width : 16, height: 16, transform: 'scale(1.15)' }),
+                badge:  (base) => ({ ...base, width: 48, height: 48, fontSize: '1.5rem' }),
+                // add mask zIndex too
+                maskWrapper: (base) => ({ ...base, zIndex: 10000 }),
+            }}
+        >
             <App />
         </TourProvider>
     );
