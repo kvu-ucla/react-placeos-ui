@@ -1,57 +1,35 @@
-import {TourProvider, type StepType } from '@reactour/tour';
-import App from '../App';
-import { useModalContext } from '../hooks/ModalContext';
-import React from "react";
+// TourHost.tsx
+import * as React from "react";
+import { TourProvider, type StepType } from "@reactour/tour";
+import App from "../App";
+import { useModalContext } from "../hooks/ModalContext";
 
 function useFrameMetrics(designW = 1920, designH = 1200) {
-    const [m, setM] = React.useState({ left: 0, top: 0, width: 0, height: 0, SCALE: 1 });
+    const read = () => {
+        const el = document.getElementById("app-frame");
+        if (!el) return { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight, SCALE: 1 };
+        const r = el.getBoundingClientRect();                 // scaled box on screen
+        const scaleW = r.width / designW, scaleH = r.height / designH;
+        const SCALE = Math.min(scaleW, scaleH);               // same math as your AppFrame
+        return { left: r.left, top: r.top, width: r.width, height: r.height, SCALE };
+    };
 
+    const [m, setM] = React.useState(read);
     React.useEffect(() => {
-        const update = () => {
-            const el = document.getElementById("app-frame");
-            if (!el) return;
-            const r = el.getBoundingClientRect();
-            const scaleW = r.width / designW;
-            const scaleH = r.height / designH;
-            const SCALE = Math.min(scaleW, scaleH);
-            setM({ left: r.left, top: r.top, width: r.width, height: r.height, SCALE });
-        };
-        update();
-        window.addEventListener("resize", update);
-        window.visualViewport?.addEventListener("resize", update);
+        const onResize = () => setM(read());
+        window.addEventListener("resize", onResize);
+        window.visualViewport?.addEventListener("resize", onResize);
         return () => {
-            window.removeEventListener("resize", update);
-            window.visualViewport?.removeEventListener("resize", update);
+            window.removeEventListener("resize", onResize);
+            window.visualViewport?.removeEventListener("resize", onResize);
         };
-    }, [designW, designH]);
-
+    }, []);
     return m;
 }
 
 export default function TourHost() {
     const { showModal } = useModalContext();
 
-    function waitForSelector(sel: string, timeout = 5000) {
-        return new Promise<HTMLElement>((resolve, reject) => {
-            const found = document.querySelector<HTMLElement>(sel);
-            if (found) return resolve(found);
-
-            const obs = new MutationObserver(() => {
-                const el = document.querySelector<HTMLElement>(sel);
-                if (el) {
-                    obs.disconnect();
-                    resolve(el);
-                }
-            });
-            obs.observe(document.documentElement, { childList: true, subtree: true });
-
-            setTimeout(() => {
-                obs.disconnect();
-                reject(new Error(`Timeout waiting for ${sel}`));
-            }, timeout);
-        });
-    }
-    
     const steps: StepType[] = [
         {
             selector: '#settings',
@@ -151,18 +129,36 @@ export default function TourHost() {
 
 
     ]
-
     const M = useFrameMetrics(1920, 1200);
+
+    function waitForSelector(sel: string, timeout = 5000) {
+        return new Promise<HTMLElement>((resolve, reject) => {
+            const found = document.querySelector<HTMLElement>(sel);
+            if (found) return resolve(found);
+
+            const obs = new MutationObserver(() => {
+                const el = document.querySelector<HTMLElement>(sel);
+                if (el) {
+                    obs.disconnect();
+                    resolve(el);
+                }
+            });
+            obs.observe(document.documentElement, { childList: true, subtree: true });
+
+            setTimeout(() => {
+                obs.disconnect();
+                reject(new Error(`Timeout waiting for ${sel}`));
+            }, timeout);
+        });
+    }
 
     return (
         <TourProvider
             steps={steps}
-            // Optional: keep Wrapper if you want, but it's not required with these styles
-            // Wrapper={FramePortal}
             scrollSmooth={false}
-            className="rounded-lg"
+            // KEY PART: rebase the overlay into the frame’s box (offset only; no extra scaling)
             styles={{
-                // Constrain + align the overlay to the scaled frame box
+                // Put the mask wrapper exactly over the frame box
                 maskWrapper: (base) => ({
                     ...base,
                     position: "fixed",
@@ -170,28 +166,43 @@ export default function TourHost() {
                     top: M.top,
                     width: M.width,
                     height: M.height,
-                    transform: `scale(${M.SCALE})`,
-                    transformOrigin: "top left",
+                    transform: "none",
                     zIndex: 10000,
                 }),
-                // Popover needs the same transform & offset so it points at the right place
+                // Make the full-screen rects match the frame box, not window
+                maskRect: (base) => ({ ...base, width: M.width, height: M.height }),
+                clickArea: (base) => ({ ...base, width: M.width, height: M.height }),
+
+                // Rebase highlighted area from viewport -> frame coords
+                // (Reactour gives x/y/width/height in *viewport* px of the SCALED element)
+                highlightedArea: (base, a) => ({
+                    ...base,
+                    x: a?.x - M.left,
+                    y: a?.y - M.top,
+                    width: a?.width,
+                    height: a?.height,
+                }),
+
+                // Popover: move from viewport coords into the frame box (offset only)
+                // Reactour’s base computes top/left already for the scaled target.
                 popover: (base) => ({
                     ...base,
-                    maxWidth: 660,
-                    padding: 32,
-                    borderRadius: 16,
-                    position: "fixed",
-                    transform: `translate(${M.left}px, ${M.top}px) scale(${M.SCALE})`,
+                    // shift the whole popover by the negative frame offset so it aligns in the rebased box
+                    transform: `translate(${-M.left}px, ${-M.top}px)`,
                     transformOrigin: "top left",
                     zIndex: 10001,
+                    maxWidth: 660,
+                    borderRadius: 16,
+                    padding: 32,
                 }),
-                // Controls/badge/dots live inside popover; no extra transform needed
-                controls: (base) => ({ ...base, gap: 12 }),
-                button: (base) => ({ ...base, fontSize: "1.125rem", padding: "0.75rem 1rem", borderRadius: 12 }),
-                close: (base) => ({ ...base, width: 56, height: 56 }),
-                arrow: (base) => ({ ...base, width: 48, height: 48 }),
-                dot: (base, state) => ({ ...base, width: state?.showNumber ? base.width : 16, height: 16, transform: "scale(1.15)" }),
-                badge: (base) => ({ ...base, width: 48, height: 48, fontSize: "1.5rem" }),
+
+                // (Optional cosmetics you already had)
+                controls: (b) => ({ ...b, gap: 12 }),
+                button:   (b) => ({ ...b, fontSize: "1.125rem", padding: "0.75rem 1rem", borderRadius: 12 }),
+                close:    (b) => ({ ...b, width: 56, height: 56 }),
+                arrow:    (b) => ({ ...b, width: 48, height: 48 }),
+                dot:      (b, s) => ({ ...b, width: s?.showNumber ? b.width : 16, height: 16, transform: "scale(1.15)" }),
+                badge:    (b) => ({ ...b, width: 48, height: 48, fontSize: "1.5rem" }),
             }}
         >
             <App />
