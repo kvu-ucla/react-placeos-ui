@@ -117,7 +117,7 @@ export default function SessionControls() {
                 present.
               </li>
               <li>
-                Tap "Share Screen" and input [Sharing Key], if applicable.
+                Tap "Share Screen" and input Sharing key: <span className="font-semibold">{sharing?.directPresentationSharingKey}</span>
               </li>
             </ol>
           </div>
