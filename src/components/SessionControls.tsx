@@ -15,6 +15,10 @@ export const IconType = {
   Share: {
     On: "material-symbols:present-to-all-outline-rounded",
     Off: "material-symbols:cancel-presentation-outline-rounded",
+  },
+  Gallery: {
+    On: "material-symbols:person-outline-rounded",
+    Off: "material-symbols:gallery-thumbnail-rounded",
   }
 };
 
@@ -23,6 +27,8 @@ export default function SessionControls() {
     callStatus,
     recording,
     sharing,
+      gallery,
+      toggleGallery,
     toggleSharing,
     toggleAudioMuteAll,
     toggleVideoMuteAll,
@@ -82,6 +88,13 @@ export default function SessionControls() {
           icon={IconType.Share}
           buttonAction={() => toggleSharing()}
           buttonState={!isSharing}
+        />
+        <ControlCard
+            id="gallery"
+            label="Gallery: "
+            icon={IconType.Gallery}
+            buttonAction={() => toggleGallery()}
+            buttonState={gallery}
         />
         <ControlCard
             id="meeting-ctrls"
@@ -173,7 +186,7 @@ function ControlCard({
       onClick={() => {
         if (buttonAction) buttonAction();
       }}
-      id={id} className="btn btn-primary bg-white active:bg-gray-100 p-0 border-none h-[206px] w-[404px] rounded-lg text-avit-grey-80 "
+      id={id} className="btn btn-primary bg-white active:bg-gray-100 p-0 border-none h-[206px] rounded-lg text-avit-grey-80 "
     >
       <div className="px-8 py-6 w-full h-full flex flex-col items-center justify-center relative">
         {!disabled && detailsButton && (

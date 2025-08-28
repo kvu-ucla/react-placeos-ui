@@ -89,6 +89,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
     const [bookings, setBookings] = useState<ZoomBooking[]>();
     const [volume, setVolume] = useState<number>();
     const [volumeMute, setVolumeMute] = useState<boolean>();
+    const [gallery, setGallery] = useState<boolean>(true);
 
     const handleActiveRecordings = (data: string[] | null | undefined) => {
         const value = !!(data && data.length > 0)
@@ -171,6 +172,24 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         else 
             await module.execute('sharing_start_hdmi');
     };
+    
+    const toggleGallery = async () => {
+        const sysMod = getModule(systemId, 'System');
+        if (!module) return;
+        
+        if (gallery)
+        {
+            await sysMod.execute('apply_current_routes');
+            setGallery(false);  
+        }
+        else
+        {
+            await sysMod.execute('route', ['Zoom_Output_1', 'Display_1']);
+            await sysMod.execute('route', ['Zoom_Output_1', 'Display_2']);
+            await sysMod.execute('route', ['Zoom_Output_1', 'Display_3']);
+            setGallery(true);
+        }
+    }
     
     const adjustMasterVolume = (value: number ) => {
         const volumeMod = getModule(systemId, 'Mixer');
@@ -322,11 +341,13 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         callStatus,
         sharing,
         bookings,
+        gallery,
         leave,
         joinPmi,
         joinMeetingId,
         toggleAudioMuteAll,
         toggleVideoMuteAll,
-        toggleSharing
+        toggleSharing,
+        toggleGallery
     };
 }
