@@ -179,7 +179,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         
         if (gallery)
         {
-            await sysMod.execute('apply_current_routes');
+            await sysMod.execute('apply_default_routes');
             setGallery(false);  
         }
         else
