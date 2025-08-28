@@ -59,40 +59,40 @@ export default function Footer() {
 
         <div className="flex items-center space-x-2">
           <div className="flex items-center mr-8">
-            {/* Label stack + icon */}
+            {/* Label stack + icon (bigger) */}
             <div className="flex items-center mr-4">
-              <div className="flex flex-col leading-tight text-white mr-2">
-                <span className="text-base font-semibold">Speaker</span>
-                <span className="text-base font-semibold">Volume</span>
+              <div className="flex flex-col leading-tight text-white mr-3">
+                <span className="text-xl font-semibold">Speaker</span>
+                <span className="text-xl font-semibold">Volume</span>
               </div>
               {volumeMute ? (
                   <Icon
                       icon="material-symbols:volume-off-outline-rounded"
-                      width={28}
-                      height={28}
+                      width={40}
+                      height={40}
                       className="opacity-90"
                   />
               ) : (
                   <Icon
                       icon="material-symbols:volume-up-outline-rounded"
-                      width={28}
-                      height={28}
+                      width={40}
+                      height={40}
                       className="opacity-90"
                   />
               )}
             </div>
 
-            {/* Gauge: fixed width, height matched to small thumb */}
+            {/* Gauge: fixed width; track height matches thumb (40px) */}
             <div className="shrink-0 w-[500px] overflow-visible">
               <div className="relative w-full">
-                {/* Base track (match thumb height) */}
-                <div className="absolute inset-0 h-[18px] rounded-full bg-[#334155]" />
+                {/* Base track */}
+                <div className="absolute inset-0 h-10 rounded-full bg-[#334155]" />
                 {/* Fill */}
                 <div
-                    className="absolute inset-y-0 left-0 h-[18px] rounded-full bg-[#C8D7FF]"
+                    className="absolute inset-y-0 left-0 h-10 rounded-full bg-[#C8D7FF]"
                     style={{ width: `${percent}%` }}
                 />
-                {/* Slider (transparent track; only thumb visible) */}
+                {/* Slider (transparent track; thumb only) */}
                 <input
                     type="range"
                     min={MIN}
@@ -100,11 +100,12 @@ export default function Footer() {
                     value={value}
                     onChange={(e) => setValue(Number(e.target.value))}
                     onPointerUp={handleRelease}
-                    className="relative z-10 w-full h-[18px] appearance-none bg-transparent outline-none rounded-full"
+                    className="relative z-10 w-full h-10 appearance-none bg-transparent outline-none rounded-full"
                 />
               </div>
             </div>
           </div>
+
 
 
           {isJoined && (
@@ -116,27 +117,31 @@ export default function Footer() {
               </button>
           )}
         </div>
-        
+
         <style>{`
-        input[type="range"] { -webkit-appearance: none; appearance: none; }
-        input[type="range"]::-webkit-slider-runnable-track {
-          height: 40px; background: transparent; border-radius: 9999px;
-        }
-        input[type="range"]::-moz-range-track {
-          height: 40px; background: transparent; border-radius: 9999px;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-          -webkit-appearance: none; appearance: none;
-          width: 30px; height: 30px; border-radius: 9999px;
-          background: #fff; border: 2px solid #94a3b8;
-          margin-top: 5px; /* centers thumb on 40px track in WebKit */
-        }
-        input[type="range"]::-moz-range-thumb {
-          width: 30px; height: 30px; border-radius: 9999px;
-          background: #fff; border: 2px solid #94a3b8;
-        }
-        input[type="range"]::-moz-range-progress { background: transparent; }
-      `}</style>
+  input[type="range"] { -webkit-appearance: none; appearance: none; }
+
+  /* Track = 40px to match thumb */
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 40px; background: transparent; border-radius: 9999px;
+  }
+  input[type="range"]::-moz-range-track {
+    height: 40px; background: transparent; border-radius: 9999px;
+  }
+
+  /* Thumb = 40px */
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 40px; height: 40px; border-radius: 9999px;
+    background: #fff; border: 2px solid #94a3b8;
+    margin-top: 0; /* centered on a 40px track */
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 40px; height: 40px; border-radius: 9999px;
+    background: #fff; border: 2px solid #94a3b8;
+  }
+  input[type="range"]::-moz-range-progress { background: transparent; }
+`}</style>
       </footer>
   );
 }
