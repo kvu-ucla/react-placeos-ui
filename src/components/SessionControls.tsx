@@ -18,7 +18,7 @@ export const IconType = {
   },
   Gallery: {
     On: "material-symbols:person-outline-rounded",
-    Off: "material-symbols:gallery-thumbnail-rounded",
+    Off: "material-symbols:person-off-outline-rounded",
   }
 };
 
