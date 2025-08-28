@@ -20,12 +20,20 @@ function fmtHM(ms: number) {
 }
 
 function fmtTime(ms: number) {
+    const currentTime = Date.now();
+    
     if (!isFinite(ms)) return "—";
-    return new Date(ms).toLocaleTimeString([], {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-    });
+    else if (ms < currentTime)
+        return currentTime;
+    else
+    {
+        return new Date(ms).toLocaleTimeString([], {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+        });
+    }
+
 }
 
 export default function SessionDetails() {
