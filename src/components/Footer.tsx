@@ -76,16 +76,7 @@ export default function Footer() {
                 />
             )}
 
-            {/* Slider container: large, non-shrinking, unclipped */}
-            <div
-                className="
-              ml-4 flex-1 shrink-0
-              min-w-[600px] lg:min-w-[900px] xl:min-w-[1100px]
-              max-w-[min(1200px,100vw-12rem)]
-              overflow-visible
-            "
-            >
-              {/* Custom progress track under a transparent input (bulletproof on Crestron) */}
+            <div className="ml-4 shrink-0 w-[500px] overflow-visible">
               <div className="relative w-full">
                 {/* Base track */}
                 <div className="absolute inset-0 h-10 rounded-full bg-[#334155]" />
@@ -95,7 +86,8 @@ export default function Footer() {
                     className="absolute inset-y-0 left-0 h-10 rounded-full bg-[#C8D7FF]"
                     style={{ width: `${percent}%` }}
                 />
-                
+
+                {/* Transparent slider (only thumb interactive) */}
                 <input
                     type="range"
                     min={MIN}
@@ -103,12 +95,7 @@ export default function Footer() {
                     value={value}
                     onChange={(e) => setValue(Number(e.target.value))}
                     onPointerUp={handleRelease}
-                    className="
-                  relative z-10 w-full h-10
-                  appearance-none bg-transparent outline-none
-                  touch-none rounded-full
-                "
-                    style={{ borderRadius: 9999 }}
+                    className="relative z-10 w-full h-10 appearance-none bg-transparent outline-none touch-none rounded-full"
                 />
               </div>
             </div>
