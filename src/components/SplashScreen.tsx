@@ -5,6 +5,7 @@ import {ModalProvider} from "../hooks/ModalContext";
 import {useZoomContext} from "../hooks/ZoomContext";
 
 export default function SplashScreen() {
+    
     const {system, togglePower} = useControlContext();
     const { joinPmi, joinMeetingId, currentMeeting } = useZoomContext();
     

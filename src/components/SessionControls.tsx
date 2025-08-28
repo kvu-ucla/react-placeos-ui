@@ -28,13 +28,10 @@ export default function SessionControls() {
     toggleVideoMuteAll,
   } = useZoomContext();
   const { showModal } = useModalContext();
-  const isSharing = sharing?.isDirectPresentationConnected || sharing?.isSharingBlackMagic
+  const isSharing = sharing?.isDirectPresentationConnected || sharing?.isSharingBlackMagic;
   const isVideoMuted = callStatus?.isCamMuted;
   const isMicAudioMuted = callStatus?.isMicMuted;
   const isJoined = callStatus?.status === "IN_MEETING";
-
-  console.log('SessionControls recording =', recording);
-  console.log("Call Status =", callStatus);
 
   return (
     <div className="bg-gradient-to-r from-[#0331A9] to-[#2F69FF] rounded-lg px-13 py-7.5 shadow text-white">

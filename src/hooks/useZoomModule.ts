@@ -163,7 +163,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         
         if (sharing?.isDirectPresentationConnected) {
             //zCommand Call Sharing Disconnect
-            //TODO add command into zoom mod
+            await module.execute('sharing_stop_wireless');
         }
         else if (sharing?.isSharingBlackMagic) {
             await module.execute('sharing_stop');

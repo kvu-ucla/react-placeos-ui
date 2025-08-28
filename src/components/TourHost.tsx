@@ -101,11 +101,11 @@ export default function TourHost() {
                 maskWrapper: (base) => ({
                     ...base,
                     position: "absolute" as const,
-                    inset: "0",                // <-- string, not number
+                    inset: "0",          
                     width: "100%",
                     height: "100%",
                     transformOrigin: "top left",
-                    transform: "scale(1.11)",   // string is fine
+                    transform: "scale(1.2)", 
                     zIndex: 10000,
                 }),
                 popover: (base) => ({

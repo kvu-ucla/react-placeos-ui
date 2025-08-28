@@ -68,7 +68,7 @@ export default function Footer() {
           <div className="ml-4 w-full overflow-hidden">
             <input
               type="range"
-              min={600}
+              min={800}
               max={1200}
               value={value}
               onChange={(e) => setValue(Number(e.target.value))}
