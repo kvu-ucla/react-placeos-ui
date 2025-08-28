@@ -65,20 +65,22 @@ html, body, #root {
     @apply m-0 p-0 h-full bg-black;
 }
 
-.btn:focus,
-.btn:focus-visible,
-button:focus,
-button:focus-visible {
-    outline: none !important;
-    box-shadow: none !important; /* DaisyUI ring uses box-shadow */
+html, body, #root, #app-frame {
+    height: 100%;
 }
 
-/* Remove default platform appearance that can add borders */
-.btn,
-button {
-    -webkit-appearance: none;
-    appearance: none;
+html, body {
+    margin: 0;
 }
+
+#app-frame {
+    /* ensure it fills the viewport in devtools responsive mode & on panel */
+    width: 100vw;          /* or 100dvw */
+    height: 100vh;         /* or 100dvh to include iOS safe area */
+    box-sizing: border-box;
+}
+
+
 
 @layer utilities {
     /* Works for native controls (disabled) and custom widgets (aria-disabled) */
