@@ -1,37 +1,9 @@
 // TourHost.tsx
-import { useEffect, useMemo, useState } from "react";
 import { TourProvider, type StepType } from "@reactour/tour";
 import FramePortal from "./FramePortal";
 import App from "../App";
 
-const DESIGN_WIDTH = 1920;
-const DESIGN_HEIGHT = 1200;
-
-function useCanvasTransform() {
-    const [vp, setVp] = useState({ w: window.innerWidth, h: window.innerHeight });
-
-    useEffect(() => {
-        const onResize = () => setVp({ w: window.innerWidth, h: window.innerHeight });
-        window.addEventListener("resize", onResize, { passive: true });
-        return () => window.removeEventListener("resize", onResize);
-    }, []);
-
-    return useMemo(() => {
-        const scaleX = vp.w / DESIGN_WIDTH;
-        const scaleY = vp.h / DESIGN_HEIGHT;
-        const scale = Math.min(scaleX, scaleY); // uniform fit
-
-        const scaledW = DESIGN_WIDTH * scale;
-        const scaledH = DESIGN_HEIGHT * scale;
-        const offsetX = (vp.w - scaledW) / 2;
-        const offsetY = (vp.h - scaledH) / 2;
-
-        return { scale, offsetX, offsetY };
-    }, [vp.w, vp.h]);
-}
-
 export default function TourHost() {
-    const { scale, offsetX, offsetY } = useCanvasTransform();
 
     const steps: StepType[] = [
         { selector: "#settings", content: () => (
@@ -71,46 +43,15 @@ export default function TourHost() {
             )},
     ];
 
-    const ourTransform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
-    const chain = (base?: string) => (base ? `${ourTransform} ${base}` : ourTransform);
-    
-
     return (
         <TourProvider
             steps={steps}
             Wrapper={FramePortal}
             scrollSmooth={false}
             styles={{
-                maskWrapper: (base) => ({
-                    ...base,
-                    position: "fixed" as const,
-                    top: 0,
-                    left: 0,
-                    width: DESIGN_WIDTH,
-                    height: DESIGN_HEIGHT,
-                    transformOrigin: "top left",
-                    // ⬇️ keep Reactour’s own transform (if any) AND our canvas transform
-                    transform: chain(base.transform as string | undefined),
-                    zIndex: 10000,
-                    pointerEvents: "none",
-                }),
-                popover: (base) => ({
-                    ...base,
-                    position: "fixed" as const,
-                    transformOrigin: "top left",
-                    // ⬇️ DO NOT overwrite; concatenate with Reactour's translate3d that positions the popover
-                    transform: chain(base.transform as string | undefined),
-                    zIndex: 10001,
-                    maxWidth: 660,
-                    padding: 32,
-                    borderRadius: 16,
-                    pointerEvents: "auto",
-                }),
-                maskArea: (base) => ({
-                    ...base,
-                    transformOrigin: "top left",
-                    transform: chain(base.transform as string | undefined),
-                }),
+                maskWrapper: (base) => ({ ...base, position: "absolute", inset: 0, zIndex: 10000 }),
+                popover: (base) => ({ ...base, zIndex: 10001, maxWidth: 660, padding: 32, borderRadius: 16 }),
+                maskArea: (base) => ({ ...base }),
             }}
         >
             <App />
