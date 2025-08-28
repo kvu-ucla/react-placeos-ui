@@ -59,35 +59,40 @@ export default function Footer() {
 
         <div className="flex items-center space-x-2">
           <div className="flex items-center mr-8">
-            {/* Label + Icon stacked */}
-            <div className="flex flex-col items-center mr-4">
-              <div className="text-lg font-semibold mb-2">Speaker Volume</div>
+            {/* Label stack + icon */}
+            <div className="flex items-center mr-4">
+              <div className="flex flex-col leading-tight text-white mr-2">
+                <span className="text-base font-semibold">Speaker</span>
+                <span className="text-base font-semibold">Volume</span>
+              </div>
               {volumeMute ? (
                   <Icon
                       icon="material-symbols:volume-off-outline-rounded"
-                      width={48}
-                      height={48}
+                      width={28}
+                      height={28}
+                      className="opacity-90"
                   />
               ) : (
                   <Icon
                       icon="material-symbols:volume-up-outline-rounded"
-                      width={48}
-                      height={48}
+                      width={28}
+                      height={28}
+                      className="opacity-90"
                   />
               )}
             </div>
 
-            {/* Slider container: fixed width, good for touch panels */}
+            {/* Gauge: fixed width, height matched to small thumb */}
             <div className="shrink-0 w-[500px] overflow-visible">
               <div className="relative w-full">
-                {/* Base track */}
-                <div className="absolute inset-0 h-10 rounded-full bg-[#334155]" />
+                {/* Base track (match thumb height) */}
+                <div className="absolute inset-0 h-[18px] rounded-full bg-[#334155]" />
                 {/* Fill */}
                 <div
-                    className="absolute inset-y-0 left-0 h-10 rounded-full bg-[#C8D7FF]"
+                    className="absolute inset-y-0 left-0 h-[18px] rounded-full bg-[#C8D7FF]"
                     style={{ width: `${percent}%` }}
                 />
-                {/* Slider */}
+                {/* Slider (transparent track; only thumb visible) */}
                 <input
                     type="range"
                     min={MIN}
@@ -95,7 +100,7 @@ export default function Footer() {
                     value={value}
                     onChange={(e) => setValue(Number(e.target.value))}
                     onPointerUp={handleRelease}
-                    className="relative z-10 w-full h-10 appearance-none bg-transparent outline-none touch-none rounded-full"
+                    className="relative z-10 w-full h-[18px] appearance-none bg-transparent outline-none rounded-full"
                 />
               </div>
             </div>
