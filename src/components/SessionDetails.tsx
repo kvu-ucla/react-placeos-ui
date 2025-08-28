@@ -68,7 +68,7 @@ export default function SessionDetails() {
         const pct = Math.round((elapsed / duration) * 100);
 
         // “In class” means current time between start and end (inclusive of start)
-        const active = now >= startMs && now <= endMs;
+        const active =  now <= endMs;
 
         return {
             isClass: active,
