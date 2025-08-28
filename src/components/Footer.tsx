@@ -53,7 +53,8 @@ export default function Footer() {
         <div className="flex items-center space-x-2">
           <div className="flex items-center mr-8">
             <div className="flex flex-col items-center mr-4">
-              <div className="text-xl font-semibold mb-2">Speaker Volume</div>
+              <div className="text-2xl font-semibold mb-2">Speaker</div>
+              <div className="text-2xl font-semibold mb-2">Volume</div>
             </div>
             {volumeMute ? (
                 <Icon
