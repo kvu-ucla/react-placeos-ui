@@ -49,14 +49,28 @@ export default function TourHost() {
             Wrapper={FramePortal}
             scrollSmooth={false}
             styles={{
-                // Keep defaults as much as possible; don't set transform or fixed/absolute yourself.
-                maskWrapper: (base) => ({ ...base, zIndex: 10000 }),
-                maskArea:   (base) => ({ ...base }),
-                popover:    (base) => ({ ...base, zIndex: 10001, maxWidth: 660, padding: 32, borderRadius: 16 }),
+                // Anchor the mask to the container we portal into
+                maskWrapper: (base) => ({
+                    ...base,
+                    position: "absolute",
+                    inset: 0,
+                    // IMPORTANT: do not set transform/width/height here
+                    zIndex: 10000,
+                }),
+                // Don’t touch maskArea’s transform; Reactour calculates it
+                maskArea: (base) => ({ ...base }),
+                // Let Reactour position the popover via its own translate3d
+                popover: (base) => ({
+                    ...base,
+                    zIndex: 10001,
+                    maxWidth: 660,
+                    padding: 32,
+                    borderRadius: 16,
+                    // no transform/position overrides
+                }),
             }}
         >
             <App />
         </TourProvider>
-
     );
 }

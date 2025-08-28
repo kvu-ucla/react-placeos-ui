@@ -5,10 +5,10 @@ import { createPortal } from "react-dom";
 type Props = { children?: React.ReactNode };
 
 /**
- * Mount the tour into the same DOM container as the app (or the app's scaled wrapper).
- * No transforms, no widths/heights — we avoid double scaling and let Reactour position itself.
+ * Mount the tour inside the same container as the app.
+ * No transforms/sizing here — Reactour will handle positioning.
  */
-const TARGET_SELECTOR = "#app-frame"; // <-- or '#scaled-root' if that’s where your app applies transform
+const TARGET_SELECTOR = "#app-frame"; // change if your app root is different
 
 export default function FramePortal({ children }: Props): React.ReactPortal | null {
     const [mount, setMount] = React.useState<HTMLElement | null>(null);
@@ -18,26 +18,26 @@ export default function FramePortal({ children }: Props): React.ReactPortal | nu
         const target = document.querySelector(TARGET_SELECTOR) as HTMLElement | null;
         if (!target) return;
 
-        // Ensure absolute children can anchor properly
+        // Ensure absolutely-positioned children have a positioning context
         const prevPos = target.style.position;
         if (getComputedStyle(target).position === "static") {
             target.style.position = "relative";
         }
 
-        // Lightweight layer that fills the target; no transforms/sizing here.
+        // Full-cover layer (no transform!)
         const layer = document.createElement("div");
         layer.id = "tour-layer";
         Object.assign(layer.style, {
             position: "absolute",
-            inset: "0",
+            inset: "0",           // top/right/bottom/left: 0
             margin: "0",
             padding: "0",
             boxSizing: "border-box",
             zIndex: "10000",
-            pointerEvents: "none", // let app receive clicks; Reactour will enable on popover
+            pointerEvents: "none", // let app receive clicks; popover will be re-enabled
         } as CSSStyleDeclaration);
 
-        // Interactive wrapper so the popover remains clickable
+        // Re-enable interactivity for Reactour's popover subtree
         const interactive = document.createElement("div");
         Object.assign(interactive.style, {
             width: "100%",
