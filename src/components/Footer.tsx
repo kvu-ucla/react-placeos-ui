@@ -21,7 +21,7 @@ export default function Footer() {
   const MAX = 1200;
 
   // local value, start wherever volume is polled
-  const [value, setValue] = useState(volume);
+  const [value, setValue] = useState(volume ?? MIN);
 
   const percent = useMemo(() => {
     const pct = ((value - MIN) / (MAX - MIN)) * 100;
