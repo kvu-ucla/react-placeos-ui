@@ -5,36 +5,27 @@ import { createPortal } from "react-dom";
 const DESIGN_WIDTH = 1920;
 const DESIGN_HEIGHT = 1200;
 
+// Change this to the element you scale your app on (if any).
+// Fallback is #app-frame itself.
+const MIRROR_SELECTOR = "#scaled-root";
+
 type Props = { children?: React.ReactNode };
 
-/**
- * Portals the Reactour DOM into #app-frame, and scales a 1920x1200 "canvas"
- * to fit the frame. Reactour controls positions; we only scale an ancestor.
- */
 export default function FramePortal({ children }: Props): React.ReactPortal | null {
-    const [mount, setMount] = React.useState<Element | null>(null);
+    const [mountEl, setMountEl] = React.useState<Element | null>(null);
 
     React.useEffect(() => {
-        // SSR / non-browser guard
-        if (typeof window === "undefined" || typeof document === "undefined") return;
+        if (typeof window === "undefined") return;
 
         const frame = document.getElementById("app-frame") as HTMLElement | null;
-        if (!frame) {
-            if (process.env.NODE_ENV !== "production") {
-                // eslint-disable-next-line no-console
-                console.warn('[FramePortal] Couldn’t find element with id="app-frame".');
-            }
-            return;
-        }
+        if (!frame) return;
 
-        // Ensure the frame can position absolute children
-        const computedPos = getComputedStyle(frame).position;
-        const prevPosInline = frame.style.position;
-        if (computedPos === "static") frame.style.position = "relative";
+        // Ensure absolute children can anchor
+        const prevPos = frame.style.position;
+        if (getComputedStyle(frame).position === "static") frame.style.position = "relative";
 
-        // Root layer that fills the frame
+        // Root layer that fills the frame (no transform here)
         const layer = document.createElement("div");
-        layer.id = "tour-layer";
         Object.assign(layer.style, {
             position: "absolute",
             inset: "0",
@@ -42,10 +33,10 @@ export default function FramePortal({ children }: Props): React.ReactPortal | nu
             padding: "0",
             boxSizing: "border-box",
             zIndex: "10000",
-            pointerEvents: "none", // let app receive clicks by default
+            pointerEvents: "none",
         } as CSSStyleDeclaration);
 
-        // Inner canvas in design pixels; we apply translate+scale here
+        // Canvas that MAY mirror the app's transform (or stay identity)
         const canvas = document.createElement("div");
         Object.assign(canvas.style, {
             position: "absolute",
@@ -58,7 +49,7 @@ export default function FramePortal({ children }: Props): React.ReactPortal | nu
             pointerEvents: "none",
         } as CSSStyleDeclaration);
 
-        // Interactive wrapper re-enables pointer events for the popover content
+        // Actual mount (re-enable interactions for the popover)
         const interactive = document.createElement("div");
         Object.assign(interactive.style, {
             width: "100%",
@@ -70,48 +61,77 @@ export default function FramePortal({ children }: Props): React.ReactPortal | nu
         layer.appendChild(canvas);
         frame.appendChild(layer);
 
-        const applyTransform = () => {
-            // Use clientWidth/Height to ignore transforms on ancestors
-            const w = frame.clientWidth || frame.getBoundingClientRect().width;
-            const h = frame.clientHeight || frame.getBoundingClientRect().height;
-            if (!w || !h) return;
+        // Helper: parse matrix(a,b,c,d,tx,ty) to get scaleX/scaleY and translate
+        const readTransform = (el: Element) => {
+            const t = getComputedStyle(el).transform;
+            if (!t || t === "none") return { isIdentity: true, value: "" };
 
-            const scale = Math.min(w / DESIGN_WIDTH, h / DESIGN_HEIGHT);
-            const scaledW = DESIGN_WIDTH * scale;
-            const scaledH = DESIGN_HEIGHT * scale;
-            const offsetX = (w - scaledW) / 2;
-            const offsetY = (h - scaledH) / 2;
-
-            canvas.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+            // matrix(a, b, c, d, tx, ty) or matrix3d(...)
+            if (t.startsWith("matrix3d(")) {
+                // For 2D app scaling, matrix3d is rare; still mirror exactly.
+                return { isIdentity: false, value: t };
+            }
+            // matrix(a, b, c, d, tx, ty)
+            const m = t.match(/matrix\(([-\d.eE ,]+)\)/);
+            if (!m) return { isIdentity: true, value: "" };
+            const [a, , , d, tx, ty] = m[1].split(",").map((s) => parseFloat(s.trim()));
+            const scaleX = a;
+            const scaleY = d;
+            const near = (x: number, y: number) => Math.abs(x - y) < 0.001;
+            const isIdentity = near(scaleX, 1) && near(scaleY, 1) && near(tx, 0) && near(ty, 0);
+            return { isIdentity, value: t };
         };
 
-        // Observe size changes of the frame (guard if ResizeObserver missing)
-        let ro: ResizeObserver | null = null;
+        const applyTransform = () => {
+            // Prefer an explicit "scaled root" if your app uses one
+            const mirror =
+                (document.querySelector(MIRROR_SELECTOR) as HTMLElement | null) ?? frame;
 
-        if (typeof ResizeObserver !== "undefined") {
-            ro = new ResizeObserver(applyTransform);
+            const t = readTransform(mirror);
+
+            if (t.isIdentity) {
+                // No app transform: render tour in identity space sized to the frame
+                // (Reactour will position things correctly at 1280×800)
+                const w = frame.clientWidth;
+                const h = frame.clientHeight;
+                canvas.style.width = `${w}px`;
+                canvas.style.height = `${h}px`;
+                canvas.style.transform = ""; // identity
+            } else {
+                // App is transformed: copy its transform so our overlay stays in lockstep
+                // Keep design-sized canvas so the transform math matches the app’s.
+                canvas.style.width = `${DESIGN_WIDTH}px`;
+                canvas.style.height = `${DESIGN_HEIGHT}px`;
+                canvas.style.transform = t.value;
+            }
+        };
+
+        // Observe size/transform changes
+        let cleanup: () => void = () => {};
+        const ro = "ResizeObserver" in window ? new ResizeObserver(applyTransform) : null;
+        if (ro) {
             ro.observe(frame);
+            const mirror =
+                (document.querySelector(MIRROR_SELECTOR) as HTMLElement | null) ?? frame;
+            ro.observe(mirror);
+            cleanup = () => ro.disconnect();
         } else {
-            // ✅ TS now knows window is still Window
-            window.addEventListener("resize", applyTransform, { passive: true });
+            window.addEventListener("resize", applyTransform);
+            cleanup = () => window.removeEventListener("resize", applyTransform);
         }
 
         // Initial layout
         applyTransform();
-        setMount(interactive);
+        setMountEl(interactive);
 
         return () => {
-            if (ro) ro.disconnect();
-            else window.removeEventListener("resize", applyTransform);
+            cleanup();
             try {
                 frame.removeChild(layer);
-            } catch {
-                /* no-op if already removed */
-            }
-            // restore inline style only (don’t clobber a non-inline computed style)
-            frame.style.position = prevPosInline;
+            } catch {/* no-op */}
+            frame.style.position = prevPos;
         };
     }, []);
 
-    return mount ? createPortal(children as React.ReactNode, mount) : null;
+    return mountEl ? createPortal(children as React.ReactNode, mountEl) : null;
 }

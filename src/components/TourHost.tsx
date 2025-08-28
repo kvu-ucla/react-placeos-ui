@@ -51,7 +51,6 @@ export default function TourHost() {
             styles={{
                 maskWrapper: (base) => ({ ...base, position: "absolute", inset: 0, zIndex: 10000 }),
                 popover: (base) => ({ ...base, zIndex: 10001, maxWidth: 660, padding: 32, borderRadius: 16 }),
-                maskArea: (base) => ({ ...base }),
             }}
         >
             <App />
