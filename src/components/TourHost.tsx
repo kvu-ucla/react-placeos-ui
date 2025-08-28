@@ -71,7 +71,9 @@ export default function TourHost() {
             )},
     ];
 
-    const transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+    const ourTransform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+    const chain = (base?: string) => (base ? `${ourTransform} ${base}` : ourTransform);
+    
 
     return (
         <TourProvider
@@ -87,7 +89,8 @@ export default function TourHost() {
                     width: DESIGN_WIDTH,
                     height: DESIGN_HEIGHT,
                     transformOrigin: "top left",
-                    transform,
+                    // ⬇️ keep Reactour’s own transform (if any) AND our canvas transform
+                    transform: chain(base.transform as string | undefined),
                     zIndex: 10000,
                     pointerEvents: "none",
                 }),
@@ -95,7 +98,8 @@ export default function TourHost() {
                     ...base,
                     position: "fixed" as const,
                     transformOrigin: "top left",
-                    transform,
+                    // ⬇️ DO NOT overwrite; concatenate with Reactour's translate3d that positions the popover
+                    transform: chain(base.transform as string | undefined),
                     zIndex: 10001,
                     maxWidth: 660,
                     padding: 32,
@@ -105,7 +109,7 @@ export default function TourHost() {
                 maskArea: (base) => ({
                     ...base,
                     transformOrigin: "top left",
-                    transform,
+                    transform: chain(base.transform as string | undefined),
                 }),
             }}
         >
