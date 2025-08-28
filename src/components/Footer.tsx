@@ -58,36 +58,36 @@ export default function Footer() {
         )}
 
         <div className="flex items-center space-x-2">
-          <div className="flex items-center mr-8 basis-full lg:basis-auto">
-            <div className="text-3xl">Speaker Volume</div>
+          <div className="flex items-center mr-8">
+            {/* Label + Icon stacked */}
+            <div className="flex flex-col items-center mr-4">
+              <div className="text-lg font-semibold mb-2">Speaker Volume</div>
+              {volumeMute ? (
+                  <Icon
+                      icon="material-symbols:volume-off-outline-rounded"
+                      width={48}
+                      height={48}
+                  />
+              ) : (
+                  <Icon
+                      icon="material-symbols:volume-up-outline-rounded"
+                      width={48}
+                      height={48}
+                  />
+              )}
+            </div>
 
-            {volumeMute ? (
-                <Icon
-                    icon="material-symbols:volume-off-outline-rounded"
-                    width={128}
-                    height={128}
-                    className="opacity-80"
-                />
-            ) : (
-                <Icon
-                    icon="material-symbols:volume-up-outline-rounded"
-                    width={128}
-                    height={128}
-                />
-            )}
-
-            <div className="ml-4 shrink-0 w-[500px] overflow-visible">
+            {/* Slider container: fixed width, good for touch panels */}
+            <div className="shrink-0 w-[500px] overflow-visible">
               <div className="relative w-full">
                 {/* Base track */}
                 <div className="absolute inset-0 h-10 rounded-full bg-[#334155]" />
-
                 {/* Fill */}
                 <div
                     className="absolute inset-y-0 left-0 h-10 rounded-full bg-[#C8D7FF]"
                     style={{ width: `${percent}%` }}
                 />
-
-                {/* Transparent slider (only thumb interactive) */}
+                {/* Slider */}
                 <input
                     type="range"
                     min={MIN}
@@ -100,6 +100,7 @@ export default function Footer() {
               </div>
             </div>
           </div>
+
 
           {isJoined && (
               <button
