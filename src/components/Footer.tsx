@@ -52,19 +52,22 @@ export default function Footer() {
         )}
         <div className="flex items-center space-x-2">
           <div className="flex items-center mr-8">
-            <div className="text-3xl">Speaker Volume</div>
-            {volumeMute ?
-                <Icon
-                    icon="material-symbols:volume-off-outline-rounded"
-                    width={128}
-                    height={128}
-                />
-                :
-                <Icon
-                    icon="material-symbols:volume-up-outline-rounded"
-                    width={128}
-                    height={128}
-                />}
+            <div className="flex flex-col items-center mr-4">
+              <div className="text-xl font-semibold mb-2">Speaker Volume</div>
+              {volumeMute ? (
+                  <Icon
+                      icon="material-symbols:volume-off-outline-rounded"
+                      width={96}
+                      height={96}
+                  />
+              ) : (
+                  <Icon
+                      icon="material-symbols:volume-up-outline-rounded"
+                      width={96}
+                      height={96}
+                  />
+              )}
+            </div>
             <div className="ml-4 w-[500px] overflow-hidden">
               <input
                   type="range"
