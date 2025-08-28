@@ -8,6 +8,7 @@ export default function SplashScreen() {
     
     const {system, togglePower} = useControlContext();
     const { joinPmi, joinMeetingId, currentMeeting } = useZoomContext();
+    const noMeeting = currentMeeting == null;
     
     function startScheduled() {
        togglePower();
@@ -20,12 +21,12 @@ export default function SplashScreen() {
         joinPmi();
     }
 
-    const innerWidth = window.innerWidth;
-    const innerHeight = window.innerHeight;
-
-    const screenWidth = screen.width;
-    const screenHeight = screen.height;
-    const devicePixelRatio = window.devicePixelRatio;
+    // const innerWidth = window.innerWidth;
+    // const innerHeight = window.innerHeight;
+    //
+    // const screenWidth = screen.width;
+    // const screenHeight = screen.height;
+    // const devicePixelRatio = window.devicePixelRatio;
 
 
     return (
@@ -43,20 +44,18 @@ export default function SplashScreen() {
                             className="btn btn-primary min-w-64 min-h-24 mt-9 mb-9 mr-9 text-white px-6 py-2 rounded-lg text-3xl">Start Ad-Hoc
                         Meeting
                     </button>
-                    <button onClick={startScheduled}
+                    {!noMeeting && <button onClick={startScheduled}
                             className="btn btn-primary min-w-64 min-h-24 mt-9 mb-9 text-white px-6 py-2 rounded-lg text-3xl">Start Scheduled
                         Class
-                    </button>
+                    </button>}
                     <p className="max-w-6xl text-3xl text-gray-500">
                         This will start the <b className="text-avit-blue">Zoom Room</b> for this session.
                         Once started, you can <b className="text-avit-blue">join wirelessly from your personal device</b> to
                         present.
                         Instructions on next screen.
-                        <div>Window Resolution is {innerWidth} x {innerHeight}</div>
-                        <div>Screen Resolution is {screenWidth} x {screenHeight}</div>
-                        <div>Pixel Ratio is {devicePixelRatio}</div>
-                        
-                        
+                        {/*<div>Window Resolution is {innerWidth} x {innerHeight}</div>*/}
+                        {/*<div>Screen Resolution is {screenWidth} x {screenHeight}</div>*/}
+                        {/*<div>Pixel Ratio is {devicePixelRatio}</div>*/}
                     </p>
                 </footer>
             </div>
