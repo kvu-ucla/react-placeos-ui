@@ -59,11 +59,11 @@ export default function SessionDetails() {
         remainingMs,
     } = useMemo(() => {
         
-        const duration = startMs >= timeJoined ? endMs - startMs : endMs - timeJoined;
-        // if (timeJoined )
-        // const duration = endMs - startMs;
-        const valid = isFinite(startMs) && isFinite(endMs) && duration > 0;
-
+        const earlyClass = startMs >= timeJoined;
+        
+        const duration = earlyClass ? endMs - timeJoined : endMs - startMs;
+        const valid = earlyClass ? isFinite(timeJoined) && isFinite(endMs) && duration > 0 : isFinite(startMs) && isFinite(endMs) && duration > 0 ;
+        
         if (!valid) {
             return {
                 isClass: false,
@@ -73,8 +73,9 @@ export default function SessionDetails() {
             };
         }
 
-        const elapsed = clamp(now - startMs, 0, duration);
-        const remaining = clamp(endMs - now, 0, duration);
+        const elapsed = earlyClass ? clamp(now - timeJoined, 0, duration) : clamp(now - startMs, 0, duration);
+
+        const remaining = earlyClass ? clamp(endMs - timeJoined, 0, duration) : clamp(endMs - now, 0, duration);
         const pct = Math.round((elapsed / duration) * 100);
 
         // “In class” means current time between start and end (inclusive of start)
