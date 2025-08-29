@@ -22,7 +22,7 @@ function fmtHM(ms: number) {
 function fmtTime(ms: number, timeJoined = 0, joinedEarly: boolean = false) {
     
     if (!isFinite(ms)) return "—";
-    else if (ms > timeJoined)
+    else if (joinedEarly)
         return timeJoined;
     else
     {
