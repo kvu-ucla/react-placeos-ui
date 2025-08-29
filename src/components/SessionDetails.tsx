@@ -61,6 +61,8 @@ export default function SessionDetails() {
         
         const earlyClass = startMs >= timeJoined;
         
+        console.log("class joined early: ", earlyClass);
+        
         const duration = earlyClass ? endMs - timeJoined : endMs - startMs;
         const valid = earlyClass ? isFinite(timeJoined) && isFinite(endMs) && duration > 0 : isFinite(startMs) && isFinite(endMs) && duration > 0 ;
         
