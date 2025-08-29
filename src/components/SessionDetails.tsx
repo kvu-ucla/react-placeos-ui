@@ -52,44 +52,44 @@ export default function SessionDetails() {
   const nextStartMs = toMs(Number(nextMeeting?.startTime));
   const nextEndMs = toMs(Number(nextMeeting?.endTime));
 
-  const earlyClass = startMs >= timeJoined;
+    const earlyClass =
+        Number.isFinite(startMs) &&
+        Number.isFinite(timeJoined) &&
+        timeJoined < startMs;
 
   // Derived timeline values
-  const { isClass, percent, elapsedMs, remainingMs } = useMemo(() => {
-    const duration = earlyClass ? endMs - timeJoined : endMs - startMs;
-    const valid = earlyClass
-      ? isFinite(timeJoined) && isFinite(endMs) && duration > 0
-      : isFinite(startMs) && isFinite(endMs) && duration > 0;
+    const { isClass, percent, elapsedMs, remainingMs } = useMemo(() => {
+ 
+        const startRef = earlyClass ? timeJoined : startMs;
+        const duration = endMs - startRef;
 
-    if (!valid) {
-      return {
-        isClass: false,
-        percent: 0,
-        elapsedMs: 0,
-        remainingMs: 0,
-      };
-    }
+        const valid =
+            Number.isFinite(startRef) &&
+            Number.isFinite(endMs) &&
+            duration > 0;
 
-    const elapsed = earlyClass
-      ? clamp(timeJoined - startMs, 0, duration)
-      : clamp(now - startMs, 0, duration);
+        if (!valid) {
+            return { 
+                isClass: false, 
+                percent: 0, 
+                elapsedMs: 0, 
+                remainingMs: 0 };
+        }
+        
+        const elapsed = clamp(now - startRef, 0, duration);
+        const remaining = clamp(endMs - now, 0, duration);
 
-    const remaining = earlyClass
-      ? clamp(endMs - timeJoined, 0, duration)
-      : clamp(endMs - now, 0, duration);
+        const pct = clamp(Math.round((elapsed / duration) * 100), 0, 100);
+        
+        const active = now >= startRef && now <= endMs;
 
-    const pct = Math.round((elapsed / duration) * 100);
-
-    // “In class” means current time between start and end (inclusive of start)
-    const active = now <= endMs;
-
-    return {
-      isClass: active,
-      percent: pct,
-      elapsedMs: elapsed,
-      remainingMs: remaining,
-    };
-  }, [now, startMs, endMs]);
+        return {
+            isClass: active,
+            percent: pct,
+            elapsedMs: elapsed,
+            remainingMs: remaining,
+        };
+    }, [now, startMs, endMs, timeJoined, earlyClass]);
 
   const remainingMinutes = Math.ceil(remainingMs / 60000);
   const elapsedLabel = fmtHM(elapsedMs);
