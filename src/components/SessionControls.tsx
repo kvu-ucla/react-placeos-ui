@@ -63,7 +63,7 @@ export default function SessionControls() {
         )}
       </div>
 
-      <div className="flex justify-between items-center mb-4">
+      <div className="grid grid-cols-5 gap-6 items-stretch mb-4">
         <ControlCard 
             id="microphone"
           label="Microphone: "
@@ -186,7 +186,7 @@ function ControlCard({
       onClick={() => {
         if (buttonAction) buttonAction();
       }}
-      id={id} className="btn btn-primary bg-white active:bg-gray-100 p-0 border-none h-[206px] rounded-lg text-avit-grey-80 "
+      id={id} className="w-full h-[206px] btn btn-primary bg-white active:bg-gray-100 p-0 border-none rounded-lg text-avit-grey-80"
     >
       <div className="px-8 py-6 w-full h-full flex flex-col items-center justify-center relative">
         {!disabled && detailsButton && (
