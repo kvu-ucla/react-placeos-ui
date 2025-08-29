@@ -19,12 +19,11 @@ function fmtHM(ms: number) {
     return h > 0 ? `${h}:${String(m).padStart(2, "0")}` : `${m}m`;
 }
 
-function fmtTime(ms: number) {
-    const currentTime = Date.now();
+function fmtTime(ms: number, timeJoined = 0) {
     
     if (!isFinite(ms)) return "—";
-    else if (ms < currentTime)
-        return currentTime;
+    else if (ms > timeJoined)
+        return timeJoined;
     else
     {
         return new Date(ms).toLocaleTimeString([], {
@@ -37,7 +36,7 @@ function fmtTime(ms: number) {
 }
 
 export default function SessionDetails() {
-    const { nextMeeting, currentMeeting } = useZoomContext();
+    const { nextMeeting, currentMeeting, timeJoined } = useZoomContext();
 
     // Tick every second so progress/remaining update live
     const [now, setNow] = useState(() => Date.now());
@@ -59,7 +58,10 @@ export default function SessionDetails() {
         elapsedMs,
         remainingMs,
     } = useMemo(() => {
-        const duration = endMs - startMs;
+        
+        const duration = startMs >= timeJoined ? endMs - startMs : endMs - timeJoined;
+        // if (timeJoined )
+        // const duration = endMs - startMs;
         const valid = isFinite(startMs) && isFinite(endMs) && duration > 0;
 
         if (!valid) {
@@ -100,7 +102,7 @@ export default function SessionDetails() {
                     <h2 className="text-3xl font-bold">Session progress</h2>
                     {isClass && (
                         <div className="text-xl">
-                            Started at {fmtTime(startMs)} • Ends at {fmtTime(endMs)}
+                            Started at {fmtTime(startMs, timeJoined)} • Ends at {fmtTime(endMs)}
                         </div>
                     )}
                 </div>

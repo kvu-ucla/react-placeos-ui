@@ -90,6 +90,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
     const [volume, setVolume] = useState<number>();
     const [volumeMute, setVolumeMute] = useState<boolean>();
     const [gallery, setGallery] = useState<boolean>(true);
+    const [timeJoined, setTimeJoined] = useState<number>(0);
 
     const handleActiveRecordings = (data: string[] | null | undefined) => {
         const value = !!(data && data.length > 0)
@@ -143,6 +144,10 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         if (!module) return;
 
         await module.execute('dial_join', [meetingId]);
+
+        //set time joined
+        const ms = Math.floor(Date.now() / 1000);
+        setTimeJoined(ms);
     }
 
     const toggleAudioMuteAll = async () => {
@@ -342,6 +347,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         sharing,
         bookings,
         gallery,
+        timeJoined,
         leave,
         joinPmi,
         joinMeetingId,
