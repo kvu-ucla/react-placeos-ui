@@ -146,7 +146,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         await module.execute('dial_join', [meetingId]);
 
         //set time joined
-        const ms = Math.floor(Date.now() / 1000);
+        const ms = Date.now();
         setTimeJoined(ms);
     }
 
