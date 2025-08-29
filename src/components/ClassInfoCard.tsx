@@ -93,12 +93,13 @@ export function ClassInfoCard() {
 
         // If time already passed today, assume it's tomorrow
         if (scheduled < now) {
-            scheduled.setDate(scheduled.getDate() + 1);
+           return 'Class already started'
         }
 
         const diffMs = scheduled.getTime() - now.getTime();
         const diffMins = Math.round(diffMs / 60000);
 
+        
         if (diffMins <= 0) return 'Starting now';
         if (diffMins === 1) return 'Starts in 1 minute';
         return `Starts in ${diffMins} minutes`;
