@@ -19,7 +19,7 @@ function fmtHM(ms: number) {
     return h > 0 ? `${h}:${String(m).padStart(2, "0")}` : `${m}m`;
 }
 
-function fmtTime(ms: number, timeJoined = 0) {
+function fmtTime(ms: number, timeJoined = 0, joinedEarly: boolean = false) {
     
     if (!isFinite(ms)) return "—";
     else if (ms > timeJoined)
@@ -51,6 +51,8 @@ export default function SessionDetails() {
     const nextStartMs = toMs(Number(nextMeeting?.startTime));
     const nextEndMs = toMs(Number(nextMeeting?.endTime));
 
+    const earlyClass = startMs >= timeJoined;
+    
     // Derived timeline values
     const {
         isClass,
@@ -59,9 +61,7 @@ export default function SessionDetails() {
         remainingMs,
     } = useMemo(() => {
         
-        const earlyClass = startMs >= timeJoined;
-        
-        console.log("class joined early: ", earlyClass);
+
         
         const duration = earlyClass ? endMs - timeJoined : endMs - startMs;
         const valid = earlyClass ? isFinite(timeJoined) && isFinite(endMs) && duration > 0 : isFinite(startMs) && isFinite(endMs) && duration > 0 ;
@@ -105,7 +105,7 @@ export default function SessionDetails() {
                     <h2 className="text-3xl font-bold">Session progress</h2>
                     {isClass && (
                         <div className="text-xl">
-                            Started at {fmtTime(startMs, timeJoined)} • Ends at {fmtTime(endMs)}
+                            Started at {fmtTime(startMs, timeJoined, earlyClass)} • Ends at {fmtTime(endMs)}
                         </div>
                     )}
                 </div>
