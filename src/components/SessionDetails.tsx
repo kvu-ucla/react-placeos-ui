@@ -75,9 +75,10 @@ export default function SessionDetails() {
             };
         }
 
-        const elapsed = earlyClass ? clamp(now - timeJoined, 0, duration) : clamp(now - startMs, 0, duration);
+        const elapsed = earlyClass ? clamp(timeJoined - startMs, 0, duration) : clamp(now - startMs, 0, duration);
 
         const remaining = earlyClass ? clamp(endMs - timeJoined, 0, duration) : clamp(endMs - now, 0, duration);
+        
         const pct = Math.round((elapsed / duration) * 100);
 
         // “In class” means current time between start and end (inclusive of start)
