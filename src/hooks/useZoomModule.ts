@@ -127,6 +127,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         setNextMeeting(second);
     }, [bookings]);
 
+    //disconnect from Zoom call
     const leave = async () => {
         if (!module) return;
         
@@ -134,12 +135,14 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
             await module.execute('call_disconnect');
     };
 
+    //connect to ad-hoc meeting
     const joinPmi = async (time = 15) => {
         if (!module) return;
 
         await module.execute('dial_start_pmi', [time]);
     }
 
+    //connect to scheduled meeting or meeting with meetingId
     const joinMeetingId = async (meetingId: string) => {
         if (!module) return;
 
@@ -150,6 +153,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         setTimeJoined(ms);
     }
 
+    //toggle in-call microphone
     const toggleAudioMuteAll = async () => {
         if (!module) return;
 
@@ -157,6 +161,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         await module.execute('call_mute_self', [newState]);
     }
 
+    //toggle in-call camera
     const toggleVideoMuteAll = async () => {
         if (!module) return;
 
@@ -164,6 +169,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         await module.execute('call_mute_camera', [newState]);
     }
 
+    //toggle in-call wired-sharing, or cancel wireless or wired sharing
     const toggleSharing = async () => {
         if (!module) return;
         
@@ -178,6 +184,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
             await module.execute('sharing_start_hdmi');
     };
     
+    //toggle "gallery", which is just routing different NVX routes to each display
     const toggleGallery = async () => {
         const sysMod = getModule(systemId, 'System');
         if (!module) return;
@@ -196,13 +203,15 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         }
     }
     
+    //adjust Shure IMX volume for fader 27
     const adjustMasterVolume = (value: number ) => {
         const volumeMod = getModule(systemId, 'Mixer');
         if (!volumeMod) return;
         
         volumeMod.execute('set_audio_gain_hi_res', [27, value])
     }
-    
+
+    //adjust Shure IMX mute for fader 27
     const toggleMasterMute = () => {
         const volumeMod = getModule(systemId, 'Mixer');
         if (!volumeMod) return;
@@ -210,7 +219,8 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         const newState = !volumeMute;
          volumeMod.execute('set_audio_mute', [27, newState]);
     }
-    
+
+    //adjust Shure IMX mute for fader 27
     const setMasterMute = (state: boolean) => {
         const volumeMod = getModule(systemId, 'Mixer');
         if (!volumeMod) return;
@@ -320,6 +330,8 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         const volumeMod = getModule(systemId, 'Mixer');
         if (!volumeMod) return;
         
+        
+        //DSP bindings for Shure IMX Room
         bindAndListen('audio_gain_hi_res_27', volumeMod, (val) => {
             const vol = Number(val);
             setVolume(vol);

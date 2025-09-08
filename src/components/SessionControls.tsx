@@ -106,7 +106,7 @@ export default function SessionControls() {
       <h2 className="font-semibold mb-4">Join from your device</h2>
       <div id="zoom-join" className="grid grid-cols-2 gap-4">
         <div className="collapse collapse-arrow p-2 bg-gray-200/20 border-base-200/20 backdrop-blur-xl">
-          <input type="checkbox" name="my-accordion-1" defaultChecked />
+          <input type="radio" name="my-accordion-1"/>
           <div className="collapse-title font-semibold inline-flex">
             <img
               src={import.meta.env.BASE_URL + "zoom_logo_white.svg"}
@@ -115,12 +115,12 @@ export default function SessionControls() {
             />
             <div className="flex flex-col ml-4">
               Join wirelessly
-              <div className="text-2xl font-extralight mt-2">
+              <div className="text-2xl font-light mt-2">
                 Connect via Zoom to share your screen.
               </div>
             </div>
           </div>
-          <div className="collapse-content text-xl font-light">
+          <div className="collapse-content text-2xl font-light">
             <ol className="list-decimal list-inside">
               <li>
                 Open the Zoom client application on the device you wish to
@@ -134,17 +134,17 @@ export default function SessionControls() {
         </div>
 
         <div className="collapse collapse-arrow p-2 bg-gray-200/20 border-base-200/20 backdrop-blur-xl">
-          <input type="checkbox" name="my-accordion-1" defaultChecked />
+          <input type="radio" name="my-accordion-1"/>
           <div className="collapse-title font-semibold inline-flex">
             <Icon icon="material-symbols:cable-rounded" width={64} height={64}></Icon>
             <div className="flex flex-col ml-4">
               Connect with USB-C / HDMI
-              <div className="text-2xl font-extralight mt-2">
+              <div className="text-2xl font-light mt-2">
                 Use a physical USB-C or HDMI cable for direct connection.
               </div>
             </div>
           </div>
-          <div className="collapse-content text-xl font-light">
+          <div className="collapse-content text-2xl font-light">
             <ol className="list-decimal list-inside">
               <li>
                 Connect one end of the USB-C or HDMI cable into your laptop.
