@@ -44,7 +44,7 @@ export function Header() {
             <Icon
               icon="material-symbols:home-outline-rounded"
               width={56}
-              height={56}
+              height={64}
             />
             <div className="text-xl font-semibold">Home</div>
           </button>
@@ -56,8 +56,8 @@ export function Header() {
           >
             <Icon
               icon="material-symbols:explore-outline-rounded"
-              width={56}
-              height={56}
+              width={64}
+              height={64}
             />
             <span className="text-xl font-semibold">Tour</span>
           </button>
@@ -66,7 +66,7 @@ export function Header() {
           onClick={() => showModal("support")}
           className={`btn btn-primary btn-ghost flex flex-col justify-center items-center w-27 h-26 mr-1 ${modalType == "support" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
         >
-          <Icon icon="material-symbols:support" width={56} height={56} />
+          <Icon icon="material-symbols:support" width={64} height={64} />
           <span className="text-xl font-semibold">Support</span>
         </button>
         {active && (
@@ -77,7 +77,7 @@ export function Header() {
             }}
             className={`btn btn-primary btn-ghost flex flex-col justify-center items-center w-27 h-26 mr-1 ${modalType == "settings" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
           >
-            <Icon icon="material-symbols:tune-rounded" width={56} height={56} />
+            <Icon icon="material-symbols:tune-rounded" width={64} height={64} />
             <span className="text-xl font-semibold">Settings</span>
           </button>
         )}
@@ -88,8 +88,8 @@ export function Header() {
           >
             <Icon
               icon="material-symbols:cancel-outline"
-              width={56}
-              height={56}
+              width={64}
+              height={64}
             />
             <span className="text-xl font-semibold">End</span>
           </button>

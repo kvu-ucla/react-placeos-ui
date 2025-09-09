@@ -108,7 +108,7 @@ export default function SessionControls() {
         <div className="collapse collapse-arrow p-2 bg-gray-200/20 border-base-200/20 backdrop-blur-xl">
           <input type="radio" name="my-accordion-1"/>
           <div className="collapse-title font-semibold inline-flex after:border-r-4 after:border-b-4 after:border-current
-           after:!w-8 after:!h-8 after:!top-12 after:[inset-inline-end:3rem]">
+           after:!w-8 after:!h-8 after:!top-12 after:!right-12">
             <img
               src={import.meta.env.BASE_URL + "zoom_logo_white.svg"}
               alt="zoom logo"
@@ -137,7 +137,7 @@ export default function SessionControls() {
         <div className="collapse collapse-arrow p-2 bg-gray-200/20 border-base-200/20 backdrop-blur-xl">
           <input type="radio" name="my-accordion-1"/>
           <div className="collapse-title font-semibold inline-flex after:border-r-4 after:border-b-4 after:border-current
-           after:!w-8 after:!h-8 after:!top-12 after:[inset-inline-end:3rem]">
+           after:!w-8 after:!h-8 after:!top-12 after:!right-12">
             <Icon icon="material-symbols:cable-rounded" width={64} height={64}></Icon>
             <div className="flex flex-col ml-4">
               Connect with USB-C / HDMI
