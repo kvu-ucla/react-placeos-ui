@@ -79,6 +79,15 @@ export default function Footer() {
                   onPointerUp={handleRelease}
                   className="w-full range rounded-3xl [--range-thumb:white] text-[#C8D7FF] range-xl touch-none"
               />
+              <input
+                  type="range"
+                  min={800}
+                  max={1200}
+                  value={value}
+                  onChange={(e) => setValue(Number(e.target.value))}
+                  onPointerUp={handleRelease}
+                  className="rounded-3xl [--range-thumb:white] text-[#C8D7FF]touch-none"
+              />
             </div>
           </div>
 
