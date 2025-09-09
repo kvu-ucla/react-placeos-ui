@@ -27,7 +27,7 @@ export default function Footer() {
     if (!volume) return;
     
     setValue(volume);
-  }, [value, volume] )
+  }, [volume] )
 
   return (
       <footer className="min-h-38 bg-blue-900 text-white py-4 px-8 flex justify-between items-center">
