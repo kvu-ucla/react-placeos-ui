@@ -39,11 +39,11 @@ export function Header() {
         {active && (
           <button
             onClick={() => showModal("none")}
-            className={`btn btn-primary btn-ghost flex flex-col justify-center items-center w-27 h-26 mr-1 ${modalType == "none" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
+            className={`btn btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "none" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
           >
             <Icon
               icon="material-symbols:home-outline-rounded"
-              width={56}
+              width={64}
               height={64}
             />
             <div className="text-xl font-semibold">Home</div>
@@ -52,7 +52,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => setIsOpen(true)}
-            className={`btn btn-primary btn-ghost flex flex-col justify-center items-center w-27 h-26 mr-1 ${modalType == "tour" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
+            className={`btn btn-primary btn-ghost flex flex-col justify-center items-center w-27 h-26 ${modalType == "tour" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
           >
             <Icon
               icon="material-symbols:explore-outline-rounded"
@@ -64,7 +64,7 @@ export function Header() {
         )}
         <button
           onClick={() => showModal("support")}
-          className={`btn btn-primary btn-ghost flex flex-col justify-center items-center w-27 h-26 mr-1 ${modalType == "support" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
+          className={`btn btn-primary btn-ghost flex flex-col justify-center items-center w-27 h-26 ${modalType == "support" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
         >
           <Icon icon="material-symbols:support" width={64} height={64} />
           <span className="text-xl font-semibold">Support</span>
@@ -75,7 +75,7 @@ export function Header() {
             onClick={() => {
               showModal("settings", { tab: "Volume" });
             }}
-            className={`btn btn-primary btn-ghost flex flex-col justify-center items-center w-27 h-26 mr-1 ${modalType == "settings" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
+            className={`btn btn-primary btn-ghost flex flex-col justify-center items-center w-27 h-26 ${modalType == "settings" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
           >
             <Icon icon="material-symbols:tune-rounded" width={64} height={64} />
             <span className="text-xl font-semibold">Settings</span>
@@ -84,7 +84,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => showModal("shutdown")}
-            className={`btn btn-primary btn-ghost flex flex-col justify-center items-center w-27 h-26 mr-1 ${modalType == "shutdown" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
+            className={`btn btn-primary btn-ghost flex flex-col justify-center items-center w-27 h-26 ${modalType == "shutdown" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
           >
             <Icon
               icon="material-symbols:cancel-outline"
