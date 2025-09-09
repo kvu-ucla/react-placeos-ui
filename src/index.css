@@ -54,15 +54,16 @@
     --color-primary: #155dfc;
     --color-avit-grey-button: #EDF0F4;
     --color-avit-lightblue: #C8D7FF;
-    --color-error: oklch(55% 0.23 29);
 }
 
 @layer base {
     body {
         @apply text-3xl text-avit-grey-80;
     }
-
-
+    :root {
+        --color-error: oklch(55% 0.23 29);
+        --color-error-content: oklch(98% 0.01 29);
+    }
 }
 
 html, body, #root {
@@ -74,7 +75,6 @@ html, body, #root {
 
 
 @layer utilities {
-    /* Works for native controls (disabled) and custom widgets (aria-disabled) */
     .ui-disabled {
         @apply disabled:bg-white/20 disabled:cursor-not-allowed disabled:pointer-events-none disabled:border-white
         aria-disabled:bg-white/20 aria-disabled:cursor-not-allowed aria-disabled:pointer-events-none aria-disabled:border-white;
