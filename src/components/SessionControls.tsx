@@ -116,12 +116,12 @@ export default function SessionControls() {
             />
             <div className="flex flex-col ml-4">
               Join wirelessly
-              <div className="text-2xl font-light mt-2">
+              <div className="text-2xl font-normal mt-2">
                 Connect via Zoom to share your screen.
               </div>
             </div>
           </div>
-          <div className="collapse-content text-2xl font-light">
+          <div className="collapse-content text-2xl font-normal">
             <ol className="list-decimal list-inside">
               <li>
                 Open the Zoom client application on the device you wish to
@@ -141,12 +141,12 @@ export default function SessionControls() {
             <Icon icon="material-symbols:cable-rounded" width={64} height={64}></Icon>
             <div className="flex flex-col ml-4">
               Connect with USB-C / HDMI
-              <div className="text-2xl font-light mt-2">
+              <div className="text-2xl font-normal mt-2">
                 Use a physical USB-C or HDMI cable for direct connection.
               </div>
             </div>
           </div>
-          <div className="collapse-content text-2xl font-light">
+          <div className="collapse-content text-2xl font-normal">
             <ol className="list-decimal list-inside">
               <li>
                 Connect one end of the USB-C or HDMI cable into your laptop.
