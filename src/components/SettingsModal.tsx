@@ -37,8 +37,8 @@ export default function SettingsModal({
   
   useEffect( () => {
     if (!volume) return;
-    
-    setPercentage(300 * (volume - 800) / 1200);
+    let percent = 100 * (volume - 800) / (1200 - 800);
+    setPercentage(Math.round(percent));
   }, [value, volume] )
 
   return (
