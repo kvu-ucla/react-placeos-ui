@@ -313,6 +313,8 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
             if (!val) return;
             
             SetMics(val);
+            
+            console.log('mics?: ', mics);
         });  
         
         //bind local cameras for control and preset info. first, get the list of available cameras
@@ -336,7 +338,8 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
                       patchCam(camId, { presets });
                   });
               }
-
+              
+              console.log('cams?', cams);    
             // setCams((prev) => {
             //   const next: CameraMap = { ...prev };
             //   // add missing
