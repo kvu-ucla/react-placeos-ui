@@ -18,6 +18,7 @@ export default function SettingsModal({
     toggleMasterMute,
     adjustMasterVolume,
     setMasterMute,
+    currentMeeting  
   } = useZoomContext();
   const [activeTab, setActiveTab] = useState<TabSection>(initialTab);
 
@@ -279,10 +280,10 @@ export default function SettingsModal({
                     <div className="bg-blue-600 text-white p-4 rounded-lg flex items-center justify-between">
                       <span className="font-semibold">
                         Jordan’s Laptop (Zoom)
-                      </span>
-                      <span className="bg-white text-blue-600 text-xs font-bold px-3 py-1 rounded-full">
+                        <span className="bg-white text-blue-600 text-xs font-bold px-3 py-1 rounded-full">
                           CONNECTED
                         </span>
+                      </span>
                       <div className="flex items-center gap-4">
                         <span className="flex items-center gap-1">
                           <div className="relative">
@@ -354,10 +355,10 @@ export default function SettingsModal({
                   {/* Room Info */}
                   <div className="border rounded-md p-4 bg-white">
                     <div className="font-semibold text-black">
-                      Kaplan 1203 Meeting Room
+                      {currentMeeting?.meetingName}
                     </div>
                     <div className="text-gray-600">
-                      Meeting ID: 123-456-7890 &nbsp; • &nbsp; 5 Participants
+                      {currentMeeting?.meetingNumber} &nbsp; • &nbsp; {}
                     </div>
                   </div>
 

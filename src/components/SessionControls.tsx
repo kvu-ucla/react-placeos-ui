@@ -198,7 +198,7 @@ function ControlCard({
               e.preventDefault();
               if (detailsButton) detailsButton();
             }}
-            className="btn-ghost active:bg-avit-grey-button active:border-avit-grey absolute bottom-4 right-4 w-16 h-16 flex items-center justify-center text-avit-grey-80"
+            className="btn-ghost bg-transparent active:bg-avit-grey-button active:border-avit-grey absolute bottom-4 right-4 w-16 h-16 flex items-center justify-center text-avit-grey-80"
           >
             <Icon
               icon="material-symbols:more-horiz"
