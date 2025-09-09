@@ -2,7 +2,7 @@
 import { Icon } from "@iconify/react";
 import { useModalContext } from "../hooks/ModalContext";
 import { useZoomContext } from "../hooks/ZoomContext";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 export default function Footer() {
   const {
@@ -22,6 +22,12 @@ export default function Footer() {
     value === 800 ? setMasterMute(true) : setMasterMute(false);
     adjustMasterVolume(value);
   };
+
+  useEffect( () => {
+    if (!volume) return;
+    
+    setValue(volume);
+  }, [value, volume] )
 
   return (
       <footer className="min-h-38 bg-blue-900 text-white py-4 px-8 flex justify-between items-center">
