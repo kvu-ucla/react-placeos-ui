@@ -84,14 +84,14 @@ export default function SupportModal({onClose}: { onClose: () => void }) {
                                                     <div className="flex-1">
                                                         <div className="mb-1 flex items-center gap-2">
                                                             <span className="text-blue-600"><Info /></span>
-                                                            <span className="font-semibold leading-tight">{title}</span>
+                                                            <span className="font-semibold text-2xl leading-tight">{title}</span>
                                                         </div>
-                                                        <p className="text-xl leading-relaxed whitespace-pre-line text-gray-600">
+                                                        <p className="text-2xl leading-relaxed whitespace-pre-line text-gray-600">
                                                             {description}
                                                         </p>
                                                     </div>
 
-                                                    <div className="flex items-center justify-center">
+                                                    <div className="flex items-center justify-center text-4xl">
                                                         <a
                                                             href={href}
                                                             className="whitespace-nowrap text-blue-600 font-semibold text-right hover:underline"
