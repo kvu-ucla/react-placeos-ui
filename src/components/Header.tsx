@@ -39,7 +39,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => showModal("none")}
-            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "none" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
+            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "none" ? "btn-active rounded-2xl bg-blue-600 text-white text-white" : ""}`}
           >
             <Icon
               icon="material-symbols:home-outline-rounded"
@@ -52,7 +52,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => setIsOpen(true)}
-            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "tour" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
+            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "tour" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
           >
             <Icon
               icon="material-symbols:explore-outline-rounded"
@@ -64,7 +64,7 @@ export function Header() {
         )}
         <button
           onClick={() => showModal("support")}
-          className={`btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "support" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
+          className={`btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "support" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
         >
           <Icon icon="material-symbols:support" width={72} height={72} />
           <span className="text-xl font-semibold">Support</span>
@@ -75,7 +75,7 @@ export function Header() {
             onClick={() => {
               showModal("settings", { tab: "Volume" });
             }}
-            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "settings" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
+            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "settings" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
           >
             <Icon icon="material-symbols:tune-rounded" width={72} height={72} />
             <span className="text-xl font-semibold">Settings</span>
@@ -84,7 +84,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => showModal("shutdown")}
-            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "shutdown" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
+            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "shutdown" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
           >
             <Icon
               icon="material-symbols:cancel-outline"
