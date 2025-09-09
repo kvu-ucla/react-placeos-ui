@@ -1,6 +1,9 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import type { TabSection } from "../models/Modal";
 import { Icon } from "@iconify/react";
+import {useZoomContext} from "../hooks/ZoomContext.tsx";
+
+
 
 export default function SettingsModal({
   onClose,
@@ -9,11 +12,33 @@ export default function SettingsModal({
   onClose: () => void;
   initialTab?: TabSection;
 }) {
+  const {
+    volume,
+    volumeMute,
+    adjustMasterVolume,
+    setMasterMute,
+  } = useZoomContext();
   const [activeTab, setActiveTab] = useState<TabSection>(initialTab);
+
+  const [value, setValue] = useState(volume);
+  const [percentage, setPercentage] = useState(0);
+  const handleRelease = () => {
+    if (!value) return;
+
+    value === 800 ? setMasterMute(true) : setMasterMute(false);
+    
+    adjustMasterVolume(value);
+  };
 
   const audioTabs: TabSection[] = ["Volume", "Sources"];
   const videoTabs: TabSection[] = ["Display"];
   const meetingTabs: TabSection[] = ["Status", "View", "Camera"];
+  
+  useEffect( () => {
+    if (!volume) return;
+    
+    setPercentage((volume - 800) / 1200);
+  }, [value, volume] )
 
   return (
     <div className="modal modal-open bg-black/40">
@@ -63,7 +88,7 @@ export default function SettingsModal({
                       {/* Row spans full width */}
                       <div className="flex w-full items-center justify-between">
                         <p className="font-semibold">Output volume</p>
-                        <span className="text-blue-600 font-bold">60%</span>
+                        <span className="text-blue-600 font-bold">{percentage}%</span>
                       </div>
 
                       {/* Slider row also spans full width */}
@@ -74,8 +99,13 @@ export default function SettingsModal({
                           height={64}
                         ></Icon>
                         <input
+                          min={800}
+                          max={1200}
+                          value={value}
+                          onChange={(e) => setValue(Number(e.target.value))}
+                          onPointerUp={handleRelease}
                           type="range"
-                          className="w-full range rounded-3xl [--range-thumb:white] text-blue-600 touch-none"
+                          className="w-full range-xl rounded-3xl [--range-thumb:white] text-blue-600 touch-none"
                           defaultValue={60}
                         />
                         <Icon
@@ -86,9 +116,12 @@ export default function SettingsModal({
                       </div>
                     </div>
                     <div className="flex justify-end items-end">
-                      <button className="btn w-[300px] h-[64px] ml-4 bg-gray-100 border-gray-100 px-9 py-6 rounded-lg text-xl text-avit-grey-80 font-medium">
+                      {volumeMute ? <button className="btn w-[300px] h-[64px] ml-4 bg-gray-100 border-gray-100 px-9 py-6 rounded-lg text-xl text-avit-grey-80 font-medium">
                         Mute Speaker
-                      </button>
+                      </button> :
+                      <button className="btn w-[300px] h-[64px] ml-4 bg-black border-gray-100 px-9 py-6 rounded-lg text-xl text-white font-medium">
+                        Unmute Speaker
+                      </button>}
                     </div>
                   </div>
 
@@ -246,10 +279,10 @@ export default function SettingsModal({
                       <span className="font-semibold">
                         Jordan’s Laptop (Zoom)
                       </span>
-                      <div className="flex items-center gap-4">
-                        <span className="bg-white text-blue-600 text-xs font-bold px-3 py-1 rounded-full">
+                      <span className="bg-white text-blue-600 text-xs font-bold px-3 py-1 rounded-full">
                           CONNECTED
                         </span>
+                      <div className="flex items-center gap-4">
                         <span className="flex items-center gap-1">
                           <div className="relative">
                             <div className="absolute inline-flex h-4 w-4 rounded-full bg-green-400 opacity-75 animate-ping"></div>

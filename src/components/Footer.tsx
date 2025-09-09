@@ -79,33 +79,6 @@ export default function Footer() {
                   onPointerUp={handleRelease}
                   className="w-full range rounded-3xl [--range-thumb:white] text-[#C8D7FF] range-xl touch-none"
               />
-              <input
-                  type="range"
-                  min={800}
-                  max={1200}
-                  value={value}
-                  onChange={(e) => setValue(Number(e.target.value))}
-                  onPointerUp={handleRelease}
-                  className="
-                  w-full appearance-none touch-none
-                  focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2
-              
-                  [&::-webkit-slider-runnable-track]:h-2
-                  [&::-webkit-slider-runnable-track]:rounded-full
-                  [&::-webkit-slider-runnable-track]:bg-gray-200
-              
-                  [&::-webkit-slider-thumb]:appearance-none
-                  [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5
-                  [&::-webkit-slider-thumb]:rounded-full
-                  [&::-webkit-slider-thumb]:bg-[#155dfc]
-                  [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white
-                  [&::-webkit-slider-thumb]:shadow
-                  [&::-webkit-slider-thumb]:transition-transform
-                  [&::-webkit-slider-thumb]:active:scale-110
-                  [&::-webkit-slider-thumb]:-mt-[6px]
-                   "
-              />
-
             </div>
           </div>
 
