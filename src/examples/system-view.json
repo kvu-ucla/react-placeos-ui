@@ -175,7 +175,7 @@
         "handheld1Gain"
       ],
       "mute_id": [
-        "handheld1Mute"
+microphone         "handheld1Mute"
       ],
       "level_index": null,
       "mute_index": null,

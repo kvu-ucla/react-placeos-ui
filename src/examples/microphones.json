@@ -1,0 +1,56 @@
+{
+  "microphones": [
+    {
+      "name": "Catchbox 1",
+      "level_id": ["5"],
+      "mute_id": ["5"],
+      "level_index": null,
+      "mute_index": null,
+      "level_feedback": "fader5",
+      "mute_feedback": "fader5_mute",
+      "module_id": "Mixer_1",
+      "min_level": 1000,
+      "max_level": 1200,
+      "rooms": null
+    },
+    {
+      "name": "Catchbox 2",
+      "level_id": ["6"],
+      "mute_id": ["6"],
+      "level_index": null,
+      "mute_index": null,
+      "level_feedback": "fader6",
+      "mute_feedback": "fader6_mute",
+      "module_id": "Mixer_1",
+      "min_level": 1000,
+      "max_level": 1200,
+      "rooms": null
+    },
+    {
+      "name": "Catchbox 3",
+      "level_id": ["7"],
+      "mute_id": ["7"],
+      "level_index": null,
+      "mute_index": null,
+      "level_feedback": "fader7",
+      "mute_feedback": "fader7_mute",
+      "module_id": "Mixer_1",
+      "min_level": 1000,
+      "max_level": 1200,
+      "rooms": null
+    },
+    {
+      "name": "Catchbox 4",
+      "level_id": ["8"],
+      "mute_id": ["8"],
+      "level_index": null,
+      "mute_index": null,
+      "level_feedback": "fader8",
+      "mute_feedback": "fader8_mute",
+      "module_id": "Mixer_1",
+      "min_level": 1000,
+      "max_level": 1200,
+      "rooms": null
+    }
+  ]
+}

@@ -25,7 +25,7 @@ const contacts: ContactInfo[] = [
     {
         title: 'Emergency Support',
         description: 'Crisis response hotline',
-        phone: '1 (800) 900-UCLA',
+        phone: '(800) 900-UCLA',
         href: 'tel:+18009008525',
     },
 ];

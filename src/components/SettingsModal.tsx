@@ -89,7 +89,7 @@ export default function SettingsModal({
                     <div className="flex flex-col w-full items-start">
                       {/* Row spans full width */}
                       <div className="flex w-full items-center justify-between">
-                        <p className="font-semibold">Output volume</p>
+                        <p className="font-semibold">Speaker volume</p>
                         <span className="text-blue-600 font-bold">{percentage}%</span>
                       </div>
 
