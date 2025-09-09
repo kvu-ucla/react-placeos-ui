@@ -72,40 +72,46 @@ export default function SupportModal({onClose}: { onClose: () => void }) {
                         <div className="w-3/4 px-6">
                             {activeTab === 'Contact' && (
                                 <>
-                                    <h3 className="text-3xl font-semibold mb-4">Contact</h3>
-                                    <div className="space-y-3">
-                                        {contacts.map(({title, description, phone, href}) => (
-                                            <div
-                                                key={title}
-                                                className="border border-avit-grey rounded-lg p-12 flex justify-between items-start bg-white"
-                                            >
-                                                <div className="flex-1">
-                                                    <div className="flex items-center mb-1">
-                                                        <span className="text-blue-600 mr-2"><Info/></span>
-                                                        <span className="font-semibold">{title}</span>
+                                    <div className="not-prose text-left text-base text-avit-grey-80">
+                                        <h3 className="text-3xl font-semibold mb-4">Contact</h3>
+
+                                        <div className="space-y-3">
+                                            {contacts.map(({ title, description, phone, href }) => (
+                                                <div
+                                                    key={title}
+                                                    className="flex items-start justify-between gap-6 rounded-lg border border-avit-grey bg-white p-12"
+                                                >
+                                                    <div className="flex-1">
+                                                        <div className="mb-1 flex items-center gap-2">
+                                                            <span className="text-blue-600"><Info /></span>
+                                                            <span className="font-semibold leading-tight">{title}</span>
+                                                        </div>
+                                                        <p className="text-xl leading-relaxed whitespace-pre-line text-gray-600">
+                                                            {description}
+                                                        </p>
                                                     </div>
-                                                    <p className="text-xl whitespace-pre-line text-gray-600">
-                                                        {description}
-                                                    </p>
+
+                                                    <div className="flex items-center justify-center">
+                                                        <a
+                                                            href={href}
+                                                            className="whitespace-nowrap text-blue-600 font-semibold text-right hover:underline"
+                                                        >
+                                                            {phone}
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                                <div className="flex-col h-full items-center justify-center">
-                                                    <a
-                                                        href={href}
-                                                        className="text-blue-600 font-semibold text-right hover:underline"
-                                                    >
-                                                        {phone}
-                                                    </a>
-                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div className="mt-6 text-left">
+                                            <div className="inline-flex items-center gap-2 rounded bg-gray-100 px-3 py-1 text-sm">
+                                                <div className="h-4 w-4 rounded-full bg-green-500 mr-1 animate-pulse" />
+                                                <span className="text-gray-700 text-base font-medium">All systems online</span>
                                             </div>
-                                        ))}
-                                    </div>
-                                    <div className="mt-6">
-                                        <div className="inline-flex items-center bg-gray-100 text-sm px-3 py-1 rounded">
-                                            <div className="w-4 h-4 rounded-full bg-green-500 mr-2 animate-pulse"></div>
-                                            <span className="text-gray-700 text-xl font-medium">All systems online</span>
                                         </div>
                                     </div>
                                 </>
+
 
                             )}
                             {activeTab === 'Troubleshoot' && (
