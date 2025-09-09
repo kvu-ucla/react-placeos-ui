@@ -39,7 +39,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => showModal("none")}
-            className={`btn btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "none" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
+            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "none" ? "btn-active rounded-2xl bg-blue-600" : ""}`}
           >
             <Icon
               icon="material-symbols:home-outline-rounded"
