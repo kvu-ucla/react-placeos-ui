@@ -13,6 +13,8 @@ export default function SettingsModal({
   initialTab?: TabSection;
 }) {
   const {
+    mics,
+    cams,  
     volume,
     volumeMute,
     toggleMasterMute,
@@ -41,6 +43,14 @@ export default function SettingsModal({
     let percent = 100 * (volume - 800) / (1200 - 800);
     setPercentage(Math.round(percent));
   }, [value, volume] )
+
+  useEffect(() => {
+    console.log("mics from settings :", mics);
+  }, [mics]);
+
+  useEffect(() => {
+    console.log("cams from settings :", cams);
+  }, [cams]);
 
   return (
     <div className="modal modal-open bg-black/40">

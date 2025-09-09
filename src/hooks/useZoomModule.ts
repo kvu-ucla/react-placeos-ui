@@ -307,7 +307,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
             
             SetMics(val);
             
-            console.log('mics?: ', mics);
+            console.log('mics?: ', val);
         });  
         
         //bind local cameras for control and preset info. first, get the list of available cameras
