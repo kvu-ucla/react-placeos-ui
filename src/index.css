@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@plugin "daisyui" {themes: false}
+@plugin "daisyui" {themes: light --default}
 
 
 @tailwind utilities;
@@ -20,11 +20,6 @@
     body {
         @apply text-3xl text-avit-grey-80;
     }
-    
-    :root {
-        --color-error: oklch(55% 0.23 29);
-        --color-error-content: oklch(98% 0.01 29);
-    }
 }
 
 html, body, #root {
@@ -36,6 +31,10 @@ html, body, #root {
 
 
 @layer utilities {
+    :root, [data-theme] {
+        --color-error: oklch(55% 0.23 29);
+        --color-error-content: oklch(98% 0.01 29);
+    }
     .ui-disabled {
         @apply disabled:bg-white/20 disabled:cursor-not-allowed disabled:pointer-events-none disabled:border-white
         aria-disabled:bg-white/20 aria-disabled:cursor-not-allowed aria-disabled:pointer-events-none aria-disabled:border-white;
