@@ -15,6 +15,7 @@ export default function SettingsModal({
   const {
     volume,
     volumeMute,
+    toggleMasterMute,
     adjustMasterVolume,
     setMasterMute,
   } = useZoomContext();
@@ -37,7 +38,7 @@ export default function SettingsModal({
   useEffect( () => {
     if (!volume) return;
     
-    setPercentage((volume - 800) / 1200);
+    setPercentage(300 * (volume - 800) / 1200);
   }, [value, volume] )
 
   return (
@@ -105,7 +106,7 @@ export default function SettingsModal({
                           onChange={(e) => setValue(Number(e.target.value))}
                           onPointerUp={handleRelease}
                           type="range"
-                          className="w-full range-xl rounded-3xl [--range-thumb:white] text-blue-600 touch-none"
+                          className="w-full range rounded-3xl [--range-thumb:white] text-blue-600 touch-none"
                           defaultValue={60}
                         />
                         <Icon
@@ -116,11 +117,11 @@ export default function SettingsModal({
                       </div>
                     </div>
                     <div className="flex justify-end items-end">
-                      {volumeMute ? <button className="btn w-[300px] h-[64px] ml-4 bg-gray-100 border-gray-100 px-9 py-6 rounded-lg text-xl text-avit-grey-80 font-medium">
-                        Mute Speaker
-                      </button> :
-                      <button className="btn w-[300px] h-[64px] ml-4 bg-black border-gray-100 px-9 py-6 rounded-lg text-xl text-white font-medium">
+                      {volumeMute ? <button onClick={toggleMasterMute} className="btn w-[300px] h-[64px] ml-4 bg-black border-black px-9 py-6 rounded-lg text-xl text-white font-medium">
                         Unmute Speaker
+                      </button> :
+                      <button onClick={toggleMasterMute} className="btn w-[300px] h-[64px] ml-4 bg-gray-100 border-gray-100 px-9 py-6 rounded-lg text-xl text-avit-grey-80 font-medium">
+                        Mute Speaker
                       </button>}
                     </div>
                   </div>
