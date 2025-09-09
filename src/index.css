@@ -2,46 +2,46 @@
 
 @plugin "daisyui";
 
-@plugin "daisyui/theme" {
-    name: "ucla-theme";
-    default: true; /* set as default */
-    prefersdark: false; /* set as default dark mode (prefers-color-scheme:dark) */
-    color-scheme: light; /* color of browser-provided UI */
-    /*--color-base-100: oklch(98% 0.02 240);*/
-    /*--color-base-200: oklch(95% 0.03 240);*/
-    /*--color-base-300: oklch(92% 0.04 240);*/
-    --color-base-content: oklch(20% 0.05 240);
-    --color-primary: oklch(55% 0.3 240);
-    --color-primary-content: oklch(98% 0.01 240);
-    --color-secondary: oklch(70% 0.25 200);
-    --color-secondary-content: oklch(98% 0.01 200);
-    --color-error: oklch(0.5501 0.225755 29.2339);
+/*@plugin "daisyui/theme" {*/
+/*    name: "ucla-theme";*/
+/*    default: true; !* set as default *!*/
+/*    prefersdark: false; !* set as default dark mode (prefers-color-scheme:dark) *!*/
+/*    color-scheme: light; !* color of browser-provided UI *!*/
+/*    !*--color-base-100: oklch(98% 0.02 240);*!*/
+/*    !*--color-base-200: oklch(95% 0.03 240);*!*/
+/*    !*--color-base-300: oklch(92% 0.04 240);*!*/
+/*    --color-base-content: oklch(20% 0.05 240);*/
+/*    --color-primary: oklch(55% 0.3 240);*/
+/*    --color-primary-content: oklch(98% 0.01 240);*/
+/*    --color-secondary: oklch(70% 0.25 200);*/
+/*    --color-secondary-content: oklch(98% 0.01 200);*/
+/*    --color-error: oklch(0.5501 0.225755 29.2339);*/
 
-    --color-avit-blue: #022EA0;
-    --color-avit-grey: #E5E7EC;
-    --color-avit-bg: #E4E6EB;
-    --color-avit-grey-80: #333;
-    --color-primary: #155dfc;
-    --color-avit-grey-button: #EDF0F4;
-    --color-avit-lightblue: #C8D7FF;
+/*    --color-avit-blue: #022EA0;*/
+/*    --color-avit-grey: #E5E7EC;*/
+/*    --color-avit-bg: #E4E6EB;*/
+/*    --color-avit-grey-80: #333;*/
+/*    --color-primary: #155dfc;*/
+/*    --color-avit-grey-button: #EDF0F4;*/
+/*    --color-avit-lightblue: #C8D7FF;*/
 
 
-    /* border radius */
-    --radius-selector: 1rem;
-    --radius-field: 0.25rem;
-    --radius-box: 0.5rem;
+/*    !* border radius *!*/
+/*    --radius-selector: 1rem;*/
+/*    --radius-field: 0.25rem;*/
+/*    --radius-box: 0.5rem;*/
 
-    /* base sizes */
-    --size-selector: 0.25rem;
-    --size-field: 0.25rem;
+/*    !* base sizes *!*/
+/*    --size-selector: 0.25rem;*/
+/*    --size-field: 0.25rem;*/
 
-    /* border size */
-    --border: 1px;
+/*    !* border size *!*/
+/*    --border: 1px;*/
 
-    /* effects */
-    --depth: 1;
-    --noise: 0;
-}
+/*    !* effects *!*/
+/*    --depth: 1;*/
+/*    --noise: 0;*/
+/*}*/
 
 @tailwind utilities;
 
@@ -54,28 +54,12 @@
     --color-primary: #155dfc;
     --color-avit-grey-button: #EDF0F4;
     --color-avit-lightblue: #C8D7FF;
+    --color-error: oklch(55% 0.23 29);
 }
 
 @layer base {
     body {
         @apply text-3xl text-avit-grey-80;
-
-        .collapse-arrow > .collapse-title::after {
-            content: "";
-            transform-origin: 75% 75%;
-            pointer-events: none;
-            top: 3rem;
-            width: 2rem;
-            height: 2rem;
-            transition: all .2s cubic-bezier(.4, 0, .2, 1);
-            display: block;
-            position: absolute;
-            inset-inline-end: 3rem;
-            transform: translateY(-100%) rotate(45deg);
-            box-shadow: 2px 2px;
-            border-right: 4px solid currentColor;
-            border-bottom: 4px solid currentColor;
-        }
     }
 
 
