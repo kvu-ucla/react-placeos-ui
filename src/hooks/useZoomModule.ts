@@ -299,17 +299,10 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
         };
 
         if (!module) return;
-
-        //bind to Zoom Rooms driver in placeOS
-        // bindAndListen('meeting_in_progress', module, setInProgress);
-        // bindAndListen('meeting_joined', module, setZoomJoined);
-        // bindAndListen('share_content', module, setSharing);
-        // bindAndListen('next_pending', module, setNextPending);
-        // bindAndListen('mic_mute', module, setAudioMuted);
-        // bindAndListen('camera_mute', module, setVideoMuted);
         
         //bind local microphones for tag and min/max info
         bindAndListen('microphones', getModule(systemId, 'System'), (val: Microphone[]) => {
+            console.log('mics enter?: ', mics);
             if (!val) return;
             
             SetMics(val);
@@ -322,6 +315,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
           "available_cameras",
           getModule(systemId, "System"),
           (list) => {
+              console.log('cams enter?', cams);
             if (!list) return;
 
             syncCameraSet(list);
@@ -339,53 +333,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
                   });
               }
               
-              console.log('cams?', cams);    
-            // setCams((prev) => {
-            //   const next: CameraMap = { ...prev };
-            //   // add missing
-            //   for (const id of list) {
-            //     if (!next[id])
-            //       next[id] = { camera_id: id, camera_name: "", presets: [] };
-            //   }
-            //   // prune removed
-            //   for (const id of Object.keys(next)) {
-            //     if (!list.includes(id)) delete next[id];
-            //   }
-            //   return next;
-            // });
-
-            //cam will be Camera_1, Camera_2, etc aka the module/class name from BackOffice available cameras array
-            // list.forEach((cam: string) => {
-            //   //after getting list of available cameras, get specified camera from status variable Input/<INPUT_CAM_NAME> which should be Camera_1, etc
-            //   bindAndListen(
-            //     "Input/${cam}",
-            //     getModule(systemId, "System"),
-            //     (entry) => {
-            //       const name = entry.name;
-            //
-            //       setCams((prev) => {
-            //         const updated: CameraMap = {
-            //           ...prev,
-            //           [cam]: { ...prev[cam], camera_name: name },
-            //         };
-            //
-            //         return updated;
-            //       });
-            //     },
-            //   );
-            //
-            //   //result will be the status variables from the camera module itself
-            //   bindAndListen(
-            //     "presets",
-            //     getModule(systemId, cam),
-            //     (presets: string[]) => {
-            //       setCams((prev) => ({
-            //         ...prev,
-            //         [cam]: { ...prev[cam], presets },
-            //       }));
-            //     },
-            //   );
-            // });
+              console.log('cams?', cams);
           }
         );
         
@@ -434,8 +382,6 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
                         endTime:   String(Math.floor(endMs   / 1000)),
                     }];
                 })
-
-            console.log("Updated bookings in epoch", updatedBookings);
             
             setBookings(updatedBookings);
         });
