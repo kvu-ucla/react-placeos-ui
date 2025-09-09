@@ -328,7 +328,7 @@ export function useZoomModule(systemId: string, mod = 'ZoomCSAPI') {
 
               for (const camId of list) {
                   // name from System status "Input/<camId>"
-                  bindAndListen(`Input/${camId}`, getModule(systemId, "System"), (entry) => {
+                  bindAndListen(`input/${camId}`, getModule(systemId, "System"), (entry) => {
                       const name = typeof entry === "string" ? entry : entry?.name ?? camId;
                       patchCam(camId, { camera_name: name });
                   });
