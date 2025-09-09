@@ -249,7 +249,7 @@ function ControlCard({
         </div>
         <div
           aria-disabled={disabled}
-          className="aria-disabled:text-white text-xl font-medium"
+          className="aria-disabled:text-white text-2xl font-medium"
         >
           {label} {hasButtonState && (buttonState ? "Off" : "On")}
         </div>

@@ -59,24 +59,26 @@
 @layer base {
     body {
         @apply text-3xl text-avit-grey-80;
+
+        .collapse-arrow > .collapse-title::after {
+            content: "";
+            transform-origin: 75% 75%;
+            pointer-events: none;
+            top: 3rem;
+            width: 2rem;
+            height: 2rem;
+            transition: all .2s cubic-bezier(.4, 0, .2, 1);
+            display: block;
+            position: absolute;
+            inset-inline-end: 3rem;
+            transform: translateY(-100%) rotate(45deg);
+            box-shadow: 2px 2px;
+            border-right: 4px solid currentColor;
+            border-bottom: 4px solid currentColor;
+        }
     }
 
-    .collapse-arrow > .collapse-title::after {
-        content: "";
-        transform-origin: 75% 75%;
-        pointer-events: none;
-        top: 4rem;
-        width: 2rem;
-        height: 2rem;
-        transition: all .2s cubic-bezier(.4, 0, .2, 1);
-        display: block;
-        position: absolute;
-        inset-inline-end: 3rem;
-        transform: translateY(-100%) rotate(45deg);
-        box-shadow: 2px 2px;
-        border-right: 4px solid currentColor;
-        border-bottom: 4px solid currentColor;
-    }
+
 }
 
 html, body, #root {
