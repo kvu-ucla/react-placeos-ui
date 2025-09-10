@@ -58,7 +58,7 @@ export default function SettingsModal({
      (document.activeElement as HTMLElement)?.blur()
      const mod = getModule(system_id!, 'System');
      if (!mod) return;
-     mod.execute('select_camera', [camera_id]);
+     mod.execute('selected_camera', [camera_id]);
   }
 
   return (
