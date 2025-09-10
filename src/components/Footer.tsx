@@ -78,36 +78,36 @@ export default function Footer() {
               height={96}
             />
           )}
-          <div className="ml-4 w-[500px] overflow-hidden">
+          <div className="ml-4 w-[500px] min-h-[48px] overflow-visible">
             <Slider.Root
-                className="relative flex items-center select-none touch-none w-64 h-5"
+                className="relative flex items-center select-none touch-none w-full h-10"
                 min={800}
                 max={1200}
                 step={10}
-                defaultValue={[value!]}
+                value={[value!]}
                 onValueChange={([val]) => setValue(val)}
                 onValueCommit={() => handleRelease()}
             >
-              <Slider.Track className="bg-gray-300 relative grow rounded-full h-[4px]">
-                <Slider.Range className="absolute bg-blue-500 rounded-full h-full" />
+              <Slider.Track className="relative grow rounded-full h-3 bg-gray-300">
+                <Slider.Range className="absolute h-full bg-blue-500 rounded-full" />
               </Slider.Track>
               <Slider.Thumb
-                  className="block w-5 h-5 bg-white border-2 border-blue-500 rounded-full shadow hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="block w-6 h-6 bg-white border-2 border-blue-500 rounded-full shadow-md hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-blue-500"
                   aria-label="Volume"
               />
             </Slider.Root>
-            {/*<input*/}
-            {/*  type="range"*/}
-            {/*  min={800}*/}
-            {/*  max={1200}*/}
-            {/*  value={value}*/}
-            {/*  onChange={(e) => setValue(Number(e.target.value))}*/}
-            {/*  onPointerUp={handleRelease}*/}
-            {/*  className="w-full range rounded-3xl [--range-thumb:white] text-[#C8D7FF] range-xl touch-none"*/}
-            {/*/>*/}
           </div>
-        </div>
 
+
+        {/*<input*/}
+        {/*  type="range"*/}
+        {/*  min={800}*/}
+        {/*  max={1200}*/}
+        {/*  value={value}*/}
+        {/*  onChange={(e) => setValue(Number(e.target.value))}*/}
+        {/*  onPointerUp={handleRelease}*/}
+        {/*  className="w-full range rounded-3xl [--range-thumb:white] text-[#C8D7FF] range-xl touch-none"*/}
+        {/*/>*/}
         {isJoined && (
           <button
             onClick={() => showModal("end-meeting")}
