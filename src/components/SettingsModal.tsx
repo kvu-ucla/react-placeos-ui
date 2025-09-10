@@ -455,7 +455,7 @@ export default function SettingsModal({
                         <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                           {Object.values(cams).map((cam) => (
                               <li onClick={
-                                (document.activeElement as HTMLElement)?.blur();
+                                () => (document.activeElement as HTMLElement)?.blur()
                               }><a>{cam.camera_name}</a></li>
                           ))}
                         </ul>
