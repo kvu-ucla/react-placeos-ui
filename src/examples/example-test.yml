@@ -66,17 +66,17 @@ connections:
     hdmi: Switcher_1.3
   Ex_Display_1:
     hdmi: Switcher_1.6
-  '*Preview_Monitor': Switcher_1.4
-  '*Lectern_Capture': Switcher_1.5
+  "*Preview_Monitor": Switcher_1.4
+  "*Lectern_Capture": Switcher_1.5
   Switcher_1:
     ECP101-LeftCam-NVXE30: Camera_1
     ECP101-MidCam-NVXE30: Camera_5
     ECP101-RightCam-NVXE30: Camera_2
     ECP101-MidRightCam-NVXE30: Camera_3
     ECP101-RearCam-NVXE30: Camera_4
-    ECP101-ViaGo-NVXE30: '*Wireless_Presenter'
-    ECP101-LectHDMI-NVXE30: '*Lectern_Input_HDMI'
-    ECP-Level1Brightsign-NVXE30: '*Signage_Player'
+    ECP101-ViaGo-NVXE30: "*Wireless_Presenter"
+    ECP101-LectHDMI-NVXE30: "*Lectern_Input_HDMI"
+    ECP-Level1Brightsign-NVXE30: "*Signage_Player"
 local_outputs:
   - Display_1
   - Display_2
@@ -184,7 +184,7 @@ lighting_scenes:
     icon: lightbulb
     opacity: 0.2
   - id: 3
-    name: 'Off'
+    name: "Off"
     icon: lightbulb_outline
     opacity: 0.8
 room_accessories:
@@ -269,12 +269,12 @@ room_accessories:
   - name: Front LED Wall Power
     module: Display_1
     controls:
-      - name: 'On'
+      - name: "On"
         icon: power
         function_name: power
         arguments:
           - true
-      - name: 'Off'
+      - name: "Off"
         icon: power_off
         function_name: power
         arguments:
@@ -282,12 +282,12 @@ room_accessories:
   - name: West Display 1 Power
     module: Display_2
     controls:
-      - name: 'On'
+      - name: "On"
         icon: power
         function_name: power
         arguments:
           - true
-      - name: 'Off'
+      - name: "Off"
         icon: power_off
         function_name: power
         arguments:
@@ -295,12 +295,12 @@ room_accessories:
   - name: East Display 1 Power
     module: Display_3
     controls:
-      - name: 'On'
+      - name: "On"
         icon: power
         function_name: power
         arguments:
           - true
-      - name: 'Off'
+      - name: "Off"
         icon: power_off
         function_name: power
         arguments:

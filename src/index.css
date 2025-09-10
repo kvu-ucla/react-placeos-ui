@@ -1,42 +1,41 @@
 @import "tailwindcss";
 
-@plugin "daisyui" {themes: light --default}
-
+@plugin "daisyui" {
+  themes: light --default;
+}
 
 @tailwind utilities;
 
-
-@theme{
-    --color-avit-blue: #022EA0;
-    --color-avit-grey: #E5E7EC;
-    --color-avit-bg: #E4E6EB;
-    --color-avit-grey-80: #333;
-    --color-primary: #155dfc;
-    --color-avit-grey-button: #EDF0F4;
-    --color-avit-lightblue: #C8D7FF;
+@theme {
+  --color-avit-blue: #022ea0;
+  --color-avit-grey: #e5e7ec;
+  --color-avit-bg: #e4e6eb;
+  --color-avit-grey-80: #333;
+  --color-primary: #155dfc;
+  --color-avit-grey-button: #edf0f4;
+  --color-avit-lightblue: #c8d7ff;
 }
 
 @layer base {
-    body {
-        @apply text-3xl text-avit-grey-80;
-    }
+  body {
+    @apply text-3xl text-avit-grey-80;
+  }
 }
 
-html, body, #root {
-    @apply m-0 p-0 h-full bg-cyan-400;
+html,
+body,
+#root {
+  @apply m-0 p-0 h-full bg-cyan-400;
 }
-
-
-
-
 
 @layer utilities {
-    :root, [data-theme] {
-        --color-error: oklch(55% 0.23 29);
-        --color-error-content: oklch(98% 0.01 29);
-    }
-    .ui-disabled {
-        @apply disabled:bg-white/20 disabled:cursor-not-allowed disabled:pointer-events-none disabled:border-white
+  :root,
+  [data-theme] {
+    --color-error: oklch(55% 0.23 29);
+    --color-error-content: oklch(98% 0.01 29);
+  }
+  .ui-disabled {
+    @apply disabled:bg-white/20 disabled:cursor-not-allowed disabled:pointer-events-none disabled:border-white
         aria-disabled:bg-white/20 aria-disabled:cursor-not-allowed aria-disabled:pointer-events-none aria-disabled:border-white;
-    }
+  }
 }

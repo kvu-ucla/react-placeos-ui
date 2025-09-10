@@ -3,42 +3,38 @@
 // import {getModule, querySystems, setAPI_Key, setup} from '@placeos/ts-client';
 // import {ControlStateProvider} from "./hooks/ControlStateContext.tsx";
 import MainView from "./components/MainView";
-import {useAuth} from "./AuthContext";
-import {Route, Routes } from 'react-router-dom';
+import { useAuth } from "./AuthContext";
+import { Route, Routes } from "react-router-dom";
 import BootstrapPage from "./BootstrapPage";
 
 function App() {
+  const { isAuthenticated, loading } = useAuth()!;
 
-    const { isAuthenticated, loading } = useAuth()!;
-
-    // While the library is initializing, you can show a global spinner
-    if (loading) {
-        return (
-            <div className="flex h-screen items-center justify-center">
-                <div className="h-16 w-16 animate-spin rounded-full border-b-2 border-indigo-600"></div>
-            </div>
-        );
-    }
+  // While the library is initializing, you can show a global spinner
+  if (loading) {
     return (
-        <>
-            <main>
-                <Routes>
-                    <Route path="/" element={<BootstrapPage />} />
-                    {/* Conditionally render routes based on auth state */}
-                    {isAuthenticated && (
-                        <>
-                            <Route path="/" element={<BootstrapPage />} />
-                            <Route
-                                path="/:system_id"
-                                element={<MainView />}
-                            />
-                        </>
-                    )}
-                    {/* You could add a catch-all or a "not found" page here */}
-                </Routes>
-            </main>
-        </>
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-16 w-16 animate-spin rounded-full border-b-2 border-indigo-600"></div>
+      </div>
     );
+  }
+  return (
+    <>
+      <main>
+        <Routes>
+          <Route path="/" element={<BootstrapPage />} />
+          {/* Conditionally render routes based on auth state */}
+          {isAuthenticated && (
+            <>
+              <Route path="/" element={<BootstrapPage />} />
+              <Route path="/:system_id" element={<MainView />} />
+            </>
+          )}
+          {/* You could add a catch-all or a "not found" page here */}
+        </Routes>
+      </main>
+    </>
+  );
 }
 export default App;
 
