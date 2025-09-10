@@ -3,6 +3,9 @@ import { Icon } from "@iconify/react";
 import { useModalContext } from "../hooks/ModalContext";
 import { useZoomContext } from "../hooks/ZoomContext";
 import { useEffect, useState } from "react";
+import * as Slider from '@radix-ui/react-slider';
+
+
 
 export default function Footer() {
   const {
@@ -76,15 +79,31 @@ export default function Footer() {
             />
           )}
           <div className="ml-4 w-[500px] overflow-hidden">
-            <input
-              type="range"
-              min={800}
-              max={1200}
-              value={value}
-              onChange={(e) => setValue(Number(e.target.value))}
-              onPointerUp={handleRelease}
-              className="w-full range rounded-3xl [--range-thumb:white] text-[#C8D7FF] range-xl touch-none"
-            />
+            <Slider.Root
+                className="relative flex items-center select-none touch-none w-64 h-5"
+                min={800}
+                max={1200}
+                step={10}
+                defaultValue={[value!]}
+                onValueChange={([val]) => setValue(val)}
+            >
+              <Slider.Track className="bg-gray-300 relative grow rounded-full h-[4px]">
+                <Slider.Range className="absolute bg-blue-500 rounded-full h-full" />
+              </Slider.Track>
+              <Slider.Thumb
+                  className="block w-5 h-5 bg-white border-2 border-blue-500 rounded-full shadow hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  aria-label="Volume"
+              />
+            </Slider.Root>
+            {/*<input*/}
+            {/*  type="range"*/}
+            {/*  min={800}*/}
+            {/*  max={1200}*/}
+            {/*  value={value}*/}
+            {/*  onChange={(e) => setValue(Number(e.target.value))}*/}
+            {/*  onPointerUp={handleRelease}*/}
+            {/*  className="w-full range rounded-3xl [--range-thumb:white] text-[#C8D7FF] range-xl touch-none"*/}
+            {/*/>*/}
           </div>
         </div>
 
