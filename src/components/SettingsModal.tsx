@@ -491,7 +491,7 @@ export default function SettingsModal({
                     <div className="bg-gray-400 w-[500px] h-[200px] flex items-center justify-center text-white text-lg font-bold rounded">
                       <CameraController
                         id={system_id!}
-                        activeCamera={{ mod: "Camera_1" }}
+                        activeCamera={{ mod: "Camera_2" }}
                       ></CameraController>
                     </div>
 

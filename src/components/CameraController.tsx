@@ -45,14 +45,14 @@ function CameraController({
 
       if (tiltRef.current !== JoystickTilt.Stop) {
         await module.execute(
-          "tilt",
+          "move",
           index !== undefined ? [tiltRef.current, index] : [tiltRef.current],
         );
       }
 
       if (panRef.current !== JoystickPan.Stop) {
         await module.execute(
-          "pan",
+          "move",
           index !== undefined ? [panRef.current, index] : [panRef.current],
         );
       }
