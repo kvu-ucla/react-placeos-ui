@@ -454,7 +454,9 @@ export default function SettingsModal({
                         <div tabIndex={0} role="button" className="btn m-1">Cameras</div>
                         <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                           {Object.values(cams).map((cam) => (
-                              <li><a>{cam.camera_name}</a></li>
+                              <li onClick={
+                                (document.activeElement as HTMLElement)?.blur();
+                              }><a>{cam.camera_name}</a></li>
                           ))}
                         </ul>
                       </div>
