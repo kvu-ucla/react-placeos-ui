@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { TabSection } from "../models/Modal";
 import { Icon } from "@iconify/react";
 import { useZoomContext } from "../hooks/ZoomContext.tsx";
-import CameraController from "./CameraController.tsx";
-import { useParams } from "react-router-dom";
-import {getModule} from "@placeos/ts-client";
+import {CameraTab} from "./tabbed/CameraTab.tsx";
+import {MicTab} from "./tabbed/MicTab.tsx";
 
 export default function SettingsModal({
   onClose,
@@ -15,45 +14,14 @@ export default function SettingsModal({
 }) {
   const {
     //TODO add mics
-    cams,
-    selectedCamera,
-    volume,
-    volumeMute,
-    toggleMasterMute,
-    adjustMasterVolume,
-    setMasterMute,
     currentMeeting,
   } = useZoomContext();
-  const { system_id } = useParams();
   const [activeTab, setActiveTab] = useState<TabSection>(initialTab);
-
-  const [value, setValue] = useState(volume);
-  const [percentage, setPercentage] = useState(0);
-  const handleRelease = () => {
-    if (!value) return;
-
-    value === 800 ? setMasterMute(true) : setMasterMute(false);
-
-    adjustMasterVolume(value);
-  };
-
   const audioTabs: TabSection[] = ["Volume", "Sources"];
   const videoTabs: TabSection[] = ["Display"];
   const meetingTabs: TabSection[] = ["Status", "View", "Camera"];
   
-
-  useEffect(() => {
-    if (!volume) return;
-    let percent = (100 * (volume - 800)) / (1200 - 800);
-    setPercentage(Math.round(percent));
-  }, [value, volume]);
   
-   const cameraSelection = (camera_id: string) => {
-     (document.activeElement as HTMLElement)?.blur()
-     const mod = getModule(system_id!, 'System');
-     if (!mod) return;
-     mod.execute('selected_camera', [camera_id]);
-  }
 
   return (
     <div className="modal modal-open bg-black/40">
@@ -100,74 +68,7 @@ export default function SettingsModal({
             {/* Content */}
             <div className="w-full space-y-6 flex-col justify-end items-center">
               {activeTab === "Volume" && (
-                <>
-                  <h3 className="font-semibold mb-2">Volume</h3>
-
-                  {/* Make the row fill the parent width */}
-                  <div className="w-full border border-[#999] flex items-center justify-between p-4 rounded-lg">
-                    {/* Main column takes all remaining space */}
-                    <div className="flex flex-col w-full items-start">
-                      {/* Row spans full width */}
-                      <div className="flex w-full items-center justify-between">
-                        <p className="font-semibold">Speaker volume</p>
-                        <span className="text-blue-600 font-bold">
-                          {percentage}%
-                        </span>
-                      </div>
-
-                      {/* Slider row also spans full width */}
-                      <div className="flex w-full items-center">
-                        <Icon
-                          icon="material-symbols:volume-mute-outline-rounded"
-                          width={64}
-                          height={64}
-                        ></Icon>
-                        <input
-                          min={800}
-                          max={1200}
-                          value={value}
-                          onChange={(e) => setValue(Number(e.target.value))}
-                          onPointerUp={handleRelease}
-                          type="range"
-                          className="w-full range rounded-3xl [--range-thumb:white] text-blue-600 touch-none"
-                          defaultValue={60}
-                        />
-                        <Icon
-                          icon="material-symbols:volume-up-outline-rounded"
-                          width={64}
-                          height={64}
-                        ></Icon>
-                      </div>
-                    </div>
-                    <div className="flex justify-end items-end">
-                      {volumeMute ? (
-                        <button
-                          onClick={toggleMasterMute}
-                          className="btn w-[300px] h-[64px] ml-4 bg-black border-black px-9 py-6 rounded-lg text-xl text-white font-medium"
-                        >
-                          Unmute Speaker
-                        </button>
-                      ) : (
-                        <button
-                          onClick={toggleMasterMute}
-                          className="btn w-[300px] h-[64px] ml-4 bg-gray-100 border-gray-100 px-9 py-6 rounded-lg text-xl text-avit-grey-80 font-medium"
-                        >
-                          Mute Speaker
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Microphones section also fills width */}
-                  <div className="w-full">
-                    <h3 className="font-semibold mb-2">Microphones</h3>
-                    <div className="grid grid-cols-2 gap-4 w-full">
-                      {[1, 2, 3, 4].map((mic) => (
-                        <MicControl key={mic} mic={mic} />
-                      ))}
-                    </div>
-                  </div>
-                </>
+              <MicTab></MicTab>
               )}
 
               {activeTab === "Sources" && (
@@ -457,63 +358,7 @@ export default function SettingsModal({
               )}
 
               {activeTab === "Camera" && (
-                <div className="border rounded-lg p-6 space-y-6">
-                  {/* Section Title */}
-                  <h2 className="text-xl font-semibold">Camera Management</h2>
-
-                  {/* Active Camera Dropdown */}
-                  <div>
-                    <label className="block text-gray-800 font-medium mb-2">
-                      Active Camera
-                    </label>
-                    <div className="dropdown dropdown-bottom dropdown-center w-full">
-                      <div tabIndex={0} role="button" className="btn m-1">
-                        Cameras
-                      </div>
-                      <ul
-                        tabIndex={0}
-                        className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
-                      >
-                        {Object.values(cams).map((cam) => (
-                          <li
-                            onClick={ () =>
-                                cameraSelection(cam.camera_id)
-                            }
-                          >
-                            <a>{cam.camera_name}</a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-
-                  {/* Pan Zoom Tilt + Presets */}
-                  <div className="flex justify-between items-start gap-4">
-                    {/* Pan Zoom Tilt Controls (placeholder) */}
-                    <div className="bg-gray-400 w-[500px] h-[200px] flex items-center justify-center text-white text-lg font-bold rounded">
-                      <CameraController
-                        id={system_id!}
-                        activeCamera={{mod: selectedCamera!}}
-                      ></CameraController>
-                    </div>
-
-                    {/* Camera Presets */}
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-semibold text-right text-gray-800 mb-2">
-                        Camera Presets
-                      </h4>
-                      {/* Camera Presets from camera 1*/}
-                      {cams["Camera_1"].presets.map((preset) => (
-                        <button
-                          key={preset}
-                          className="w-28 bg-gray-100 text-gray-800 py-2 rounded text-sm font-medium hover:bg-gray-200"
-                        >
-                          {preset}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                  <CameraTab></CameraTab>
               )}
 
               <div className="mt-6">
@@ -580,48 +425,6 @@ function Section({
           </button>
         ))}
       </div>
-    </div>
-  );
-}
-
-function MicControl({ mic }: { mic: number }) {
-  // const isEven = mic % 2 === 0;
-  const muted = mic % 2 !== 0;
-  const volume = muted ? 0 : 65;
-
-  return (
-    <div className="border border-[#999] rounded-lg p-4">
-      <div className="flex items-center justify-between">
-        <h4 className="font-semibold mb-2">Mic {mic} volume (output)</h4>
-        <span className="font-bold text-blue-600">{volume}%</span>
-      </div>
-      <div className="flex items-center justify-between mb-2">
-        <Icon
-          icon="material-symbols:volume-mute-outline-rounded"
-          width={48}
-          height={48}
-        ></Icon>
-        <input
-          type="range"
-          className="mr-2 w-full range rounded-3xl [--range-thumb:white] text-blue-600 touch-none"
-          defaultValue={60}
-        />
-        <Icon
-          icon="material-symbols:volume-up-outline-rounded"
-          width={48}
-          height={48}
-        ></Icon>
-        {/*<Volume2 className="h-24 w-24"></Volume2>*/}
-      </div>
-      <button
-        className={`btn w-full h-[64px] rounded-lg text-xl font-medium ${
-          muted
-            ? "bg-gray-800 text-white"
-            : "text-avit-grey-80 bg-gray-100 border-gray-100"
-        }`}
-      >
-        {muted ? "Unmute Mic" : "Mute Mic"}
-      </button>
     </div>
   );
 }
