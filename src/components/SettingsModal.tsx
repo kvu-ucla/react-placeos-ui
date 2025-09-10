@@ -450,7 +450,14 @@ export default function SettingsModal({
                       Active Camera
                     </label>
                     <div className="bg-gray-100 text-gray-700 px-4 py-3 rounded w-fit">
-                      Front Camera
+                      <div className="dropdown dropdown-bottom dropdown-center">
+                        <div tabIndex={0} role="button" className="btn m-1">Cameras</div>
+                        <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                          {Object.values(cams).map((cam) => (
+                              <li><a>{cam.camera_name}</a></li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
                   </div>
 
