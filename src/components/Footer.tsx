@@ -80,7 +80,7 @@ export default function Footer() {
           )}
           <div className="ml-4 w-[500px] min-h-[48px] overflow-visible">
             <Slider.Root
-                className="relative flex items-center select-none touch-none w-full h-14"
+                className="relative flex items-center select-none touch-none w-full h-16"
                 min={800}
                 max={1200}
                 step={10}
@@ -88,11 +88,11 @@ export default function Footer() {
                 onValueChange={([val]) => setValue(val)}
                 onValueCommit={() => handleRelease()}
             >
-              <Slider.Track className="relative grow rounded-full h-5 bg-gray-300">
+              <Slider.Track className="relative grow rounded-full h-6 bg-gray-300">
                 <Slider.Range className="absolute h-full bg-blue-500 rounded-full" />
               </Slider.Track>
               <Slider.Thumb
-                  className="block w-8 h-8 bg-white border-2 border-blue-500 rounded-full shadow-md hover:scale-110 transition-transform focus:outline-none focus:ring-4 focus:ring-blue-500"
+                  className="block w-12 h-12 bg-white border-2 border-blue-500 rounded-full shadow-md hover:scale-110 transition-transform focus:outline-none focus:ring-6 focus:ring-blue-500"
                   aria-label="Volume"
               />
             </Slider.Root>
