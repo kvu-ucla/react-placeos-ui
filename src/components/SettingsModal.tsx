@@ -16,6 +16,7 @@ export default function SettingsModal({
   const {
     //TODO add mics
     cams,
+    selectedCamera,
     volume,
     volumeMute,
     toggleMasterMute,
@@ -25,7 +26,6 @@ export default function SettingsModal({
   } = useZoomContext();
   const { system_id } = useParams();
   const [activeTab, setActiveTab] = useState<TabSection>(initialTab);
-  const [selectedCamera, setSelectedCamera] = useState<string>();
 
   const [value, setValue] = useState(volume);
   const [percentage, setPercentage] = useState(0);
@@ -47,19 +47,12 @@ export default function SettingsModal({
     let percent = (100 * (volume - 800)) / (1200 - 800);
     setPercentage(Math.round(percent));
   }, [value, volume]);
-
-  //set camera 1 by default
-  useEffect(() => {
-    setSelectedCamera(cams['Camera_1'].camera_id);
-  }, []);
   
    const cameraSelection = (camera_id: string) => {
-     setSelectedCamera(camera_id);
      (document.activeElement as HTMLElement)?.blur()
      const mod = getModule(system_id!, 'System');
      if (!mod) return;
      mod.execute('selected_camera', [camera_id]);
-     
   }
 
   return (

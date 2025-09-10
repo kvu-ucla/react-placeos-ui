@@ -116,6 +116,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   const [timeJoined, setTimeJoined] = useState<number>(0);
   const [mics, SetMics] = useState<Microphone[]>([]);
   const [cams, setCams] = useState<CameraMap>({});
+  const [selectedCamera, setSelectedCamera] = useState<string>();
 
   type CameraMap = Record<string, Camera>;
 
@@ -309,6 +310,11 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
         console.log("mics?: ", val);
       },
     );
+    
+    //bind selected camera
+    bindAndListen('selected_camera', getModule(systemId, "System"), (camera_id: string) => {
+      setSelectedCamera(camera_id);
+    })
 
     //bind local cameras for control and preset info. first, get the list of available cameras
     bindAndListen(
@@ -428,6 +434,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     adjustMasterVolume,
     toggleMasterMute,
     mics,
+    selectedCamera,
     cams,
     currentMeeting,
     nextMeeting,
