@@ -44,7 +44,7 @@ export default function SettingsModal({
 
           <div className="flex mt-4 space-x-6">
             {/* Sidebar */}
-            <div className="w-[248px] space-y-2">
+            <div className="w-64 space-y-2">
               <Section
                 label="Audio"
                 tabs={audioTabs}
