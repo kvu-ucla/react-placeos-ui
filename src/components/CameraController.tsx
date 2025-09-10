@@ -21,11 +21,18 @@ function CameraController({
   const tiltRef = useRef<JoystickTilt>(tilt);
   const activeCamera = useRef<ActiveCamera>(initialCamera);
   const moveTimeout = useRef<NodeJS.Timeout | null>(null);
-
-  // Sync refs when state changes
+  
+  useEffect(() => {
+    activeCamera.current = initialCamera;
+  }, [initialCamera]);
+  
   useEffect(() => {
     panRef.current = pan;
   }, [pan]);
+
+  useEffect(() => {
+    tiltRef.current = tilt;
+  }, [tilt]);
 
   useEffect(() => {
     tiltRef.current = tilt;
