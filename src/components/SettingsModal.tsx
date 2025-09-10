@@ -25,6 +25,7 @@ export default function SettingsModal({
   } = useZoomContext();
   const { system_id } = useParams();
   const [activeTab, setActiveTab] = useState<TabSection>(initialTab);
+  const [selectedCamera, setSelectedCamera] = useState<string>();
 
   const [value, setValue] = useState(volume);
   const [percentage, setPercentage] = useState(0);
@@ -39,6 +40,7 @@ export default function SettingsModal({
   const audioTabs: TabSection[] = ["Volume", "Sources"];
   const videoTabs: TabSection[] = ["Display"];
   const meetingTabs: TabSection[] = ["Status", "View", "Camera"];
+  
 
   useEffect(() => {
     if (!volume) return;
@@ -46,19 +48,18 @@ export default function SettingsModal({
     setPercentage(Math.round(percent));
   }, [value, volume]);
 
+  //set camera 1 by default
   useEffect(() => {
-    console.log("mics from settings :", mics);
-  }, [mics]);
-
-  useEffect(() => {
-    console.log("cams from settings :", cams);
-  }, [cams]);
+    setSelectedCamera(cams['Camera_1'].camera_id);
+  }, []);
   
    const cameraSelection = (camera_id: string) => {
+     setSelectedCamera(camera_id);
      (document.activeElement as HTMLElement)?.blur()
      const mod = getModule(system_id!, 'System');
      if (!mod) return;
      mod.execute('selected_camera', [camera_id]);
+     
   }
 
   return (
@@ -499,7 +500,7 @@ export default function SettingsModal({
                     <div className="bg-gray-400 w-[500px] h-[200px] flex items-center justify-center text-white text-lg font-bold rounded">
                       <CameraController
                         id={system_id!}
-                        activeCamera={{ mod: "Camera_2" }}
+                        activeCamera={{mod: selectedCamera!}}
                       ></CameraController>
                     </div>
 
