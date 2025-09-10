@@ -14,7 +14,7 @@ export default function SettingsModal({
   initialTab?: TabSection;
 }) {
   const {
-    mics,
+    //TODO add mics
     cams,
     volume,
     volumeMute,
