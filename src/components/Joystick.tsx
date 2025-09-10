@@ -28,8 +28,8 @@ interface JoystickProps {
 const eventToPoint = (event: MouseEvent | TouchEvent): Point => {
   if ("touches" in event) {
     return event.touches.length
-      ? { x: event.touches[0].clientX, y: event.touches[0].clientY }
-      : { x: -1, y: -1 };
+        ? { x: event.touches[0].clientX, y: event.touches[0].clientY }
+        : { x: -1, y: -1 };
   }
   return { x: event.clientX, y: event.clientY };
 };
@@ -49,22 +49,19 @@ export default function Joystick({ onPanChange, onTiltChange }: JoystickProps) {
       y: box.top + box.height / 2,
     };
 
-    const angle =
-      (Math.atan2(point.y - center.y, point.x - center.x) * 180) / Math.PI;
+    const dx = point.x - center.x;
+    const dy = point.y - center.y;
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
 
-    const newTilt: JoystickTilt =
-      angle >= 150 || angle <= -150 || (angle > -30 && angle < 30)
-        ? JoystickTilt.Stop
-        : angle > 0
-          ? JoystickTilt.Down
-          : JoystickTilt.Up;
+    let newPan: JoystickPan = JoystickPan.Stop;
+    let newTilt: JoystickTilt = JoystickTilt.Stop;
 
-    const newPan: JoystickPan =
-      (angle >= 60 && angle <= 120) || (angle <= -60 && angle >= -120)
-        ? JoystickPan.Stop
-        : angle > 90 || angle < -90
-          ? JoystickPan.Left
-          : JoystickPan.Right;
+    if (absDx > absDy) {
+      newPan = dx < 0 ? JoystickPan.Left : JoystickPan.Right;
+    } else if (absDy > absDx) {
+      newTilt = dy < 0 ? JoystickTilt.Up : JoystickTilt.Down;
+    }
 
     if (newTilt !== tilt) {
       setTilt(newTilt);
@@ -111,47 +108,47 @@ export default function Joystick({ onPanChange, onTiltChange }: JoystickProps) {
 
   const thumbTransform = () => {
     const x =
-      pan === JoystickPan.Stop
-        ? "0"
-        : pan === JoystickPan.Left
-          ? "-50%"
-          : "50%";
+        pan === JoystickPan.Stop
+            ? "0"
+            : pan === JoystickPan.Left
+                ? "-50%"
+                : "50%";
     const y =
-      tilt === JoystickTilt.Stop
-        ? "0"
-        : tilt === JoystickTilt.Up
-          ? "-50%"
-          : "50%";
+        tilt === JoystickTilt.Stop
+            ? "0"
+            : tilt === JoystickTilt.Up
+                ? "-50%"
+                : "50%";
     return `translate(${x}, ${y})`;
   };
 
   return (
-    <div
-      ref={panningRef}
-      onMouseDown={startPanMouse}
-      onTouchStart={startPanTouch}
-      onContextMenu={(e) => e.preventDefault()}
-      onClick={stopPan}
-      className="relative h-48 w-48 rounded-full bg-base-300 text-white"
-    >
-      <div className="absolute inset-0 flex items-center text-5xl">
-        <span style={{ transform: "translateX(-.5rem)" }}>◀</span>
+      <div
+          ref={panningRef}
+          onMouseDown={startPanMouse}
+          onTouchStart={startPanTouch}
+          onContextMenu={(e) => e.preventDefault()}
+          onClick={stopPan}
+          className="relative h-64 w-64 rounded-full bg-base-300 text-white"
+      >
+        <div className="absolute inset-0 flex items-center text-6xl">
+          <span style={{ transform: "translateX(-.5rem)" }}>◀</span>
+        </div>
+        <div className="absolute inset-0 flex items-center justify-end text-6xl">
+          <span style={{ transform: "translateX(.5rem)" }}>▶</span>
+        </div>
+        <div className="absolute inset-0 flex justify-center text-6xl">
+          <span style={{ transform: "translateY(-.5rem)" }}>▲</span>
+        </div>
+        <div className="absolute inset-0 flex items-end justify-center text-6xl">
+          <span style={{ transform: "translateY(.5rem)" }}>▼</span>
+        </div>
+        <div className="absolute bottom-16 left-16 right-16 top-16 flex items-center justify-center rounded-full bg-base-100">
+          <div
+              className="h-16 w-16 rounded-full bg-neutral"
+              style={{ transform: thumbTransform() }}
+          />
+        </div>
       </div>
-      <div className="absolute inset-0 flex items-center justify-end text-5xl">
-        <span style={{ transform: "translateX(.5rem)" }}>▶</span>
-      </div>
-      <div className="absolute inset-0 flex justify-center text-5xl">
-        <span style={{ transform: "translateY(-.5rem)" }}>▲</span>
-      </div>
-      <div className="absolute inset-0 flex items-end justify-center text-5xl">
-        <span style={{ transform: "translateY(.5rem)" }}>▼</span>
-      </div>
-      <div className="absolute bottom-12 left-12 right-12 top-12 flex items-center justify-center rounded-full bg-base-100">
-        <div
-          className="h-12 w-12 rounded-full bg-neutral"
-          style={{ transform: thumbTransform() }}
-        />
-      </div>
-    </div>
   );
 }

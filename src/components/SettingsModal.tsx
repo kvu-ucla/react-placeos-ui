@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react";
 import { useZoomContext } from "../hooks/ZoomContext.tsx";
 import CameraController from "./CameraController.tsx";
 import { useParams } from "react-router-dom";
+import {getModule} from "@placeos/ts-client";
 
 export default function SettingsModal({
   onClose,
@@ -52,6 +53,13 @@ export default function SettingsModal({
   useEffect(() => {
     console.log("cams from settings :", cams);
   }, [cams]);
+  
+   const cameraSelection = (camera_id: string) => {
+     (document.activeElement as HTMLElement)?.blur()
+     const mod = getModule(system_id!, 'System');
+     if (!mod) return;
+     mod.execute('select_camera', [camera_id]);
+  }
 
   return (
     <div className="modal modal-open bg-black/40">
@@ -474,8 +482,8 @@ export default function SettingsModal({
                       >
                         {Object.values(cams).map((cam) => (
                           <li
-                            onClick={() =>
-                              (document.activeElement as HTMLElement)?.blur()
+                            onClick={ () =>
+                                cameraSelection(cam.camera_id)
                             }
                           >
                             <a>{cam.camera_name}</a>
