@@ -226,8 +226,8 @@ export function useControlState(
     }
     else
     {
-      await mixer.execute("set_preset", [2]);
-      await zoom.execute("call_disconnect");
+      mixer.execute("set_preset", [2]);
+      zoom.execute("call_disconnect");
     }
   };
 
