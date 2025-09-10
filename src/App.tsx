@@ -6,6 +6,7 @@ import MainView from "./components/MainView";
 import { useAuth } from "./AuthContext";
 import { Route, Routes } from "react-router-dom";
 import BootstrapPage from "./BootstrapPage";
+import {ToastContainer} from "react-toastify";
 
 function App() {
   const { isAuthenticated, loading } = useAuth()!;
@@ -32,6 +33,16 @@ function App() {
           )}
           {/* You could add a catch-all or a "not found" page here */}
         </Routes>
+        <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            pauseOnHover
+            draggable
+            theme="light"
+        />  
       </main>
     </>
   );
