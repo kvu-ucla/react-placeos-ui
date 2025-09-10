@@ -28,7 +28,7 @@ export function CameraTab() {
                 </label>
                 <div className="dropdown dropdown-bottom dropdown-center w-full">
                     <div tabIndex={0} role="button" className="w-full text-3xl h-15 btn m-1">
-                        Cameras
+                        {selectedCamera ?? 'Select a camera to control'}
                     </div>
                     <ul
                         tabIndex={0}
@@ -58,7 +58,7 @@ export function CameraTab() {
 
                 {/* Camera Presets */}
                 <div className="flex flex-col justify-center items-center w-[300px] space-y-3">
-                    <h4 className="text-sm font-semibold text-right text-gray-800 mb-2">
+                    <h4 className="font-semibold text-right text-gray-800 mb-2">
                         Camera Presets
                     </h4>
                     {/* Camera Presets from camera 1*/}
