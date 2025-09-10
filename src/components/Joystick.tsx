@@ -1,19 +1,20 @@
 import React, { useRef, useState } from "react";
 
-export const JoystickTilt = {
-  Down: "down",
+// Unified 8-way + stop enum
+export const JoystickDirection = {
   Up: "up",
-  Stop: "stop",
-} as const;
-
-export const JoystickPan = {
+  Down: "down",
   Left: "left",
   Right: "right",
+  UpLeft: "upleft",
+  UpRight: "upright",
+  DownLeft: "downleft",
+  DownRight: "downright",
   Stop: "stop",
 } as const;
 
-export type JoystickTilt = (typeof JoystickTilt)[keyof typeof JoystickTilt];
-export type JoystickPan = (typeof JoystickPan)[keyof typeof JoystickPan];
+export type JoystickDirection =
+    (typeof JoystickDirection)[keyof typeof JoystickDirection];
 
 interface Point {
   x: number;
@@ -21,8 +22,7 @@ interface Point {
 }
 
 interface JoystickProps {
-  onPanChange?: (pan: JoystickPan) => void;
-  onTiltChange?: (tilt: JoystickTilt) => void;
+  onDirectionChange?: (dir: JoystickDirection) => void;
 }
 
 const eventToPoint = (event: MouseEvent | TouchEvent): Point => {
@@ -34,10 +34,11 @@ const eventToPoint = (event: MouseEvent | TouchEvent): Point => {
   return { x: event.clientX, y: event.clientY };
 };
 
-export default function Joystick({ onPanChange, onTiltChange }: JoystickProps) {
+export default function Joystick({ onDirectionChange }: JoystickProps) {
   const panningRef = useRef<HTMLDivElement>(null);
-  const [pan, setPan] = useState<JoystickPan>(JoystickPan.Stop);
-  const [tilt, setTilt] = useState<JoystickTilt>(JoystickTilt.Stop);
+  const [direction, setDirection] = useState<JoystickDirection>(
+      JoystickDirection.Stop
+  );
 
   const handlePan = (event: MouseEvent | TouchEvent) => {
     const box = panningRef.current?.getBoundingClientRect();
@@ -51,26 +52,28 @@ export default function Joystick({ onPanChange, onTiltChange }: JoystickProps) {
 
     const dx = point.x - center.x;
     const dy = point.y - center.y;
+
+    const threshold = 10;
+    let newDirection: JoystickDirection = JoystickDirection.Stop;
+
     const absDx = Math.abs(dx);
     const absDy = Math.abs(dy);
 
-    let newPan: JoystickPan = JoystickPan.Stop;
-    let newTilt: JoystickTilt = JoystickTilt.Stop;
+    const horizontal =
+        absDx > threshold ? (dx < 0 ? "left" : "right") : "";
+    const vertical =
+        absDy > threshold ? (dy < 0 ? "up" : "down") : "";
 
-    if (absDx > absDy) {
-      newPan = dx < 0 ? JoystickPan.Left : JoystickPan.Right;
-    } else if (absDy > absDx) {
-      newTilt = dy < 0 ? JoystickTilt.Up : JoystickTilt.Down;
-    }
+    const combined = vertical + horizontal; // e.g. "up" + "left" = "upleft"
 
-    if (newTilt !== tilt) {
-      setTilt(newTilt);
-      onTiltChange?.(newTilt);
-    }
+    newDirection =
+        (JoystickDirection as any)[combined] ??
+        (JoystickDirection as any)[horizontal || vertical] ??
+        JoystickDirection.Stop;
 
-    if (newPan !== pan) {
-      setPan(newPan);
-      onPanChange?.(newPan);
+    if (newDirection !== direction) {
+      setDirection(newDirection);
+      onDirectionChange?.(newDirection);
     }
   };
 
@@ -100,26 +103,23 @@ export default function Joystick({ onPanChange, onTiltChange }: JoystickProps) {
   };
 
   const stopPan = () => {
-    setPan(JoystickPan.Stop);
-    setTilt(JoystickTilt.Stop);
-    onPanChange?.(JoystickPan.Stop);
-    onTiltChange?.(JoystickTilt.Stop);
+    setDirection(JoystickDirection.Stop);
+    onDirectionChange?.(JoystickDirection.Stop);
   };
 
   const thumbTransform = () => {
-    const x =
-        pan === JoystickPan.Stop
-            ? "0"
-            : pan === JoystickPan.Left
-                ? "-50%"
-                : "50%";
-    const y =
-        tilt === JoystickTilt.Stop
-            ? "0"
-            : tilt === JoystickTilt.Up
-                ? "-50%"
-                : "50%";
-    return `translate(${x}, ${y})`;
+    const map: Record<JoystickDirection, string> = {
+      stop: "translate(0, 0)",
+      up: "translate(0, -50%)",
+      down: "translate(0, 50%)",
+      left: "translate(-50%, 0)",
+      right: "translate(50%, 0)",
+      upleft: "translate(-50%, -50%)",
+      upright: "translate(50%, -50%)",
+      downleft: "translate(-50%, 50%)",
+      downright: "translate(50%, 50%)",
+    };
+    return map[direction];
   };
 
   return (

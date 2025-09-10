@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
-import Joystick, { JoystickPan, JoystickTilt } from "./Joystick";
+import Joystick, { JoystickDirection } from "./Joystick";
+import ZoomController from "./ZoomController";
 import { getModule } from "@placeos/ts-client";
 
 interface ActiveCamera {
@@ -8,37 +9,28 @@ interface ActiveCamera {
 }
 
 function CameraController({
-  id,
-  activeCamera: initialCamera,
-}: {
+                            id,
+                            activeCamera: initialCamera,
+                          }: {
   id: string;
   activeCamera: ActiveCamera;
 }) {
-  const [pan, setPan] = useState<JoystickPan>(JoystickPan.Stop);
-  const [tilt, setTilt] = useState<JoystickTilt>(JoystickTilt.Stop);
+  const [direction, setDirection] = useState<JoystickDirection>(JoystickDirection.Stop);
+  const directionRef = useRef<JoystickDirection>(direction);
+  const zoomRef = useRef<"tele" | "wide" | null>(null);
 
-  const panRef = useRef<JoystickPan>(pan);
-  const tiltRef = useRef<JoystickTilt>(tilt);
   const activeCamera = useRef<ActiveCamera>(initialCamera);
   const moveTimeout = useRef<NodeJS.Timeout | null>(null);
-  
+
   useEffect(() => {
     activeCamera.current = initialCamera;
   }, [initialCamera]);
-  
-  useEffect(() => {
-    panRef.current = pan;
-  }, [pan]);
 
   useEffect(() => {
-    tiltRef.current = tilt;
-  }, [tilt]);
+    directionRef.current = direction;
+  }, [direction]);
 
-  useEffect(() => {
-    tiltRef.current = tilt;
-  }, [tilt]);
-
-  const moveCamera = () => {
+  const moveCamera = (command: JoystickDirection | "tele" | "wide" | "stop") => {
     if (!activeCamera.current) return;
 
     if (moveTimeout.current) clearTimeout(moveTimeout.current);
@@ -48,35 +40,38 @@ function CameraController({
       const module = getModule(id, mod);
       if (!module) return;
 
-      await module.execute("stop", index !== undefined ? [index] : []);
+      const args = index !== undefined ? [index] : [];
 
-      if (tiltRef.current !== JoystickTilt.Stop) {
-        await module.execute(
-          "move",
-          index !== undefined ? [tiltRef.current, index] : [tiltRef.current],
-        );
-      }
+      // Stop first
+      await module.execute("stop", args);
 
-      if (panRef.current !== JoystickPan.Stop) {
-        await module.execute(
-          "move",
-          index !== undefined ? [panRef.current, index] : [panRef.current],
-        );
-      }
+      if (command === "stop") return;
+
+      const moveArgs = index !== undefined ? [command, index] : [command];
+      await module.execute("move_all", moveArgs);
     }, 50);
   };
 
+  const handleDirectionChange = (newDir: JoystickDirection) => {
+    setDirection(newDir);
+    moveCamera(newDir);
+  };
+
+  const handleZoomStart = (dir: "tele" | "wide") => {
+    zoomRef.current = dir;
+    moveCamera(dir);
+  };
+
+  const handleZoomStop = () => {
+    zoomRef.current = null;
+    moveCamera("stop");
+  };
+
   return (
-    <Joystick
-      onPanChange={(newPan) => {
-        setPan(newPan);
-        moveCamera();
-      }}
-      onTiltChange={(newTilt) => {
-        setTilt(newTilt);
-        moveCamera();
-      }}
-    />
+      <div className="flex flex-col items-center gap-4">
+        <Joystick onDirectionChange={handleDirectionChange} />
+        <ZoomController onZoomStart={handleZoomStart} onZoomStop={handleZoomStop} />
+      </div>
   );
 }
 
