@@ -86,6 +86,7 @@ export default function Footer() {
                 step={10}
                 defaultValue={[value!]}
                 onValueChange={([val]) => setValue(val)}
+                onValueCommit={() => handleRelease()}
             >
               <Slider.Track className="bg-gray-300 relative grow rounded-full h-[4px]">
                 <Slider.Range className="absolute bg-blue-500 rounded-full h-full" />
