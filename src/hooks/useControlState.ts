@@ -212,10 +212,25 @@ export function useControlState(
   }, [systemId, moduleAlias]);
 
   const togglePower = async () => {
-    const mod = getModule(systemId, moduleAlias);
-    await mod.execute("power", [!activeRef.current]);
+    const system = getModule(systemId, moduleAlias);
+    await system.execute("power", [!activeRef.current]);
+
+    const mixer = getModule(systemId, 'Mixer_1');
+    
+    const zoom = getModule(systemId, 'ZoomCSAPI_1');
 
     console.log("activeRef State", activeRef.current);
+    
+    if (activeRef.current) {
+      
+      await mixer.execute("set_preset", [1]);
+      await zoom.execute("call_disconnect");
+    }
+    else
+    {
+      await mixer.execute("set_preset", [2]);
+      await zoom.execute("call_disconnect");
+    }
   };
 
   const setVolume = async (val: number) => {
