@@ -442,24 +442,22 @@ export default function SettingsModal({
               {activeTab === "Camera" && (
                 <div className="border rounded-lg p-6 space-y-6">
                   {/* Section Title */}
-                  <h3 className="text-xl font-semibold">Camera Management</h3>
+                  <h2 className="text-xl font-semibold">Camera Management</h2>
 
                   {/* Active Camera Dropdown */}
                   <div>
                     <label className="block text-gray-800 font-medium mb-2">
                       Active Camera
                     </label>
-                    <div className="bg-gray-100 text-gray-700 px-4 py-3 rounded w-fit">
-                      <div className="dropdown dropdown-bottom dropdown-center">
-                        <div tabIndex={0} role="button" className="btn m-1">Cameras</div>
-                        <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-                          {Object.values(cams).map((cam) => (
-                              <li onClick={
-                                () => (document.activeElement as HTMLElement)?.blur()
-                              }><a>{cam.camera_name}</a></li>
-                          ))}
-                        </ul>
-                      </div>
+                    <div className="dropdown dropdown-bottom dropdown-center w-full">
+                      <div tabIndex={0} role="button" className="btn m-1">Cameras</div>
+                      <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                        {Object.values(cams).map((cam) => (
+                            <li onClick={
+                              () => (document.activeElement as HTMLElement)?.blur()
+                            }><a>{cam.camera_name}</a></li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
 
@@ -475,7 +473,8 @@ export default function SettingsModal({
                       <h4 className="text-sm font-semibold text-right text-gray-800 mb-2">
                         Camera Presets
                       </h4>
-                      {["Preset 1", "Preset 2", "Preset 3", "Preset 4"].map(
+                      {/* Camera Presets from camera 1*/}
+                      {cams["Camera_1"].presets.map(
                         (preset) => (
                           <button
                             key={preset}
