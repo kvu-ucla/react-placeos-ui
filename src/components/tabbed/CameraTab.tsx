@@ -29,7 +29,7 @@ export function CameraTab() {
                 </label>
                 <div className="dropdown dropdown-bottom dropdown-center w-full">
                     <div tabIndex={0} role="button" className="w-full text-3xl h-15 btn m-1">
-                        {cams[selectedCamera!].camera_name ?? 'Select a camera to control'}
+                        cams?.[selectedCamera ?? -1]?.camera_name ?? 'Select a camera to control'
                     </div>
                     <ul
                         tabIndex={0}
