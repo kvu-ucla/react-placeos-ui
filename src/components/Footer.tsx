@@ -97,7 +97,7 @@ export default function Footer() {
               />
             </Slider.Root>
           </div>
-
+        </div>
 
         {/*<input*/}
         {/*  type="range"*/}
