@@ -1,8 +1,8 @@
-import CameraController from "../CameraController.tsx";
+import CameraController from "../CameraController";
 import {getModule} from "@placeos/ts-client";
 import {useZoomContext} from "../../hooks/ZoomContext";
 import {useParams} from "react-router-dom";
-import {toast} from "react-toastify";
+import {CameraPresetButton} from "./CameraPresetButton";
 
 export function CameraTab() {
     const {
@@ -16,8 +16,6 @@ export function CameraTab() {
         if (!mod) return;
         mod.execute('selected_camera', [camera_id]);
     }
-
-    const notify = (preset: string) => toast(cams[selectedCamera!].camera_name + ' ' + preset + ' recalled!');
     
     return (
         <div className="border rounded-lg p-6 space-y-6">
@@ -66,16 +64,17 @@ export function CameraTab() {
                     </h4>
                     {/* Camera Presets from camera 1*/}
                     {cams[selectedCamera!].presets.map((preset) => (
-                        <button
-                            onClick={ () => notify(preset)}
+                        <CameraPresetButton
                             key={preset}
-                            className="bg-gray-100 text-gray-800 py-2 rounded w-full h-15 font-medium hover:bg-gray-200"
-                        >
-                            {preset}
-                        </button>
+                            preset={preset}
+                            system_id={system_id!}
+                            selectedCamera={selectedCamera!}
+                            cams={cams}
+                        />
                     ))}
                 </div>
             </div>
         </div>
     );
 }
+
