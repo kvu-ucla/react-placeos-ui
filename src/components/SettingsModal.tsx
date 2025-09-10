@@ -2,6 +2,8 @@ import {useEffect, useState} from "react";
 import type { TabSection } from "../models/Modal";
 import { Icon } from "@iconify/react";
 import {useZoomContext} from "../hooks/ZoomContext.tsx";
+import CameraController from "./CameraController.tsx";
+import {useParams} from "react-router-dom";
 
 
 
@@ -22,6 +24,7 @@ export default function SettingsModal({
     setMasterMute,
     currentMeeting  
   } = useZoomContext();
+  const { system_id } = useParams();
   const [activeTab, setActiveTab] = useState<TabSection>(initialTab);
 
   const [value, setValue] = useState(volume);
@@ -465,7 +468,7 @@ export default function SettingsModal({
                   <div className="flex justify-between items-start gap-4">
                     {/* Pan Zoom Tilt Controls (placeholder) */}
                     <div className="bg-gray-400 w-[500px] h-[200px] flex items-center justify-center text-white text-lg font-bold rounded">
-                      Pan Zoom Tilt Controls
+                      <CameraController id={system_id!} activeCamera={{mod: 'Camera_1'}}></CameraController>
                     </div>
 
                     {/* Camera Presets */}
