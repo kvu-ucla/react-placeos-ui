@@ -31,6 +31,19 @@ function CameraController({
     tiltRef.current = tilt;
   }, [tilt]);
 
+  function directionToSpeed(direction: JoystickPan | JoystickTilt): number {
+    switch (direction) {
+      case JoystickPan.Left:
+      case JoystickTilt.Up:
+        return -100;
+      case JoystickPan.Right:
+      case JoystickTilt.Down:
+        return 100;
+      default:
+        return 0;
+    }
+  }
+
   const moveCamera = () => {
     if (!activeCamera.current) return;
 
@@ -41,20 +54,14 @@ function CameraController({
       const module = getModule(id, mod);
       if (!module) return;
 
-      await module.execute("stop", index !== undefined ? [index] : []);
+      const pan_speed = directionToSpeed(panRef.current);
+      const tilt_speed = directionToSpeed(tiltRef.current);
+      const args = [pan_speed, tilt_speed, index ?? 0];
 
-      if (tiltRef.current !== JoystickTilt.Stop) {
-        await module.execute(
-          "move",
-          index !== undefined ? [tiltRef.current, index] : [tiltRef.current],
-        );
-      }
-
-      if (panRef.current !== JoystickPan.Stop) {
-        await module.execute(
-          "move",
-          index !== undefined ? [panRef.current, index] : [panRef.current],
-        );
+      try {
+        await module.execute('joystick', args);
+      } catch (e) {
+        console.error('Joystick command failed:', e);
       }
     }, 50);
   };
