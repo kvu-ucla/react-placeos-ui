@@ -1,7 +1,7 @@
 // src/components/SessionControls.tsx
 import { Icon } from "@iconify/react";
 import { useModalContext } from "../hooks/ModalContext";
-import {useZoomContext} from "../hooks/ZoomContext";
+import { useZoomContext } from "../hooks/ZoomContext";
 
 export const IconType = {
   Mic: {
@@ -19,7 +19,7 @@ export const IconType = {
   Gallery: {
     On: "material-symbols:person-outline-rounded",
     Off: "material-symbols:person-off-outline-rounded",
-  }
+  },
 };
 
 export default function SessionControls() {
@@ -27,14 +27,15 @@ export default function SessionControls() {
     callStatus,
     recording,
     sharing,
-      gallery,
-      toggleGallery,
+    gallery,
+    toggleGallery,
     toggleSharing,
     toggleAudioMuteAll,
     toggleVideoMuteAll,
   } = useZoomContext();
   const { showModal } = useModalContext();
-  const isSharing = sharing?.isDirectPresentationConnected || sharing?.isSharingBlackMagic;
+  const isSharing =
+    sharing?.isDirectPresentationConnected || sharing?.isSharingBlackMagic;
   const isVideoMuted = callStatus?.isCamMuted;
   const isMicAudioMuted = callStatus?.isMicMuted;
   const isJoined = callStatus?.status === "IN_MEETING";
@@ -53,19 +54,19 @@ export default function SessionControls() {
           </div>
         )}
         {!isJoined && (
-            <div className="inline-flex justify-evenly items-center bg-avit-blue rounded-lg py-4 px-8">
-              <div className="relative mr-4">
-                <div className="absolute inline-flex h-4 w-4 rounded-full bg-gray-400 opacity-75"></div>
-                <div className="relative h-4 w-4 bg-gray-400 rounded-full"></div>
-              </div>
-              <span className="font-semibold">Not Joined</span>
+          <div className="inline-flex justify-evenly items-center bg-avit-blue rounded-lg py-4 px-8">
+            <div className="relative mr-4">
+              <div className="absolute inline-flex h-4 w-4 rounded-full bg-gray-400 opacity-75"></div>
+              <div className="relative h-4 w-4 bg-gray-400 rounded-full"></div>
             </div>
+            <span className="font-semibold">Not Joined</span>
+          </div>
         )}
       </div>
 
       <div className="grid grid-cols-5 gap-6 items-stretch mb-4">
-        <ControlCard 
-            id="microphone"
+        <ControlCard
+          id="microphone"
           label="Microphone: "
           icon={IconType.Mic}
           disabled={recording}
@@ -74,7 +75,7 @@ export default function SessionControls() {
           detailsButton={() => showModal("settings", { tab: "Volume" })}
         />
         <ControlCard
-            id="camera"
+          id="camera"
           label="Camera: "
           icon={IconType.Camera}
           disabled={recording}
@@ -83,21 +84,21 @@ export default function SessionControls() {
           detailsButton={() => showModal("settings", { tab: "Camera" })}
         />
         <ControlCard
-            id="screenshare"
+          id="screenshare"
           label="Screen Share: "
           icon={IconType.Share}
           buttonAction={() => toggleSharing()}
           buttonState={!isSharing}
         />
         <ControlCard
-            id="gallery"
-            label="Gallery: "
-            icon={IconType.Gallery}
-            buttonAction={() => toggleGallery()}
-            buttonState={gallery}
+          id="gallery"
+          label="Gallery: "
+          icon={IconType.Gallery}
+          buttonAction={() => toggleGallery()}
+          buttonState={gallery}
         />
         <ControlCard
-            id="meeting-ctrls"
+          id="meeting-ctrls"
           label="Meeting Controls"
           buttonAction={() => showModal("settings", { tab: "Status" })}
         />
@@ -106,9 +107,11 @@ export default function SessionControls() {
       <h2 className="font-semibold mb-4">Join from your device</h2>
       <div id="zoom-join" className="grid grid-cols-2 gap-4">
         <div className="collapse collapse-arrow p-2 bg-gray-200/20 border-base-200/20 backdrop-blur-xl">
-          <input type="radio" name="my-accordion-1"/>
-          <div className="collapse-title font-semibold inline-flex after:border-r-4 after:border-b-4 after:border-current
-           after:!w-8 after:!h-8 after:!top-12 after:!right-12">
+          <input type="radio" name="my-accordion-1" />
+          <div
+            className="collapse-title font-semibold inline-flex after:border-r-4 after:border-b-4 after:border-current
+           after:!w-8 after:!h-8 after:!top-12 after:!right-12"
+          >
             <img
               src={import.meta.env.BASE_URL + "zoom_logo_white.svg"}
               alt="zoom logo"
@@ -128,17 +131,26 @@ export default function SessionControls() {
                 present.
               </li>
               <li>
-                Tap "Share Screen" and input Sharing key: <span className="font-semibold">{sharing?.directPresentationSharingKey}</span>
+                Tap "Share Screen" and input Sharing key:{" "}
+                <span className="font-semibold">
+                  {sharing?.directPresentationSharingKey}
+                </span>
               </li>
             </ol>
           </div>
         </div>
 
         <div className="collapse collapse-arrow p-2 bg-gray-200/20 border-base-200/20 backdrop-blur-xl">
-          <input type="radio" name="my-accordion-1"/>
-          <div className="collapse-title font-semibold inline-flex after:border-r-4 after:border-b-4 after:border-current
-           after:!w-8 after:!h-8 after:!top-12 after:!right-12">
-            <Icon icon="material-symbols:cable-rounded" width={64} height={64}></Icon>
+          <input type="radio" name="my-accordion-1" />
+          <div
+            className="collapse-title font-semibold inline-flex after:border-r-4 after:border-b-4 after:border-current
+           after:!w-8 after:!h-8 after:!top-12 after:!right-12"
+          >
+            <Icon
+              icon="material-symbols:cable-rounded"
+              width={64}
+              height={64}
+            ></Icon>
             <div className="flex flex-col ml-4">
               Connect with USB-C / HDMI
               <div className="text-2xl font-normal mt-2">
@@ -164,7 +176,7 @@ export default function SessionControls() {
 }
 
 function ControlCard({
-    id,
+  id,
   label,
   icon,
   disabled,
@@ -188,7 +200,8 @@ function ControlCard({
       onClick={() => {
         if (buttonAction) buttonAction();
       }}
-      id={id} className="w-full h-[206px] btn btn-primary bg-white active:bg-gray-100 p-0 border-none rounded-lg text-avit-grey-80"
+      id={id}
+      className="w-full h-[206px] btn btn-primary bg-white active:bg-gray-100 p-0 border-none rounded-lg text-avit-grey-80"
     >
       <div className="px-8 py-6 w-full h-full flex flex-col items-center justify-center relative">
         {!disabled && detailsButton && (
@@ -259,5 +272,3 @@ function ControlCard({
     </button>
   );
 }
-
-

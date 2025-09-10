@@ -1,11 +1,9 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import type { TabSection } from "../models/Modal";
 import { Icon } from "@iconify/react";
-import {useZoomContext} from "../hooks/ZoomContext.tsx";
+import { useZoomContext } from "../hooks/ZoomContext.tsx";
 import CameraController from "./CameraController.tsx";
-import {useParams} from "react-router-dom";
-
-
+import { useParams } from "react-router-dom";
 
 export default function SettingsModal({
   onClose,
@@ -16,13 +14,13 @@ export default function SettingsModal({
 }) {
   const {
     mics,
-    cams,  
+    cams,
     volume,
     volumeMute,
     toggleMasterMute,
     adjustMasterVolume,
     setMasterMute,
-    currentMeeting  
+    currentMeeting,
   } = useZoomContext();
   const { system_id } = useParams();
   const [activeTab, setActiveTab] = useState<TabSection>(initialTab);
@@ -33,19 +31,19 @@ export default function SettingsModal({
     if (!value) return;
 
     value === 800 ? setMasterMute(true) : setMasterMute(false);
-    
+
     adjustMasterVolume(value);
   };
 
   const audioTabs: TabSection[] = ["Volume", "Sources"];
   const videoTabs: TabSection[] = ["Display"];
   const meetingTabs: TabSection[] = ["Status", "View", "Camera"];
-  
-  useEffect( () => {
+
+  useEffect(() => {
     if (!volume) return;
-    let percent = 100 * (volume - 800) / (1200 - 800);
+    let percent = (100 * (volume - 800)) / (1200 - 800);
     setPercentage(Math.round(percent));
-  }, [value, volume] )
+  }, [value, volume]);
 
   useEffect(() => {
     console.log("mics from settings :", mics);
@@ -57,13 +55,20 @@ export default function SettingsModal({
 
   return (
     <div className="modal modal-open bg-black/40">
-      <div id="settings" className="modal-box bg-white p-8 w-[1547px] h-[1098px] max-w-full rounded-lg">
+      <div
+        id="settings"
+        className="modal-box bg-white p-8 w-[1547px] h-[1098px] max-w-full rounded-lg"
+      >
         <div className="">
           {/* Header */}
           <div className="flex justify-between items-center border-b border-avit-grey pb-8">
             <h2 className="text-4xl font-semibold">Settings</h2>
             <button onClick={onClose} className="btn-ghost text-2xl font-bold ">
-              <Icon icon="material-symbols:close-small-outline-rounded" width={48} height={48}></Icon>
+              <Icon
+                icon="material-symbols:close-small-outline-rounded"
+                width={48}
+                height={48}
+              ></Icon>
             </button>
           </div>
 
@@ -103,7 +108,9 @@ export default function SettingsModal({
                       {/* Row spans full width */}
                       <div className="flex w-full items-center justify-between">
                         <p className="font-semibold">Speaker volume</p>
-                        <span className="text-blue-600 font-bold">{percentage}%</span>
+                        <span className="text-blue-600 font-bold">
+                          {percentage}%
+                        </span>
                       </div>
 
                       {/* Slider row also spans full width */}
@@ -131,12 +138,21 @@ export default function SettingsModal({
                       </div>
                     </div>
                     <div className="flex justify-end items-end">
-                      {volumeMute ? <button onClick={toggleMasterMute} className="btn w-[300px] h-[64px] ml-4 bg-black border-black px-9 py-6 rounded-lg text-xl text-white font-medium">
-                        Unmute Speaker
-                      </button> :
-                      <button onClick={toggleMasterMute} className="btn w-[300px] h-[64px] ml-4 bg-gray-100 border-gray-100 px-9 py-6 rounded-lg text-xl text-avit-grey-80 font-medium">
-                        Mute Speaker
-                      </button>}
+                      {volumeMute ? (
+                        <button
+                          onClick={toggleMasterMute}
+                          className="btn w-[300px] h-[64px] ml-4 bg-black border-black px-9 py-6 rounded-lg text-xl text-white font-medium"
+                        >
+                          Unmute Speaker
+                        </button>
+                      ) : (
+                        <button
+                          onClick={toggleMasterMute}
+                          className="btn w-[300px] h-[64px] ml-4 bg-gray-100 border-gray-100 px-9 py-6 rounded-lg text-xl text-avit-grey-80 font-medium"
+                        >
+                          Mute Speaker
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -155,7 +171,7 @@ export default function SettingsModal({
               {activeTab === "Sources" && (
                 <>
                   <h3 className="font-semibold mb-2">Sources</h3>
-                  
+
                   {/* Speaker Inputs */}
                   <div className="border border-[#999] rounded-lg p-4 space-y-4">
                     <h3 className="text-xl font-semibold flex items-center gap-2">
@@ -206,9 +222,9 @@ export default function SettingsModal({
                       {/* Replace with an actual icon if desired */}
                       <span>
                         <Icon
-                            icon="material-symbols:mic-outline-rounded"
-                            width={48}
-                            height={48}
+                          icon="material-symbols:mic-outline-rounded"
+                          width={48}
+                          height={48}
                         ></Icon>
                       </span>{" "}
                       Microphone inputs
@@ -216,9 +232,9 @@ export default function SettingsModal({
                     <div className="bg-gray-100 text-gray-700 p-3 rounded flex items-center gap-2">
                       <span className="text-avit-grey-80">
                         <Icon
-                            icon="material-symbols:info-rounded"
-                            width={48}
-                            height={48}
+                          icon="material-symbols:info-rounded"
+                          width={48}
+                          height={48}
                         ></Icon>
                       </span>
                       <span className="font-medium">
@@ -249,7 +265,7 @@ export default function SettingsModal({
               {activeTab === "Display" && (
                 <>
                   <h3 className="font-semibold mb-2">Displays</h3>
-                  
+
                   {/* Toggle All Display Screens */}
                   <div className="border border-[#999] text-avit-grey-80 rounded-lg p-4 flex items-center justify-between">
                     <h3 className="text-xl font-semibold">
@@ -271,9 +287,9 @@ export default function SettingsModal({
                       {/* Replace with an actual icon if desired */}
                       <span>
                         <Icon
-                            icon="material-symbols:tv-displays-outline-rounded"
-                            width={48}
-                            height={48}
+                          icon="material-symbols:tv-displays-outline-rounded"
+                          width={48}
+                          height={48}
                         ></Icon>
                       </span>{" "}
                       Left display screen
@@ -281,9 +297,9 @@ export default function SettingsModal({
                     <div className="bg-gray-100 text-gray-700 p-3 rounded flex items-center gap-2">
                       <span className="text-avit-grey-80">
                         <Icon
-                            icon="material-symbols:info-rounded"
-                            width={48}
-                            height={48}
+                          icon="material-symbols:info-rounded"
+                          width={48}
+                          height={48}
                         ></Icon>
                       </span>
                       <span className="font-medium">
@@ -315,9 +331,9 @@ export default function SettingsModal({
                       {/* Replace with an actual icon if desired */}
                       <span>
                         <Icon
-                            icon="material-symbols:tv-displays-outline-rounded"
-                            width={48}
-                            height={48}
+                          icon="material-symbols:tv-displays-outline-rounded"
+                          width={48}
+                          height={48}
                         ></Icon>
                       </span>{" "}
                       Right display screen
@@ -325,9 +341,9 @@ export default function SettingsModal({
                     <div className="bg-gray-100 text-gray-700 p-3 rounded flex items-center gap-2">
                       <span className="text-avit-grey-80">
                         <Icon
-                            icon="material-symbols:info-rounded"
-                            width={48}
-                            height={48}
+                          icon="material-symbols:info-rounded"
+                          width={48}
+                          height={48}
                         ></Icon>
                       </span>
                       <span className="font-medium">
@@ -364,7 +380,6 @@ export default function SettingsModal({
                     </h3>
                     <p className="text-gray-700 font-medium">Active Camera</p>
                   </div>
-
                   {/* Room Info */}
                   <div className="border rounded-md p-4 bg-white">
                     <div className="font-semibold text-black">
@@ -374,7 +389,6 @@ export default function SettingsModal({
                       {currentMeeting?.meetingNumber} &nbsp; • &nbsp; {}
                     </div>
                   </div>
-
                   {/* Tabs and Global Tools */}
                   <div className="flex items-center gap-3">
                     <button className="bg-blue-600 text-white font-bold px-4 py-2 rounded flex items-center gap-1">
@@ -387,7 +401,6 @@ export default function SettingsModal({
                       Host Tools <span>▼</span>
                     </button>
                   </div>
-
                   {/* Global actions */}
                   <div className="flex gap-4">
                     <button className="bg-gray-300 px-4 py-2 rounded text-sm font-semibold">
@@ -397,7 +410,6 @@ export default function SettingsModal({
                       Disable video for all
                     </button>
                   </div>
-
                   {/* Participants list */}
                   //TODO participant list
                 </div>
@@ -453,12 +465,21 @@ export default function SettingsModal({
                       Active Camera
                     </label>
                     <div className="dropdown dropdown-bottom dropdown-center w-full">
-                      <div tabIndex={0} role="button" className="btn m-1">Cameras</div>
-                      <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                      <div tabIndex={0} role="button" className="btn m-1">
+                        Cameras
+                      </div>
+                      <ul
+                        tabIndex={0}
+                        className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+                      >
                         {Object.values(cams).map((cam) => (
-                            <li onClick={
-                              () => (document.activeElement as HTMLElement)?.blur()
-                            }><a>{cam.camera_name}</a></li>
+                          <li
+                            onClick={() =>
+                              (document.activeElement as HTMLElement)?.blur()
+                            }
+                          >
+                            <a>{cam.camera_name}</a>
+                          </li>
                         ))}
                       </ul>
                     </div>
@@ -468,7 +489,10 @@ export default function SettingsModal({
                   <div className="flex justify-between items-start gap-4">
                     {/* Pan Zoom Tilt Controls (placeholder) */}
                     <div className="bg-gray-400 w-[500px] h-[200px] flex items-center justify-center text-white text-lg font-bold rounded">
-                      <CameraController id={system_id!} activeCamera={{mod: 'Camera_1'}}></CameraController>
+                      <CameraController
+                        id={system_id!}
+                        activeCamera={{ mod: "Camera_1" }}
+                      ></CameraController>
                     </div>
 
                     {/* Camera Presets */}
@@ -477,16 +501,14 @@ export default function SettingsModal({
                         Camera Presets
                       </h4>
                       {/* Camera Presets from camera 1*/}
-                      {cams["Camera_1"].presets.map(
-                        (preset) => (
-                          <button
-                            key={preset}
-                            className="w-28 bg-gray-100 text-gray-800 py-2 rounded text-sm font-medium hover:bg-gray-200"
-                          >
-                            {preset}
-                          </button>
-                        ),
-                      )}
+                      {cams["Camera_1"].presets.map((preset) => (
+                        <button
+                          key={preset}
+                          className="w-28 bg-gray-100 text-gray-800 py-2 rounded text-sm font-medium hover:bg-gray-200"
+                        >
+                          {preset}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -496,7 +518,11 @@ export default function SettingsModal({
                 <div className="bg-blue-100 text-blue-900 p-3 text-xl rounded flex items-center justify-left">
                   <div className="flex items-center">
                     <span className="mr-2">
-                      <Icon icon="material-symbols:phone-enabled-outline" width={32} height={32}></Icon>
+                      <Icon
+                        icon="material-symbols:phone-enabled-outline"
+                        width={32}
+                        height={32}
+                      ></Icon>
                     </span>
                     <span>
                       Need help? Call <strong>AV Technical Support</strong> for
