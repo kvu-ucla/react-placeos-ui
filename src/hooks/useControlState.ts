@@ -222,9 +222,7 @@ export function useControlState(
     console.log("activeRef State", activeRef.current);
     
     if (activeRef.current) {
-      
-      await mixer.execute("set_preset", [1]);
-      await zoom.execute("call_disconnect");
+      mixer.execute("set_preset", [1]);
     }
     else
     {
