@@ -125,10 +125,12 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
 
         {/* Thumb control */}
         <div className="absolute bottom-16 left-16 right-16 top-16 flex items-center justify-center rounded-full bg-base-100">
-          <div
-              className="h-16 w-16 rounded-full bg-neutral transition-transform duration-75"
-              style={{ transform: thumbTransform() }}
-          />
+          <div className="relative w-full h-full">
+            <div
+                className="absolute left-1/2 top-1/2 h-16 w-16 rounded-full bg-neutral transition-transform duration-75"
+                style={{ transform: thumbTransform() }}
+            />
+          </div>
         </div>
       </div>
   );
