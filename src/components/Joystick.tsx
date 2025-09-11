@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 
-// Unified 8-way + stop enum
+// ✅ Make sure the object includes ALL values used at runtime
 export const JoystickDirection = {
   Up: "up",
   Down: "down",
@@ -44,7 +44,7 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
     const horizontal = absDx > threshold ? (dx < 0 ? "left" : "right") : "";
     const vertical = absDy > threshold ? (dy < 0 ? "up" : "down") : "";
 
-    const combined = vertical + horizontal;
+    const combined = vertical + horizontal; // e.g. "upleft", "right", "stop"
 
     const newDirection: JoystickDirection =
         (JoystickDirection as any)[combined] ??
@@ -82,7 +82,7 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
       y: event.clientY,
     });
 
-    handleInput(event);
+    handleInput(event); // ✅ directly use React.PointerEvent
 
     const moveListener = (e: PointerEvent) => handleInput(e);
     const endListener = () => {
