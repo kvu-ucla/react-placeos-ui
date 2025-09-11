@@ -25,20 +25,24 @@ interface JoystickProps {
   onDirectionChange?: (dir: JoystickDirection) => void;
 }
 
-const eventToPoint = (event: PointerEvent): Point => ({
-  x: event.clientX,
-  y: event.clientY,
-});
+const eventToPoint = (event: MouseEvent | TouchEvent): Point => {
+  if ("touches" in event) {
+    return event.touches.length
+        ? { x: event.touches[0].clientX, y: event.touches[0].clientY }
+        : { x: -1, y: -1 };
+  }
+  return { x: event.clientX, y: event.clientY };
+};
 
 export default function Joystick({ onDirectionChange }: JoystickProps) {
   const joystickRef = useRef<HTMLDivElement>(null);
   const [direction, setDirection] = useState<JoystickDirection>(JoystickDirection.Stop);
 
-  const handleDirectionChange = (event: React.PointerEvent | PointerEvent) => {
+  const handleInput = (event: MouseEvent | TouchEvent) => {
     const box = joystickRef.current?.getBoundingClientRect();
     if (!box) return;
 
-    const point = eventToPoint(event as PointerEvent);
+    const point = eventToPoint(event);
     const center = {
       x: box.left + box.width / 2,
       y: box.top + box.height / 2,
@@ -54,9 +58,9 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
     const horizontal = absDx > threshold ? (dx < 0 ? "left" : "right") : "";
     const vertical = absDy > threshold ? (dy < 0 ? "up" : "down") : "";
 
-    const combined = vertical + horizontal; // e.g., "upleft"
+    const combined = vertical + horizontal;
 
-    let newDirection: JoystickDirection =
+    const newDirection: JoystickDirection =
         (JoystickDirection as any)[combined] ??
         (JoystickDirection as any)[horizontal || vertical] ??
         JoystickDirection.Stop;
@@ -67,23 +71,26 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
     }
   };
 
-  const stopDirection = () => {
+  const stopInput = () => {
     setDirection(JoystickDirection.Stop);
     onDirectionChange?.(JoystickDirection.Stop);
   };
 
-  const startJoystick = (event: React.PointerEvent<HTMLDivElement>) => {
-    handleDirectionChange(event);
+  const startInput = (event: React.MouseEvent | React.TouchEvent) => {
+    handleInput(event.nativeEvent);
 
-    const moveListener = (e: PointerEvent) => handleDirectionChange(e);
+    const moveEvent = "touches" in event.nativeEvent ? "touchmove" : "mousemove";
+    const endEvent = "touches" in event.nativeEvent ? "touchend" : "mouseup";
+
+    const moveListener = (e: Event) => handleInput(e as MouseEvent | TouchEvent);
     const endListener = () => {
-      window.removeEventListener("pointermove", moveListener);
-      window.removeEventListener("pointerup", endListener);
-      stopDirection();
+      window.removeEventListener(moveEvent, moveListener);
+      window.removeEventListener(endEvent, endListener);
+      stopInput();
     };
 
-    window.addEventListener("pointermove", moveListener);
-    window.addEventListener("pointerup", endListener);
+    window.addEventListener(moveEvent, moveListener);
+    window.addEventListener(endEvent, endListener);
   };
 
   const thumbTransform = () => {
@@ -104,7 +111,8 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
   return (
       <div
           ref={joystickRef}
-          onPointerDown={startJoystick}
+          onMouseDown={startInput}
+          onTouchStart={startInput}
           onContextMenu={(e) => e.preventDefault()}
           className="relative h-64 w-64 rounded-full bg-base-300 text-white touch-none select-none"
           style={{ touchAction: "none" }}
@@ -123,7 +131,7 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
           <span style={{ transform: "translateY(.5rem)" }}>▼</span>
         </div>
 
-        {/* Thumb control */}
+        {/* Thumb movement zone */}
         <div className="absolute bottom-16 left-16 right-16 top-16 flex items-center justify-center rounded-full bg-base-100">
           <div className="relative w-full h-full">
             <div
