@@ -57,6 +57,10 @@ function CameraController({
     }
   };
 
+  useEffect(() => {
+    console.log("direction", direction);
+  }, []);
+
   const scheduleCommand = (command: CameraCommand) => {
     // Clear any pending command
     if (moveTimeout.current) {
