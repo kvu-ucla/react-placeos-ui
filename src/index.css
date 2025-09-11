@@ -25,7 +25,7 @@
 html,
 body,
 #root {
-  @apply m-0 p-0 h-full bg-cyan-400;
+  @apply m-0 p-0 h-full bg-gray-100;
 }
 
 @layer utilities {
