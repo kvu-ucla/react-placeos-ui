@@ -13,8 +13,7 @@ export default function EndMeetingModal({ onClose }: { onClose: () => void }) {
       <div className="modal-box max-h-none overflow-visible max-w-none w-[min(90vw,48rem)] rounded-lg bg-white p-8">
         <h3 className="font-bold text-3xl mb-4">End class session?</h3>
         <p className="py-4">
-          This will end any in-progress Zoom meetings, BruinCast recordings and
-          power off all audio and video systems.
+          This will end any in-progress Zoom meetings. Continue?
         </p>
         <div className="flex items-center justify-center w-full gap-4">
           <button

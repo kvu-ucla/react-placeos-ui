@@ -184,10 +184,10 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
           </div>
         </div>
 
-        {/* Direction indicator */}
-        <div className="bg-gray-800 text-white px-4 py-2 rounded-lg font-mono text-sm">
-          Direction: <span className="text-blue-400">{direction}</span>
-        </div>
+        {/*/!* Direction indicator *!/*/}
+        {/*<div className="bg-gray-800 text-white px-4 py-2 rounded-lg font-mono text-sm">*/}
+        {/*  Direction: <span className="text-blue-400">{direction}</span>*/}
+        {/*</div>*/}
       </div>
   );
 }

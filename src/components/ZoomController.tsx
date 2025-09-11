@@ -111,13 +111,13 @@ const ZoomController: React.FC<ZoomControllerProps> = ({ onZoomStart, onZoomStop
             <div className="text-lg font-mono text-gray-600 mt-3 select-none">W</div>
 
             {/* Status indicator */}
-            <div className="mt-6 bg-gray-800 text-white px-4 py-2 rounded-lg font-mono text-sm">
-                Zoom: <span className="text-blue-400">
-                    {currentZoomRef.current === "tele" && "In"}
-                {currentZoomRef.current === "wide" && "Out"}
-                {!currentZoomRef.current && "Stop"}
-                </span>
-            </div>
+            {/*<div className="mt-6 bg-gray-800 text-white px-4 py-2 rounded-lg font-mono text-sm">*/}
+            {/*    Zoom: <span className="text-blue-400">*/}
+            {/*        {currentZoomRef.current === "tele" && "In"}*/}
+            {/*    {currentZoomRef.current === "wide" && "Out"}*/}
+            {/*    {!currentZoomRef.current && "Stop"}*/}
+            {/*    </span>*/}
+            {/*</div>*/}
         </div>
     );
 };

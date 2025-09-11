@@ -118,16 +118,16 @@ function CameraController({
 
         {/* Main Control Area */}
         <div className="flex flex-col items-center gap-6">
-          <div className="text-base text-gray-600 font-mono">
-            Camera: {activeCamera.current.mod}
-            {activeCamera.current.index !== undefined && ` [${activeCamera.current.index}]`}
-          </div>
+          {/*<div className="text-base text-gray-600 font-mono">*/}
+          {/*  Camera: {activeCamera.current.mod}*/}
+          {/*  {activeCamera.current.index !== undefined && ` [${activeCamera.current.index}]`}*/}
+          {/*</div>*/}
 
           <Joystick onDirectionChange={handleDirectionChange} />
 
-          <div className="text-sm text-gray-500 font-mono">
-            Direction: {direction} | Zoom: {currentZoomRef.current || "none"}
-          </div>
+          {/*<div className="text-sm text-gray-500 font-mono">*/}
+          {/*  Direction: {direction} | Zoom: {currentZoomRef.current || "none"}*/}
+          {/*</div>*/}
         </div>
       </div>
   );
