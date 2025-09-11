@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 
-// ✅ Full runtime-safe enum object
+// Full runtime-safe enum object
 export const JoystickDirection = {
   Up: "up",
   Down: "down",
@@ -36,7 +36,7 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
 
     const dx = clientX - centerX;
     const dy = clientY - centerY;
-    const threshold = 20; // Increased threshold for better UX
+    const threshold = 30; // Threshold for 1.5x larger joystick
 
     const absDx = Math.abs(dx);
     const absDy = Math.abs(dy);
@@ -85,9 +85,9 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
       console.log("[emit] onDirectionChange:", newDirection);
       onDirectionChange?.(newDirection);
 
-      // ✅ BONUS LOG
+      // BONUS LOG
       if (newDirection === JoystickDirection.Stop) {
-        console.log("✅ RELEASE WORKING!");
+        console.log("RELEASE WORKING!");
       }
     }
   };
@@ -96,7 +96,7 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
     console.log("[stopInput] Pointer released. Emitting stop.");
     setDirection(JoystickDirection.Stop);
     onDirectionChange?.(JoystickDirection.Stop);
-    console.log("✅ RELEASE WORKING!");
+    console.log("RELEASE WORKING!");
   };
 
   const startInput = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -105,7 +105,7 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
       y: event.clientY,
     });
 
-    // ✅ Key line to retain pointer tracking even outside bounds
+    // Key line to retain pointer tracking even outside bounds
     event.currentTarget.setPointerCapture(event.pointerId);
 
     handleInput(event);
@@ -124,46 +124,60 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
   const thumbTransform = () => {
     const map: Record<JoystickDirection, string> = {
       [JoystickDirection.Stop]: "translate(-50%, -50%)",
-      [JoystickDirection.Up]: "translate(-50%, -75%)",
-      [JoystickDirection.Down]: "translate(-50%, -25%)",
-      [JoystickDirection.Left]: "translate(-75%, -50%)",
-      [JoystickDirection.Right]: "translate(-25%, -50%)",
-      [JoystickDirection.UpLeft]: "translate(-75%, -75%)",
-      [JoystickDirection.UpRight]: "translate(-25%, -75%)",
-      [JoystickDirection.DownLeft]: "translate(-75%, -25%)",
-      [JoystickDirection.DownRight]: "translate(-25%, -25%)",
+      [JoystickDirection.Up]: "translate(-50%, -90%)",
+      [JoystickDirection.Down]: "translate(-50%, -10%)",
+      [JoystickDirection.Left]: "translate(-90%, -50%)",
+      [JoystickDirection.Right]: "translate(-10%, -50%)",
+      [JoystickDirection.UpLeft]: "translate(-90%, -90%)",
+      [JoystickDirection.UpRight]: "translate(-10%, -90%)",
+      [JoystickDirection.DownLeft]: "translate(-90%, -10%)",
+      [JoystickDirection.DownRight]: "translate(-10%, -10%)",
     };
     return map[direction];
   };
 
   return (
-      <div className="flex flex-col items-center gap-4 p-8">
+      <div className="flex flex-col items-center gap-6">
         <div
             ref={joystickRef}
             onPointerDown={startInput}
             onContextMenu={(e) => e.preventDefault()}
-            className="relative h-64 w-64 rounded-full bg-gray-700 text-white select-none cursor-pointer shadow-lg"
+            className="relative h-96 w-96 rounded-full bg-gray-300 text-white select-none cursor-pointer"
             style={{ touchAction: "none", userSelect: "none" }}
         >
-          {/* Directional arrows */}
-          <div className="absolute inset-0 flex items-center text-5xl opacity-50">
-            <span style={{ transform: "translateX(0.5rem)" }}>◀</span>
+          {/* Directional arrows - 50% larger */}
+          <div className="absolute inset-0 flex items-center text-8xl text-gray-600">
+            <span style={{ transform: "translateX(-0.75rem)" }}>◀</span>
           </div>
-          <div className="absolute inset-0 flex items-center justify-end text-5xl opacity-50">
-            <span style={{ transform: "translateX(-0.5rem)" }}>▶</span>
+          <div className="absolute inset-0 flex items-center justify-end text-8xl text-gray-600">
+            <span style={{ transform: "translateX(0.75rem)" }}>▶</span>
           </div>
-          <div className="absolute inset-0 flex justify-center text-5xl opacity-50">
-            <span style={{ transform: "translateY(0.5rem)" }}>▲</span>
+          <div className="absolute inset-0 flex justify-center text-8xl text-gray-600">
+            <span style={{ transform: "translateY(-0.75rem)" }}>▲</span>
           </div>
-          <div className="absolute inset-0 flex items-end justify-center text-5xl opacity-50">
-            <span style={{ transform: "translateY(-0.5rem)" }}>▼</span>
+          <div className="absolute inset-0 flex items-end justify-center text-8xl text-gray-600">
+            <span style={{ transform: "translateY(0.75rem)" }}>▼</span>
           </div>
 
-          {/* Thumb movement zone */}
-          <div className="absolute inset-16 flex items-center justify-center rounded-full bg-gray-100">
+          {/* Diagonal direction indicators - moved inward */}
+          <div className="absolute top-16 left-16 text-3xl text-gray-400">
+            <span>◢</span>
+          </div>
+          <div className="absolute top-16 right-16 text-3xl text-gray-400">
+            <span>◣</span>
+          </div>
+          <div className="absolute bottom-16 left-16 text-3xl text-gray-400">
+            <span>◥</span>
+          </div>
+          <div className="absolute bottom-16 right-16 text-3xl text-gray-400">
+            <span>◤</span>
+          </div>
+
+          {/* Thumb movement zone - 50% larger */}
+          <div className="absolute inset-24 flex items-center justify-center rounded-full bg-gray-100">
             <div className="relative w-full h-full">
               <div
-                  className="absolute left-1/2 top-1/2 h-16 w-16 rounded-full bg-gray-500 transition-transform duration-75"
+                  className="absolute left-1/2 top-1/2 h-24 w-24 rounded-full bg-gray-500 transition-transform duration-75"
                   style={{ transform: thumbTransform() }}
               />
             </div>

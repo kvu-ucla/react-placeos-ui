@@ -95,8 +95,8 @@ function CameraController({
     // Only send command if it's different from current zoom
     if (dir !== currentZoomRef.current) {
       currentZoomRef.current = dir;
-      currentDirectionRef.current = JoystickDirection.Stop; // Cancel direction
-      setDirection(JoystickDirection.Stop);
+      currentDirectionRef.current = JoystickDirection.Stop; // Cancel direction tracking
+      // DON'T call setDirection here - let joystick maintain its visual state
       scheduleCommand(dir);
     }
   };
@@ -120,21 +120,25 @@ function CameraController({
   }, []);
 
   return (
-      <div className="flex flex-col items-center gap-4">
-        <div className="text-sm text-gray-600 font-mono">
-          Camera: {activeCamera.current.mod}
-          {activeCamera.current.index !== undefined && ` [${activeCamera.current.index}]`}
-        </div>
-
-        <Joystick onDirectionChange={handleDirectionChange} />
-
+      <div className="flex items-center gap-8 p-8">
+        {/* Zoom Controller - positioned left like Sony UI */}
         <ZoomController
             onZoomStart={handleZoomStart}
             onZoomStop={handleZoomStop}
         />
 
-        <div className="text-xs text-gray-500 font-mono">
-          Direction: {direction} | Zoom: {currentZoomRef.current || "none"}
+        {/* Main Control Area */}
+        <div className="flex flex-col items-center gap-6">
+          <div className="text-base text-gray-600 font-mono">
+            Camera: {activeCamera.current.mod}
+            {activeCamera.current.index !== undefined && ` [${activeCamera.current.index}]`}
+          </div>
+
+          <Joystick onDirectionChange={handleDirectionChange} />
+
+          <div className="text-sm text-gray-500 font-mono">
+            Direction: {direction} | Zoom: {currentZoomRef.current || "none"}
+          </div>
         </div>
       </div>
   );
