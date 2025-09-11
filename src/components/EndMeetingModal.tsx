@@ -24,7 +24,7 @@ export default function EndMeetingModal({ onClose }: { onClose: () => void }) {
             Go back
           </button>
           <button
-            className="btn text-3xl min-w-64 min-h-24 rounded-lg bg-avit-blue px-3 py-6"
+            className="btn text-3xl min-w-64 min-h-24 text-white rounded-lg bg-avit-blue px-3 py-6"
             onClick={endMeeting}
           >
             End class
