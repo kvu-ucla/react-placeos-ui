@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 
-// ✅ Make sure the object includes ALL values used at runtime
+// ✅ Fully defined object (not just a type!) — REQUIRED for runtime lookup
 export const JoystickDirection = {
   Up: "up",
   Down: "down",
@@ -44,7 +44,7 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
     const horizontal = absDx > threshold ? (dx < 0 ? "left" : "right") : "";
     const vertical = absDy > threshold ? (dy < 0 ? "up" : "down") : "";
 
-    const combined = vertical + horizontal; // e.g. "upleft", "right", "stop"
+    const combined = vertical + horizontal;
 
     const newDirection: JoystickDirection =
         (JoystickDirection as any)[combined] ??
@@ -82,7 +82,7 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
       y: event.clientY,
     });
 
-    handleInput(event); // ✅ directly use React.PointerEvent
+    handleInput(event);
 
     const moveListener = (e: PointerEvent) => handleInput(e);
     const endListener = () => {
