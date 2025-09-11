@@ -5,8 +5,8 @@ import TourHost from "./components/TourHost";
 import { ModalProvider } from "./hooks/ModalContext";
 import { HashRouter } from "react-router-dom";
 import { AuthProvider } from "./AuthContext";
-import AppFrame from "./components/AppFrame.tsx";
-import {KioskContentWrapper} from "./components/KioskWrapper.tsx";
+// import AppFrame from "./components/AppFrame.tsx";
+// import {KioskContentWrapper} from "./components/KioskWrapper.tsx";
 
 const container = document.getElementById("root");
 if (container) {
