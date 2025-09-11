@@ -9,21 +9,25 @@ type CallState =
   | "IN_MEETING"
   | "LOGGED_OUT"
   | "UNKNOWN";
-// interface Participant {
-//     id: string;
-//     name: string;
-//     video_muted: DeviceState;
-//     audio_muted: DeviceState;
-//     speaking: boolean;
-//     is_host: boolean;
+
+
+// interface ZoomParticipant {
+//   user_id: number;
+//   user_name: string;
+//   "audio_status state": string;
+//   "video_status has_source": boolean;
+//   "video_status is_sending": boolean;
+//   isCohost: boolean;
+//   is_host: boolean;
+//   is_in_waiting_room: boolean;
+//   hand_status: {
+//     is_raise_hand: boolean;
+//     is_valid: string;
+//     time_stamp: string;
+//   };
 // }
 
-// interface Attendee {
-//     name: string,
-//     email: string,
-//     response_status: string,
-//     resource: boolean
-// }
+
 
 interface CallStatus {
   status: CallState;
@@ -117,6 +121,8 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   const [mics, SetMics] = useState<Microphone[]>([]);
   const [cams, setCams] = useState<CameraMap>({});
   const [selectedCamera, setSelectedCamera] = useState<string>();
+  const [muteEveryone, setMuteEveryone] = useState<boolean>();
+  // const [participants, setParticipants] = useState<ZoomParticipant[]>();
 
   type CameraMap = Record<string, Camera>;
 
@@ -213,6 +219,15 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
     const newState = !callStatus?.isCamMuted;
     await module.execute("call_mute_camera", [newState]);
+  };
+
+  const toggleAudioMuteEveryone = async () => {
+    if (!module) return;
+
+    const newState = !muteEveryone;
+    await module.execute("call_mute_all", [newState]);
+    
+    setMuteEveryone(newState);
   };
 
   //toggle in-call wired-sharing, or cancel wireless or wired sharing
@@ -396,6 +411,11 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
       setBookings(updatedBookings);
     });
+    
+    // bindAndListen("Participants", module, (val: ZoomParticipant[]) => {
+    //
+    //   setParticipants(val);
+    // })
 
     //bind to Bookings module in placeOS
     // const bookingsMod = getModule(systemId, 'Bookings');
@@ -435,12 +455,14 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     mics,
     selectedCamera,
     cams,
+    muteEveryone,
     currentMeeting,
     nextMeeting,
     recording,
     callStatus,
     sharing,
     bookings,
+    // participants,
     gallery,
     timeJoined,
     leave,
@@ -450,5 +472,6 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     toggleVideoMuteAll,
     toggleSharing,
     toggleGallery,
+    toggleAudioMuteEveryone
   };
 }

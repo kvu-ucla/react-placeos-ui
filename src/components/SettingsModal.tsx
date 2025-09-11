@@ -13,6 +13,8 @@ export default function SettingsModal({
   initialTab?: TabSection;
 }) {
   const {
+    muteEveryone,
+    toggleAudioMuteEveryone,
     currentMeeting
   } = useZoomContext();
   const [activeTab, setActiveTab] = useState<TabSection>(initialTab);
@@ -68,9 +70,7 @@ export default function SettingsModal({
 
             {/* Content */}
             <div className="w-full space-y-6 flex-col justify-end items-center">
-              {activeTab === "Volume" && (
-              <MicTab></MicTab>
-              )}
+              {activeTab === "Volume" && <MicTab></MicTab>}
 
               {activeTab === "Sources" && (
                 <>
@@ -228,7 +228,7 @@ export default function SettingsModal({
                   {/*    </div>*/}
                   {/*  </div>*/}
                   {/*</div>*/}
-                  
+
                   {/*/!* Right Display Screen *!/*/}
                   {/*<div className="border border-[#999] rounded-lg p-4 space-y-4">*/}
                   {/*  <h3 className="text-xl font-semibold flex items-center gap-2">*/}
@@ -279,10 +279,9 @@ export default function SettingsModal({
                 <div className="border rounded-lg p-6 space-y-6">
                   {/* Zoom Meeting Status Header */}
                   <div>
-                    <h3 className="text-xl font-semibold mb-1">
+                    <h2 className="text-xl font-semibold mb-1">
                       Zoom Meeting Status
-                    </h3>
-                    <p className="text-gray-700 font-medium">Active Camera</p>
+                    </h2>
                   </div>
                   {/* Room Info */}
                   <div className="border rounded-md p-4 bg-white">
@@ -290,32 +289,44 @@ export default function SettingsModal({
                       {currentMeeting?.meetingName}
                     </div>
                     <div className="text-gray-600">
-                      {currentMeeting?.meetingNumber} &nbsp; • &nbsp; {}
+                      Meeting Number: {currentMeeting?.meetingNumber} &nbsp; •
+                      &nbsp;
                     </div>
                   </div>
                   {/* Tabs and Global Tools */}
-                  <div className="flex items-center gap-3">
-                    <button className="bg-blue-600 text-white font-bold px-4 py-2 rounded flex items-center gap-1">
-                      Participants <span>▲</span>
-                    </button>
-                    <button className="bg-gray-100 text-gray-900 px-4 py-2 rounded flex items-center gap-2">
-                      Invite <span>▼</span>
-                    </button>
-                    <button className="bg-gray-100 text-gray-900 px-4 py-2 rounded flex items-center gap-2">
-                      Host Tools <span>▼</span>
-                    </button>
-                  </div>
                   {/* Global actions */}
                   <div className="flex gap-4">
-                    <button className="bg-gray-300 px-4 py-2 rounded text-sm font-semibold">
-                      Mute all participants
-                    </button>
-                    <button className="bg-gray-300 px-4 py-2 rounded text-sm font-semibold">
-                      Disable video for all
-                    </button>
+                    {muteEveryone ? (
+                      <button
+                        onClick={toggleAudioMuteEveryone}
+                        className="bg-black text-white px-4 py-2 rounded text-2xl font-semibold"
+                      >
+                        Unmute all participants
+                      </button>
+                    ) : (
+                      <button
+                        onClick={toggleAudioMuteEveryone}
+                        className="bg-gray-300 px-4 py-2 rounded text-2xl font-semibold"
+                      >
+                        Mute all participants
+                      </button>
+                    )}
+                    {/*<button className="bg-gray-300 px-4 py-2 rounded text-sm font-semibold">*/}
+                    {/*  Disable video for all*/}
+                    {/*</button>*/}
                   </div>
                   {/* Participants list */}
-                  //TODO participant list
+                  {/*<div>*/}
+                  {/*  {participants?.map(participant => (*/}
+                  {/*      <div key={participant.user_name}>*/}
+                  {/*        <div key={participant.is_host}>*/}
+                  {/*          <div key={participant.}>*/}
+                  {/*          </div>*/}
+                  {/*        </div>*/}
+                  {/*      </div>*/}
+                  {/*      */}
+                  {/*  )) ?? <div>No participants</div>}*/}
+                  {/*</div>*/}
                 </div>
               )}
 
@@ -358,9 +369,7 @@ export default function SettingsModal({
                 </div>
               )}
 
-              {activeTab === "Camera" && (
-                  <CameraTab></CameraTab>
-              )}
+              {activeTab === "Camera" && <CameraTab></CameraTab>}
 
               <div className="mt-6">
                 <div className="bg-blue-100 text-blue-900 p-3 text-xl rounded flex items-center justify-left">
