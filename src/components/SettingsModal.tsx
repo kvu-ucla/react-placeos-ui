@@ -18,7 +18,7 @@ export default function SettingsModal({
   const [activeTab, setActiveTab] = useState<TabSection>(initialTab);
   const audioTabs: TabSection[] = ["Volume"];
   // const audioTabs: TabSection[] = ["Volume", "Sources"];
-  const videoTabs: TabSection[] = ["Display"];
+  // const videoTabs: TabSection[] = ["Display"];
   const meetingTabs: TabSection[] = ["Status", "Camera"];
   // const meetingTabs: TabSection[] = ["Status", "View", "Camera"];
   
