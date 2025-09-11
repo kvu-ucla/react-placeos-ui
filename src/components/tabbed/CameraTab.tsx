@@ -62,15 +62,20 @@ export function CameraTab() {
                     <h4 className="font-semibold text-right text-gray-800 mb-2">
                         Camera Presets
                     </h4>
-                    {cams[selectedCamera!].presets.map((preset) => (
-                        <CameraPresetButton
-                            key={preset}
-                            preset={preset}
-                            system_id={system_id!}
-                            selectedCamera={selectedCamera!}
-                            cams={cams}
-                        />
-                    ))}
+                    {(() => {
+                        const selectedCam = selectedCamera ? cams[selectedCamera] : null;
+                        if (!selectedCam?.presets) return null;
+
+                        return selectedCam.presets.map((preset) => (
+                            <CameraPresetButton
+                                key={preset}
+                                preset={preset}
+                                system_id={system_id!}
+                                selectedCamera={selectedCamera!}
+                                cams={cams}
+                            />
+                        ));
+                    })()}
                 </div>
             </div>
         </div>
