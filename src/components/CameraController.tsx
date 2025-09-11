@@ -9,11 +9,9 @@ interface ActiveCamera {
 }
 
 type CameraCommand = JoystickDirection | "tele" | "wide" | "stop";
+
 const isJoystickDirection = (value: CameraCommand): value is JoystickDirection => {
-  return [
-    "up", "down", "left", "right",
-    "upleft", "upright", "downleft", "downright",
-  ].includes(value);
+  return Object.values(JoystickDirection).includes(value as JoystickDirection);
 };
 
 function CameraController({
@@ -25,9 +23,9 @@ function CameraController({
 }) {
   const [direction, setDirection] = useState<JoystickDirection>(JoystickDirection.Stop);
 
-  // 👇 Separate refs for direction and zoom
-  const directionRef = useRef<JoystickDirection>(JoystickDirection.Stop);
-  const zoomRef = useRef<"tele" | "wide" | null>(null);
+  // Track current commands to prevent duplicate calls
+  const currentDirectionRef = useRef<JoystickDirection>(JoystickDirection.Stop);
+  const currentZoomRef = useRef<"tele" | "wide" | null>(null);
   const activeCamera = useRef<ActiveCamera>(initialCamera);
   const moveTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -35,165 +33,111 @@ function CameraController({
     activeCamera.current = initialCamera;
   }, [initialCamera]);
 
-  useEffect(() => {
-    directionRef.current = direction;
-  }, [direction]);
+  const executeCommand = async (command: CameraCommand) => {
+    console.log("[executeCommand] Executing:", command);
 
-  const moveCamera = (command: CameraCommand) => {
-    if (!activeCamera.current) return;
+    if (!activeCamera.current) {
+      console.warn("[executeCommand] No active camera");
+      return;
+    }
 
-    if (moveTimeout.current) clearTimeout(moveTimeout.current);
+    const { mod, index } = activeCamera.current;
+    const module = getModule(id, mod);
 
-    moveTimeout.current = setTimeout(async () => {
-      const { mod, index } = activeCamera.current!;
-      const module = getModule(id, mod);
-      if (!module) return;
+    if (!module) {
+      console.warn("[executeCommand] No module found for:", { id, mod });
+      return;
+    }
 
-      const args = index !== undefined ? [index] : [];
-
-      // Prevent resending same command
-      const lastCommand = directionRef.current;
-      if (command === lastCommand) return;
-
-      // Stop
+    try {
       if (command === "stop") {
-        await module.execute("stop", args);
-        directionRef.current = JoystickDirection.Stop;
-        return;
+        console.log("[executeCommand] Stopping camera");
+        await module.execute("stop", index !== undefined ? [index] : []);
+      } else if (command === "tele" || command === "wide") {
+        console.log("[executeCommand] Zoom command:", command);
+        await module.execute("move_all", index !== undefined ? [command, index] : [command]);
+      } else if (isJoystickDirection(command)) {
+        console.log("[executeCommand] Direction command:", command);
+        await module.execute("move_all", index !== undefined ? [command, index] : [command]);
       }
+    } catch (error) {
+      console.error("[executeCommand] Error executing command:", error);
+    }
+  };
 
-      // Move
-      await module.execute("move_all", index !== undefined ? [command, index] : [command]);
+  const scheduleCommand = (command: CameraCommand) => {
+    // Clear any pending command
+    if (moveTimeout.current) {
+      clearTimeout(moveTimeout.current);
+    }
 
-      // Only track direction if it's a joystick movement
-      if (isJoystickDirection(command)) {
-        directionRef.current = command;
-      }
+    moveTimeout.current = setTimeout(() => {
+      executeCommand(command);
     }, 50);
   };
 
   const handleDirectionChange = (newDir: JoystickDirection) => {
+    console.log("[handleDirectionChange] Direction changed:", newDir);
+
     setDirection(newDir);
-    zoomRef.current = null; // cancel zoom
-    moveCamera(newDir);
+
+    // Only send command if it's actually different
+    if (newDir !== currentDirectionRef.current) {
+      currentDirectionRef.current = newDir;
+      currentZoomRef.current = null; // Cancel any zoom
+      scheduleCommand(newDir);
+    }
   };
 
   const handleZoomStart = (dir: "tele" | "wide") => {
-    zoomRef.current = dir;
-    setDirection(JoystickDirection.Stop); // cancel directional movement
-    directionRef.current = JoystickDirection.Stop;
-    moveCamera(dir);
+    console.log("[handleZoomStart] Zoom started:", dir);
+
+    // Only send command if it's different from current zoom
+    if (dir !== currentZoomRef.current) {
+      currentZoomRef.current = dir;
+      currentDirectionRef.current = JoystickDirection.Stop; // Cancel direction
+      setDirection(JoystickDirection.Stop);
+      scheduleCommand(dir);
+    }
   };
 
   const handleZoomStop = () => {
-    zoomRef.current = null;
-    moveCamera("stop");
+    console.log("[handleZoomStop] Zoom stopped");
+
+    if (currentZoomRef.current !== null) {
+      currentZoomRef.current = null;
+      scheduleCommand("stop");
+    }
   };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (moveTimeout.current) {
+        clearTimeout(moveTimeout.current);
+      }
+    };
+  }, []);
 
   return (
       <div className="flex flex-col items-center gap-4">
+        <div className="text-sm text-gray-600 font-mono">
+          Camera: {activeCamera.current.mod}
+          {activeCamera.current.index !== undefined && ` [${activeCamera.current.index}]`}
+        </div>
+
         <Joystick onDirectionChange={handleDirectionChange} />
+
         <ZoomController
             onZoomStart={handleZoomStart}
             onZoomStop={handleZoomStop}
         />
+
+        <div className="text-xs text-gray-500 font-mono">
+          Direction: {direction} | Zoom: {currentZoomRef.current || "none"}
+        </div>
       </div>
   );
 }
 
 export default CameraController;
-
-
-
-
-
-
-
-
-
-
-
-
-// import { useRef, useState, useEffect } from "react";
-// import Joystick, { JoystickPan, JoystickTilt } from "./Joystick";
-// import { getModule } from "@placeos/ts-client";
-//
-// interface ActiveCamera {
-//   mod: string;
-//   index?: number;
-// }
-//
-// function CameraController({
-//                             id,
-//                             activeCamera: initialCamera,
-//                           }: {
-//   id: string;
-//   activeCamera: ActiveCamera;
-// }) {
-//   const [pan, setPan] = useState<JoystickPan>(JoystickPan.Stop);
-//   const [tilt, setTilt] = useState<JoystickTilt>(JoystickTilt.Stop);
-//
-//   const panRef = useRef<JoystickPan>(pan);
-//   const tiltRef = useRef<JoystickTilt>(tilt);
-//   const activeCamera = useRef<ActiveCamera>(initialCamera);
-//   const moveTimeout = useRef<NodeJS.Timeout | null>(null);
-//
-//   useEffect(() => {
-//     activeCamera.current = initialCamera;
-//   }, [initialCamera]);
-//
-//   useEffect(() => {
-//     panRef.current = pan;
-//   }, [pan]);
-//
-//   useEffect(() => {
-//     tiltRef.current = tilt;
-//   }, [tilt]);
-//
-//   useEffect(() => {
-//     tiltRef.current = tilt;
-//   }, [tilt]);
-//
-//   const moveCamera = () => {
-//     if (!activeCamera.current) return;
-//
-//     if (moveTimeout.current) clearTimeout(moveTimeout.current);
-//
-//     moveTimeout.current = setTimeout(async () => {
-//       const { mod, index } = activeCamera.current!;
-//       const module = getModule(id, mod);
-//       if (!module) return;
-//
-//       await module.execute("stop", index !== undefined ? [index] : []);
-//
-//       if (tiltRef.current !== JoystickTilt.Stop) {
-//         await module.execute(
-//             "move",
-//             index !== undefined ? [tiltRef.current, index] : [tiltRef.current],
-//         );
-//       }
-//
-//       if (panRef.current !== JoystickPan.Stop) {
-//         await module.execute(
-//             "move",
-//             index !== undefined ? [panRef.current, index] : [panRef.current],
-//         );
-//       }
-//     }, 50);
-//   };
-//
-//   return (
-//       <Joystick
-//           onPanChange={(newPan) => {
-//             setPan(newPan);
-//             moveCamera();
-//           }}
-//           onTiltChange={(newTilt) => {
-//             setTilt(newTilt);
-//             moveCamera();
-//           }}
-//       />
-//   );
-// }
-//
-// export default CameraController;
