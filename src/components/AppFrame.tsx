@@ -20,17 +20,37 @@ export default function AppFrame({ children }: { children: React.ReactNode }) {
         };
     }, []);
 
-    const dpr = window.devicePixelRatio || 1;
+    const isKioskHardware = vw === 1280 && vh === 800;
 
-    const effectiveVw = vw * dpr;
-    const effectiveVh = vh * dpr;
+    if (isKioskHardware) {
+        const scaleX = vw / DESIGN_W;
+        const scaleY = vh / DESIGN_H;
 
-    const scale = Math.min(effectiveVw / DESIGN_W, effectiveVh / DESIGN_H);
+        return (
+            <div
+                id="app-frame"
+                style={{
+                    position: "fixed",
+                    left: 0,
+                    top: 0,
+                    width: DESIGN_W,
+                    height: DESIGN_H,
+                    transform: `scaleX(${scaleX}) scaleY(${scaleY})`,
+                    transformOrigin: "top left",
+                    background: "transparent",
+                    overflow: "hidden",
+                }}
+            >
+                {children}
+            </div>
+        );
+    }
+
+    const scale = Math.min(vw / DESIGN_W, vh / DESIGN_H);
     const scaledW = DESIGN_W * scale;
     const scaledH = DESIGN_H * scale;
-
-    const left = Math.round((effectiveVw - scaledW) / 2) / dpr;
-    const top = Math.round((effectiveVh - scaledH) / 2) / dpr;
+    const left = Math.round((vw - scaledW) / 2);
+    const top = Math.round((vh - scaledH) / 2);
 
     return (
         <div
@@ -41,7 +61,7 @@ export default function AppFrame({ children }: { children: React.ReactNode }) {
                 top,
                 width: DESIGN_W,
                 height: DESIGN_H,
-                transform: `scale(${scale / dpr})`,
+                transform: `scale(${scale})`,
                 transformOrigin: "top left",
                 background: "black",
                 overflow: "hidden",
