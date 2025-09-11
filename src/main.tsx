@@ -13,8 +13,6 @@ if (container) {
   const root = createRoot(container);
   root.render(
     <React.StrictMode>
-      <AppFrame>
-        <KioskContentWrapper>
           <HashRouter>
             <AuthProvider>
               <ModalProvider>
@@ -22,8 +20,6 @@ if (container) {
               </ModalProvider>
             </AuthProvider>
           </HashRouter>
-        </KioskContentWrapper>
-      </AppFrame>
     </React.StrictMode>,
   );
 }
