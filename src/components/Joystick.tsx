@@ -16,11 +16,6 @@ export const JoystickDirection = {
 export type JoystickDirection =
     (typeof JoystickDirection)[keyof typeof JoystickDirection];
 
-interface Point {
-  x: number;
-  y: number;
-}
-
 interface JoystickProps {
   onDirectionChange?: (dir: JoystickDirection) => void;
 }
@@ -29,23 +24,18 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
   const joystickRef = useRef<HTMLDivElement>(null);
   const [direction, setDirection] = useState<JoystickDirection>(JoystickDirection.Stop);
 
-  const getPoint = (event: PointerEvent): Point => ({
-    x: event.clientX,
-    y: event.clientY,
-  });
+  const handleInput = (event: React.PointerEvent | PointerEvent) => {
+    const clientX = 'clientX' in event ? event.clientX : 0;
+    const clientY = 'clientY' in event ? event.clientY : 0;
 
-  const handleInput = (event: PointerEvent) => {
     const box = joystickRef.current?.getBoundingClientRect();
     if (!box) return;
 
-    const point = getPoint(event);
-    const center = {
-      x: box.left + box.width / 2,
-      y: box.top + box.height / 2,
-    };
+    const centerX = box.left + box.width / 2;
+    const centerY = box.top + box.height / 2;
 
-    const dx = point.x - center.x;
-    const dy = point.y - center.y;
+    const dx = clientX - centerX;
+    const dy = clientY - centerY;
     const threshold = 5;
 
     const absDx = Math.abs(dx);
@@ -54,26 +44,45 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
     const horizontal = absDx > threshold ? (dx < 0 ? "left" : "right") : "";
     const vertical = absDy > threshold ? (dy < 0 ? "up" : "down") : "";
 
-    const combined = vertical + horizontal; // e.g. "upleft", "down", etc.
+    const combined = vertical + horizontal;
 
     const newDirection: JoystickDirection =
         (JoystickDirection as any)[combined] ??
         (JoystickDirection as any)[horizontal || vertical] ??
         JoystickDirection.Stop;
 
+    console.log("[handleInput]", {
+      pointer: [clientX, clientY],
+      dx,
+      dy,
+      horizontal,
+      vertical,
+      combined,
+      newDirection,
+    });
+
     if (newDirection !== direction) {
       setDirection(newDirection);
+      console.log("[emit] onDirectionChange:", newDirection);
       onDirectionChange?.(newDirection);
     }
   };
 
   const stopInput = () => {
-    setDirection(JoystickDirection.Stop);
-    onDirectionChange?.(JoystickDirection.Stop);
+    if (direction !== JoystickDirection.Stop) {
+      console.log("[stopInput] Pointer released. Emitting stop.");
+      setDirection(JoystickDirection.Stop);
+      onDirectionChange?.(JoystickDirection.Stop);
+    }
   };
 
   const startInput = (event: React.PointerEvent<HTMLDivElement>) => {
-    handleInput(event.nativeEvent);
+    console.log("[startInput] Pointer down:", {
+      x: event.clientX,
+      y: event.clientY,
+    });
+
+    handleInput(event);
 
     const moveListener = (e: PointerEvent) => handleInput(e);
     const endListener = () => {
@@ -106,8 +115,8 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
           ref={joystickRef}
           onPointerDown={startInput}
           onContextMenu={(e) => e.preventDefault()}
-          className="relative h-64 w-64 rounded-full bg-base-300 text-white touch-none select-none"
-          style={{ touchAction: "none" }}
+          className="relative h-64 w-64 rounded-full bg-base-300 text-white select-none"
+          style={{ touchAction: "none", userSelect: "none" }}
       >
         {/* Directional arrows */}
         <div className="absolute inset-0 flex items-center text-6xl">
