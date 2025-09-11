@@ -8,7 +8,7 @@ interface ActiveCamera {
   index?: number;
 }
 
-type CameraCommand = JoystickDirection | "tele" | "wide" | "stop";
+type CameraCommand = JoystickDirection | "tele" | "wide" | "stop" | "stop_zoom";
 
 const isJoystickDirection = (value: CameraCommand): value is JoystickDirection => {
   return Object.values(JoystickDirection).includes(value as JoystickDirection);
@@ -34,30 +34,22 @@ function CameraController({
   }, [initialCamera]);
 
   const executeCommand = async (command: CameraCommand) => {
-    console.log("[executeCommand] Executing:", command);
 
-    if (!activeCamera.current) {
-      console.warn("[executeCommand] No active camera");
-      return;
-    }
+    if (!activeCamera.current) return;
 
     const { mod, index } = activeCamera.current;
     const module = getModule(id, mod);
 
-    if (!module) {
-      console.warn("[executeCommand] No module found for:", { id, mod });
-      return;
-    }
+    if (!module) return;
 
     try {
       if (command === "stop") {
-        console.log("[executeCommand] Stopping camera");
         await module.execute("stop", index !== undefined ? [index] : []);
+      } else if (command === "stop_zoom"){
+        await module.execute("stop_zoom", index !== undefined ? [index] : []);
       } else if (command === "tele" || command === "wide") {
-        console.log("[executeCommand] Zoom command:", command);
         await module.execute("move_all", index !== undefined ? [command, index] : [command]);
       } else if (isJoystickDirection(command)) {
-        console.log("[executeCommand] Direction command:", command);
         await module.execute("move_all", index !== undefined ? [command, index] : [command]);
       }
     } catch (error) {
@@ -77,7 +69,6 @@ function CameraController({
   };
 
   const handleDirectionChange = (newDir: JoystickDirection) => {
-    console.log("[handleDirectionChange] Direction changed:", newDir);
 
     setDirection(newDir);
 
@@ -90,23 +81,21 @@ function CameraController({
   };
 
   const handleZoomStart = (dir: "tele" | "wide") => {
-    console.log("[handleZoomStart] Zoom started:", dir);
 
     // Only send command if it's different from current zoom
     if (dir !== currentZoomRef.current) {
       currentZoomRef.current = dir;
-      currentDirectionRef.current = JoystickDirection.Stop; // Cancel direction
-      setDirection(JoystickDirection.Stop);
+      currentDirectionRef.current = JoystickDirection.Stop; // Cancel direction tracking
+      // DON'T call setDirection here - let joystick maintain its visual state
       scheduleCommand(dir);
     }
   };
 
   const handleZoomStop = () => {
-    console.log("[handleZoomStop] Zoom stopped");
 
     if (currentZoomRef.current !== null) {
       currentZoomRef.current = null;
-      scheduleCommand("stop");
+      scheduleCommand("stop_zoom");
     }
   };
 
@@ -120,21 +109,25 @@ function CameraController({
   }, []);
 
   return (
-      <div className="flex flex-col items-center gap-4">
-        <div className="text-sm text-gray-600 font-mono">
-          Camera: {activeCamera.current.mod}
-          {activeCamera.current.index !== undefined && ` [${activeCamera.current.index}]`}
-        </div>
-
-        <Joystick onDirectionChange={handleDirectionChange} />
-
+      <div className="flex items-center gap-8 p-8">
+        {/* Zoom Controller - positioned left like Sony UI */}
         <ZoomController
             onZoomStart={handleZoomStart}
             onZoomStop={handleZoomStop}
         />
 
-        <div className="text-xs text-gray-500 font-mono">
-          Direction: {direction} | Zoom: {currentZoomRef.current || "none"}
+        {/* Main Control Area */}
+        <div className="flex flex-col items-center gap-6">
+          <div className="text-base text-gray-600 font-mono">
+            Camera: {activeCamera.current.mod}
+            {activeCamera.current.index !== undefined && ` [${activeCamera.current.index}]`}
+          </div>
+
+          <Joystick onDirectionChange={handleDirectionChange} />
+
+          <div className="text-sm text-gray-500 font-mono">
+            Direction: {direction} | Zoom: {currentZoomRef.current || "none"}
+          </div>
         </div>
       </div>
   );
