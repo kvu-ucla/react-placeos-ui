@@ -31,16 +31,14 @@ const eventToPoint = (event: PointerEvent): Point => ({
 });
 
 export default function Joystick({ onDirectionChange }: JoystickProps) {
-  const panningRef = useRef<HTMLDivElement>(null);
-  const [direction, setDirection] = useState<JoystickDirection>(
-      JoystickDirection.Stop
-  );
+  const joystickRef = useRef<HTMLDivElement>(null);
+  const [direction, setDirection] = useState<JoystickDirection>(JoystickDirection.Stop);
 
-  const handlePan = (event: PointerEvent) => {
-    const box = panningRef.current?.getBoundingClientRect();
+  const handleDirectionChange = (event: React.PointerEvent | PointerEvent) => {
+    const box = joystickRef.current?.getBoundingClientRect();
     if (!box) return;
 
-    const point = eventToPoint(event);
+    const point = eventToPoint(event as PointerEvent);
     const center = {
       x: box.left + box.width / 2,
       y: box.top + box.height / 2,
@@ -48,9 +46,7 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
 
     const dx = point.x - center.x;
     const dy = point.y - center.y;
-
     const threshold = 5;
-    let newDirection: JoystickDirection = JoystickDirection.Stop;
 
     const absDx = Math.abs(dx);
     const absDy = Math.abs(dy);
@@ -58,9 +54,9 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
     const horizontal = absDx > threshold ? (dx < 0 ? "left" : "right") : "";
     const vertical = absDy > threshold ? (dy < 0 ? "up" : "down") : "";
 
-    const combined = vertical + horizontal; // e.g., "up" + "left" = "upleft"
+    const combined = vertical + horizontal; // e.g., "upleft"
 
-    newDirection =
+    let newDirection: JoystickDirection =
         (JoystickDirection as any)[combined] ??
         (JoystickDirection as any)[horizontal || vertical] ??
         JoystickDirection.Stop;
@@ -71,19 +67,19 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
     }
   };
 
-  const stopPan = () => {
+  const stopDirection = () => {
     setDirection(JoystickDirection.Stop);
     onDirectionChange?.(JoystickDirection.Stop);
   };
 
-  const startPan = (event: React.PointerEvent<HTMLDivElement>) => {
-    handlePan(event.nativeEvent);
+  const startJoystick = (event: React.PointerEvent<HTMLDivElement>) => {
+    handleDirectionChange(event);
 
-    const moveListener = (e: PointerEvent) => handlePan(e);
+    const moveListener = (e: PointerEvent) => handleDirectionChange(e);
     const endListener = () => {
       window.removeEventListener("pointermove", moveListener);
       window.removeEventListener("pointerup", endListener);
-      stopPan();
+      stopDirection();
     };
 
     window.addEventListener("pointermove", moveListener);
@@ -107,11 +103,13 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
 
   return (
       <div
-          ref={panningRef}
-          onPointerDown={startPan}
+          ref={joystickRef}
+          onPointerDown={startJoystick}
           onContextMenu={(e) => e.preventDefault()}
           className="relative h-64 w-64 rounded-full bg-base-300 text-white touch-none select-none"
+          style={{ touchAction: "none" }}
       >
+        {/* Directional arrows */}
         <div className="absolute inset-0 flex items-center text-6xl">
           <span style={{ transform: "translateX(-.5rem)" }}>◀</span>
         </div>
@@ -124,6 +122,8 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
         <div className="absolute inset-0 flex items-end justify-center text-6xl">
           <span style={{ transform: "translateY(.5rem)" }}>▼</span>
         </div>
+
+        {/* Thumb control */}
         <div className="absolute bottom-16 left-16 right-16 top-16 flex items-center justify-center rounded-full bg-base-100">
           <div
               className="h-16 w-16 rounded-full bg-neutral transition-transform duration-75"
