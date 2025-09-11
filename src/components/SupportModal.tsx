@@ -51,7 +51,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
           {/* Sidebar tabs */}
           <div className="w-1/4">
             <div className="flex flex-col space-y-2">
-              {["Contact", "Troubleshoot"].map((tab) => (
+              {["Contact"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() =>
