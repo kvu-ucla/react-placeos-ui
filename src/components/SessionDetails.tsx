@@ -46,11 +46,11 @@ export default function SessionDetails() {
   const endMs = toMs(Number(currentMeeting?.endTime));
   const nextStartMs = toMs(Number(nextMeeting?.startTime));
   const nextEndMs = toMs(Number(nextMeeting?.endTime));
+  const timeJoinedMs = toMs(timeJoined);
 
-  
+
   const { isClass, percent, elapsedMs, remainingMs, sessionStart } = useMemo(() => {
-    // Use the earlier of meeting start or when you joined
-    const sessionStart = Math.min(startMs, timeJoined);
+    const sessionStart = Math.min(startMs, timeJoinedMs); 
     const duration = endMs - sessionStart;
 
     const valid =
@@ -62,15 +62,13 @@ export default function SessionDetails() {
         percent: 0,
         elapsedMs: 0,
         remainingMs: 0,
-        sessionStart: startMs || 0
+        sessionStart: startMs || 0,
       };
     }
 
     const elapsed = clamp(now - sessionStart, 0, duration);
     const remaining = clamp(endMs - now, 0, duration);
-
     const pct = clamp(Math.round((elapsed / duration) * 100), 0, 100);
-
     const active = now >= sessionStart && now <= endMs;
 
     return {
@@ -78,9 +76,9 @@ export default function SessionDetails() {
       percent: pct,
       elapsedMs: elapsed,
       remainingMs: remaining,
-      sessionStart
+      sessionStart,
     };
-  }, [now, startMs, endMs, timeJoined]);
+  }, [now, startMs, endMs, timeJoinedMs]); 
 
   const remainingMinutes = Math.ceil(remainingMs / 60000);
   const elapsedLabel = fmtHM(elapsedMs);
