@@ -32,6 +32,7 @@ function fmtTime(ms: number) {
 
 export default function SessionDetails() {
   const { nextMeeting, currentMeeting, timeJoined } = useZoomContext();
+ 
 
   // Tick every second so progress/remaining update live
   const [now, setNow] = useState(() => Date.now());
@@ -46,14 +47,14 @@ export default function SessionDetails() {
   const nextStartMs = toMs(Number(nextMeeting?.startTime));
   const nextEndMs = toMs(Number(nextMeeting?.endTime));
 
-
-
-  // Derived timeline values
-  const { isClass, percent, elapsedMs, remainingMs } = useMemo(() => {
-    const duration = endMs - timeJoined;
+  
+  const { isClass, percent, elapsedMs, remainingMs, sessionStart } = useMemo(() => {
+    // Use the earlier of meeting start or when you joined
+    const sessionStart = Math.min(startMs, timeJoined);
+    const duration = endMs - sessionStart;
 
     const valid =
-      Number.isFinite(timeJoined) && Number.isFinite(endMs) && duration > 0;
+        Number.isFinite(sessionStart) && Number.isFinite(endMs) && duration > 0;
 
     if (!valid) {
       return {
@@ -61,23 +62,25 @@ export default function SessionDetails() {
         percent: 0,
         elapsedMs: 0,
         remainingMs: 0,
+        sessionStart: startMs || 0
       };
     }
 
-    const elapsed = clamp(now - timeJoined, 0, duration);
+    const elapsed = clamp(now - sessionStart, 0, duration);
     const remaining = clamp(endMs - now, 0, duration);
 
     const pct = clamp(Math.round((elapsed / duration) * 100), 0, 100);
 
-    const active = now >= timeJoined && now <= endMs;
+    const active = now >= sessionStart && now <= endMs;
 
     return {
       isClass: active,
       percent: pct,
       elapsedMs: elapsed,
       remainingMs: remaining,
+      sessionStart
     };
-  }, [now, startMs, endMs ]);
+  }, [now, startMs, endMs, timeJoined]);
 
   const remainingMinutes = Math.ceil(remainingMs / 60000);
   const elapsedLabel = fmtHM(elapsedMs);
@@ -93,7 +96,7 @@ export default function SessionDetails() {
           <h2 className="text-3xl font-bold">Session progress</h2>
           {isClass && (
             <div className="text-xl">
-              Started at {fmtTime(startMs)} • Ends at{" "}
+              Started at {fmtTime(sessionStart)} • Ends at{" "}
               {fmtTime(endMs)}
             </div>
           )}
