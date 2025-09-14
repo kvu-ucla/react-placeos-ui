@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { getModule, PlaceModuleBinding } from "@placeos/ts-client";
 
-// type DeviceState = 'NONE' | 'MUTED' | 'UNMUTED';
 type CallState =
   | "NOT_IN_MEETING"
   | "CONNECTING_MEETING"
@@ -10,24 +9,23 @@ type CallState =
   | "LOGGED_OUT"
   | "UNKNOWN";
 
+type AudioState = "AUDIO_MUTED" | "AUDIO_UNMUTED";
 
-// interface ZoomParticipant {
-//   user_id: number;
-//   user_name: string;
-//   "audio_status state": string;
-//   "video_status has_source": boolean;
-//   "video_status is_sending": boolean;
-//   isCohost: boolean;
-//   is_host: boolean;
-//   is_in_waiting_room: boolean;
-//   hand_status: {
-//     is_raise_hand: boolean;
-//     is_valid: string;
-//     time_stamp: string;
-//   };
-// }
-
-
+interface ZoomParticipant {
+  user_id: number;
+  user_name: string;
+  audio_state: AudioState;
+  video_has_source: boolean;
+  video_is_sending: boolean;
+  isCohost: boolean;
+  is_host: boolean;
+  is_in_waiting_room: boolean;
+  hand_status: {
+    is_raise_hand: boolean;
+    is_valid: string;
+    time_stamp: string;
+  };
+}
 
 interface CallStatus {
   status: CallState;
@@ -71,33 +69,6 @@ interface Microphone {
   rooms: null;
 }
 
-// interface Booking {
-//     event_start: number,
-//     event_end: number,
-//     id: string,
-//     host: string,
-//     title: string,
-//     body: string,
-//     attendees: Attendee[],
-//     hide_attendees: boolean,
-//     location: string,
-//     private: boolean,
-//     all_day: boolean,
-//     timezone: string,
-//     recurring: boolean,
-//     created: string,
-//     updated: string,
-//     attachments: [],
-//     status: string,
-//     creator: string,
-//     ical_uid: string,
-//     online_meeting_provider: string,
-//     online_meeting_phones: string[],
-//     online_meeting_url: string,
-//     visibility: string,
-//     mailbox: string
-// }
-
 interface Camera {
   camera_id: string;
   camera_name: string;
@@ -111,18 +82,18 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   const [currentMeeting, setCurrentMeeting] = useState<ZoomBooking>();
   const [nextMeeting, setNextMeeting] = useState<ZoomBooking>();
   const [sharing, setSharing] = useState<SharingStatus>();
+  const [timeJoined, setTimeJoined] = useState<number>(0);
   const [recording, setRecording] = useState(false);
   const [callStatus, setCallStatus] = useState<CallStatus>();
   const [bookings, setBookings] = useState<ZoomBooking[]>();
   const [volume, setVolume] = useState<number>();
   const [volumeMute, setVolumeMute] = useState<boolean>();
   const [gallery, setGallery] = useState<boolean>(true);
-  const [timeJoined, setTimeJoined] = useState<number>(0);
   const [mics, SetMics] = useState<Microphone[]>([]);
   const [cams, setCams] = useState<CameraMap>({});
   const [selectedCamera, setSelectedCamera] = useState<string>();
   const [muteEveryone, setMuteEveryone] = useState<boolean>();
-  // const [participants, setParticipants] = useState<ZoomParticipant[]>();
+  const [participants, setParticipants] = useState<ZoomParticipant[]>();
 
   type CameraMap = Record<string, Camera>;
 
@@ -175,6 +146,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
   useEffect(() => {
     const [first, second] = bookings ?? [];
+
     setCurrentMeeting(first);
     setNextMeeting(second);
   }, [bookings]);
@@ -188,10 +160,10 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   };
 
   //connect to ad-hoc meeting
-  const joinPmi = async (time = 15) => {
+  const joinPmi = async () => {
     if (!module) return;
 
-    await module.execute("dial_start_pmi", [time]);
+    await module.execute("dial_start_pmi");
   };
 
   //connect to scheduled meeting or meeting with meetingId
@@ -199,10 +171,6 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     if (!module) return;
 
     await module.execute("dial_join", [meetingId]);
-
-    //set time joined
-    const ms = Date.now();
-    setTimeJoined(ms);
   };
 
   //toggle in-call microphone
@@ -226,7 +194,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
     const newState = !muteEveryone;
     await module.execute("call_mute_all", [newState]);
-    
+
     setMuteEveryone(newState);
   };
 
@@ -291,19 +259,14 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
       mod: PlaceModuleBinding,
       setter: (val: any) => void,
     ) => {
-      console.log(`[Binding] Setting up binding for: ${bindingName}`);
 
       const binding = mod.binding(bindingName);
-      if (!binding) {
-        console.warn(`[Binding] ${bindingName} not found on module`);
-        return;
-      }
+      if (!binding) return;
 
       const bound = binding.bind();
       subscriptions.push(bound);
 
       const sub = binding.listen().subscribe((v) => {
-        console.log(`[Binding] ${bindingName} update received:`, v);
         setter(v);
       });
 
@@ -325,11 +288,15 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
         console.log("mics?: ", val);
       },
     );
-    
+
     //bind selected camera
-    bindAndListen('selected_camera', getModule(systemId, "System"), (camera_id: string) => {
-      setSelectedCamera(camera_id);
-    })
+    bindAndListen(
+      "selected_camera",
+      getModule(systemId, "System"),
+      (camera_id: string) => {
+        setSelectedCamera(camera_id);
+      },
+    );
 
     //bind local cameras for control and preset info. first, get the list of available cameras
     bindAndListen(
@@ -362,8 +329,6 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
             },
           );
         }
-
-        console.log("cams?", cams);
       },
     );
 
@@ -371,8 +336,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     bindAndListen("Call", module, (val) => {
       let tempMic = null;
       let tempCam = null;
-
-      console.log("Call status val from zoom module: ", val);
+      
       if (val.Microphone.Mute != null) tempMic = val.Microphone.Mute;
       if (val.Microphone.Mute != null) tempCam = val.Camera.Mute;
 
@@ -382,49 +346,20 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
         isCamMuted: tempCam,
       };
 
-      console.log("Call status data from zoom module: ", data);
-
       setCallStatus(data);
     });
 
     //bind sharing status for wireless and wired sharing
     bindAndListen("Sharing", module, setSharing);
 
-    //bind and get bookings from Zoom Rooms
-    bindAndListen("Bookings", module, (val: ZoomBooking[]) => {
-      const nowMs = Date.now();
-
-      const updatedBookings: ZoomBooking[] = val.flatMap<ZoomBooking>((z) => {
-        const startMs = Date.parse(z.startTime);
-        const endMs = Date.parse(z.endTime);
-        if (Number.isNaN(startMs) || Number.isNaN(endMs)) return [];
-        if (endMs <= nowMs) return []; // only drop meetings that already ended
-
-        return [
-          {
-            ...z,
-            startTime: String(Math.floor(startMs / 1000)),
-            endTime: String(Math.floor(endMs / 1000)),
-          },
-        ];
-      });
-
-      setBookings(updatedBookings);
-    });
-    
-    // bindAndListen("Participants", module, (val: ZoomParticipant[]) => {
     //
-    //   setParticipants(val);
-    // })
+    bindAndListen("meeting_started_time", module, setTimeJoined);
 
-    //bind to Bookings module in placeOS
-    // const bookingsMod = getModule(systemId, 'Bookings');
-    // if (!bookingsMod) return;
+    //bind and get bookings from Zoom Rooms
+    bindAndListen("Bookings", module, setBookings);
+    bindAndListen("Participants", module, setParticipants);
 
-    // bindAndListen('current_booking', bookingsMod, setCurrentMeeting);
-    // bindAndListen('next_booking', bookingsMod, setNextMeeting);
-
-    //bind to Recording module in placeOS
+    //bind to Recording (Epiphan) module in placeOS
     const recordingsMod = getModule(systemId, "Recording");
     if (!recordingsMod) return;
 
@@ -456,15 +391,15 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     selectedCamera,
     cams,
     muteEveryone,
+    timeJoined,
     currentMeeting,
     nextMeeting,
     recording,
     callStatus,
     sharing,
     bookings,
-    // participants,
+    participants,
     gallery,
-    timeJoined,
     leave,
     joinPmi,
     joinMeetingId,
@@ -472,6 +407,6 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     toggleVideoMuteAll,
     toggleSharing,
     toggleGallery,
-    toggleAudioMuteEveryone
+    toggleAudioMuteEveryone,
   };
 }

@@ -19,14 +19,8 @@ function fmtHM(ms: number) {
   return h > 0 ? `${h}:${String(m).padStart(2, "0")}` : `${m}m`;
 }
 
-function fmtTime(ms: number, timeJoined = 0, joinedEarly: boolean = false) {
+function fmtTime(ms: number) {
   if (!isFinite(ms)) return "—";
-  else if (joinedEarly)
-    return new Date(timeJoined).toLocaleTimeString([], {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
   else {
     return new Date(ms).toLocaleTimeString([], {
       hour: "numeric",
@@ -52,18 +46,14 @@ export default function SessionDetails() {
   const nextStartMs = toMs(Number(nextMeeting?.startTime));
   const nextEndMs = toMs(Number(nextMeeting?.endTime));
 
-  const earlyClass =
-    Number.isFinite(startMs) &&
-    Number.isFinite(timeJoined) &&
-    timeJoined < startMs;
+
 
   // Derived timeline values
   const { isClass, percent, elapsedMs, remainingMs } = useMemo(() => {
-    const startRef = earlyClass ? timeJoined : startMs;
-    const duration = endMs - startRef;
+    const duration = endMs - timeJoined;
 
     const valid =
-      Number.isFinite(startRef) && Number.isFinite(endMs) && duration > 0;
+      Number.isFinite(timeJoined) && Number.isFinite(endMs) && duration > 0;
 
     if (!valid) {
       return {
@@ -74,12 +64,12 @@ export default function SessionDetails() {
       };
     }
 
-    const elapsed = clamp(now - startRef, 0, duration);
+    const elapsed = clamp(now - timeJoined, 0, duration);
     const remaining = clamp(endMs - now, 0, duration);
 
     const pct = clamp(Math.round((elapsed / duration) * 100), 0, 100);
 
-    const active = now >= startRef && now <= endMs;
+    const active = now >= timeJoined && now <= endMs;
 
     return {
       isClass: active,
@@ -87,7 +77,7 @@ export default function SessionDetails() {
       elapsedMs: elapsed,
       remainingMs: remaining,
     };
-  }, [now, startMs, endMs, timeJoined, earlyClass]);
+  }, [now, startMs, endMs ]);
 
   const remainingMinutes = Math.ceil(remainingMs / 60000);
   const elapsedLabel = fmtHM(elapsedMs);
@@ -103,7 +93,7 @@ export default function SessionDetails() {
           <h2 className="text-3xl font-bold">Session progress</h2>
           {isClass && (
             <div className="text-xl">
-              Started at {fmtTime(startMs, timeJoined, earlyClass)} • Ends at{" "}
+              Started at {fmtTime(startMs)} • Ends at{" "}
               {fmtTime(endMs)}
             </div>
           )}
