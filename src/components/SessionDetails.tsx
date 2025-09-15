@@ -296,14 +296,15 @@ export default function SessionDetails() {
           {isClass && (
               <div className="text-[24px]">
                 Starts at {fmtTime(nextStartMs)} • Ends at {fmtTime(nextEndMs)}
+                <button
+                    // onClick={onStartNext}
+                    className="flex-1 bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Start Next Class
+                </button>
               </div>
           )}
-          <button
-              // onClick={onStartNext}
-              className="flex-1 bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Start Next Class
-          </button>
+
         </div>
       </div>
   );
