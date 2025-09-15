@@ -2,7 +2,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast, type Id } from 'react-toastify';
 import { useZoomContext } from "../hooks/ZoomContext";
-import type {ZoomBooking} from "../hooks/useZoomModule.ts";
 
 function toMs(v?: number | null) {
   if (v == null) return NaN;
@@ -33,14 +32,12 @@ function fmtTime(ms: number) {
 }
 
 
-interface NextMeetingToastProps {
-  nextMeeting: ZoomBooking;
+interface SurveyToastProps {
   onStartNext: () => void;
   onWait: () => void;
-  waitCount: number;
 }
 
-const NextMeetingToast = ({ nextMeeting, onStartNext, onWait, waitCount }: NextMeetingToastProps) => (
+const SurveyToast = ({ onStartNext, onWait }: SurveyToastProps) => (
     <div className="p-4">
       <div className="flex items-start mb-4">
         <div className="flex-shrink-0 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center mr-3 mt-0.5">
@@ -48,17 +45,11 @@ const NextMeetingToast = ({ nextMeeting, onStartNext, onWait, waitCount }: NextM
         </div>
         <div>
           <h3 className="text-lg font-semibold text-gray-900 mb-1">
-            Ready for next class?
+            Have feedback to share?
           </h3>
-          {waitCount > 0 && (
-              <div className="text-sm text-gray-500 mb-2">
-                Reminder #{waitCount + 1}
-              </div>
-          )}
           <div className="text-gray-600">
-            <div className="font-medium text-gray-900">{nextMeeting?.meetingName}</div>
             <div className="text-sm">
-              Starts at {fmtTime(toMs(Number(nextMeeting?.startTime)))}
+              Take our survey in under 30 seconds.
             </div>
           </div>
         </div>
@@ -93,8 +84,7 @@ export default function SessionDetails() {
   }, []);
 
   // Toast states
-  const [nextMeetingToastId, setNextMeetingToastId] = useState<Id | null>(null);
-  const [waitCount, setWaitCount] = useState(0);
+  const [surveyToastId, setSurveyToastId] = useState<Id | null>(null);
   const [hasNotified, setHasNotified] = useState(false);
 
   // Debug mode for testing
@@ -148,23 +138,21 @@ export default function SessionDetails() {
 
     // When current meeting ends and there's a next meeting
     if (meetingEnded && nextMeeting && !hasNotified) {
-      const handleStartNext = () => {
+      const handleStartSurvey = () => {
         console.log('Starting next meeting:', nextMeeting.meetingName);
-        if (nextMeetingToastId) {
-          toast.dismiss(nextMeetingToastId);
+        if (surveyToastId) {
+          toast.dismiss(surveyToastId);
         }
-        setNextMeetingToastId(null);
+        setSurveyToastId(null);
         setHasNotified(true);
-        setWaitCount(0);
         setDebugMode(false); // Reset debug mode
       };
 
       const handleWait = () => {
-        if (nextMeetingToastId) {
-          toast.dismiss(nextMeetingToastId);
+        if (surveyToastId) {
+          toast.dismiss(surveyToastId);
         }
-        setNextMeetingToastId(null);
-        setWaitCount(prev => prev + 1);
+        setSurveyToastId(null);
 
         // Show toast again after delay (shorter for testing)
         const WAIT_TIMEOUT = process.env.NODE_ENV === 'development' ?
@@ -177,11 +165,9 @@ export default function SessionDetails() {
       };
 
       const toastId = toast(
-          <NextMeetingToast
-              nextMeeting={nextMeeting}
-              onStartNext={handleStartNext}
+          <SurveyToast
+              onStartNext={handleStartSurvey}
               onWait={handleWait}
-              waitCount={waitCount}
           />,
           {
             autoClose: false,
@@ -191,20 +177,19 @@ export default function SessionDetails() {
           }
       );
 
-      setNextMeetingToastId(toastId);
+      setSurveyToastId(toastId);
       setHasNotified(true);
     }
 
     // Reset when new meeting starts or conditions change
     if ((now < endMs || !nextMeeting) && !debugMode) {
       setHasNotified(false);
-      setWaitCount(0);
-      if (nextMeetingToastId) {
-        toast.dismiss(nextMeetingToastId);
-        setNextMeetingToastId(null);
+      if (surveyToastId) {
+        toast.dismiss(surveyToastId);
+        setSurveyToastId(null);
       }
     }
-  }, [now, endMs, isClass, nextMeeting, hasNotified, nextMeetingToastId, waitCount, debugMode]);
+  }, [now, endMs, isClass, nextMeeting, hasNotified, surveyToastId, debugMode]);
 
   const remainingMinutes = Math.ceil(remainingMs / 60000);
   const elapsedLabel = fmtHM(elapsedMs);
