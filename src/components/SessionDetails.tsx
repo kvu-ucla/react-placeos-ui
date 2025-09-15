@@ -60,13 +60,13 @@ const SurveyToast = ({ onStartNext, onWait }: SurveyToastProps) => (
             onClick={onWait}
             className="flex-1 bg-blue-100 text-blue-700 font-semibold py-3 px-4 rounded-lg hover:bg-blue-200 transition-colors"
         >
-          Wait
+          No
         </button>
         <button
             onClick={onStartNext}
             className="flex-1 bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
         >
-          Start Now
+          Yes
         </button>
       </div>
     </div>
@@ -134,12 +134,11 @@ export default function SessionDetails() {
   // Toast logic for meeting end
   useEffect(() => {
     // Use debug mode or actual meeting end condition
-    const meetingEnded = debugMode || (now >= endMs && isClass);
+    const meetingEnded = debugMode || (now >= endMs);
 
     // When current meeting ends and there's a next meeting
-    if (meetingEnded && nextMeeting && !hasNotified) {
+    if (meetingEnded && !hasNotified) {
       const handleStartSurvey = () => {
-        console.log('Starting next meeting:', nextMeeting.meetingName);
         if (surveyToastId) {
           toast.dismiss(surveyToastId);
         }
@@ -182,14 +181,14 @@ export default function SessionDetails() {
     }
 
     // Reset when new meeting starts or conditions change
-    if ((now < endMs || !nextMeeting) && !debugMode) {
+    if ((now < endMs ) && !debugMode) {
       setHasNotified(false);
       if (surveyToastId) {
         toast.dismiss(surveyToastId);
         setSurveyToastId(null);
       }
     }
-  }, [now, endMs, isClass, nextMeeting, hasNotified, surveyToastId, debugMode]);
+  }, [now, endMs, isClass, hasNotified, surveyToastId, debugMode]);
 
   const remainingMinutes = Math.ceil(remainingMs / 60000);
   const elapsedLabel = fmtHM(elapsedMs);
