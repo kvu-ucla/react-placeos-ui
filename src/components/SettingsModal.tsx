@@ -55,12 +55,12 @@ export default function SettingsModal({
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
               />
-              {/*<Section*/}
-              {/*  label="Video"*/}
-              {/*  tabs={videoTabs}*/}
-              {/*  activeTab={activeTab}*/}
-              {/*  setActiveTab={setActiveTab}*/}
-              {/*/>*/}
+              <Section
+                label="Video"
+                tabs={videoTabs}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+              />
               <Section
                 label="Meeting Controls"
                 tabs={meetingTabs}
