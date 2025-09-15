@@ -21,15 +21,15 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
 
         {/* Body */}
         <div className="flex flex-col items-center justify-center mt-4">
-          <div>
+          <div className="mb-4">
             Scan the QR code with your phone's camera to take a quick survey.
           </div>
           {/* Main content */}
-          <div className="px-6">
+          <div className="">
             <img
                 src={import.meta.env.BASE_URL + "dts_survey.svg"}
                 alt="DTS Survey QR Code"
-                className="h-16"
+                className=""
             />
           </div>
         </div>
