@@ -24,6 +24,13 @@ export function DisplayTab() {
             mod.execute('power', [newDisplayState]);
         }
     };
+    
+    const getInputDevice = (mod_id: string) => {
+        const mod = getModule(system_id, mod_id);
+        if (!mod) return;
+        
+        
+    }
 
     return (
         <>

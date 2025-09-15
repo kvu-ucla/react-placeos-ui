@@ -78,6 +78,7 @@ interface Camera {
 
 interface Output {
   ref: string;
+  source: string;
   locked: boolean;
   name: string;
   inputs: string[];
