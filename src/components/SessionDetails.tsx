@@ -83,7 +83,7 @@ const NextMeetingToast = ({ nextMeeting, onStartNext, onWait, waitCount }: NextM
 
 
 export default function SessionDetails() {
-  const { nextMeeting, currentMeeting, timeJoined } = useZoomContext();
+  const { nextMeeting, currentMeeting, joinMeetingId, timeJoined } = useZoomContext();
 
   // Tick every second so progress/remaining update live
   const [now, setNow] = useState(() => Date.now());
@@ -296,25 +296,18 @@ export default function SessionDetails() {
           {isClass && (
               <div className="text-[24px] mb-4">
                 Starts at {fmtTime(nextStartMs)} • Ends at {fmtTime(nextEndMs)}
-                
-                <button
-                    onClick={() => {
-                      // TODO add zoom function to start next meeting by meetingNumber
-                    }}
-                    className="ml-4 animate-pulse bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Start Next
-                </button>
-                {/*{percent >= 95 && (*/}
-                {/*    <button*/}
-                {/*        onClick={() => {*/}
-                {/*          // TODO add zoom function to start next meeting by meetingNumber*/}
-                {/*        }}*/}
-                {/*        className="ml-4 animate-pulse bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"*/}
-                {/*    >*/}
-                {/*      Start Next*/}
-                {/*    </button>*/}
-                {/*)}*/}
+                {percent >= 95 && nextMeeting && (
+                    <button
+                        onClick={() => {
+                          if (nextMeeting) {
+                            joinMeetingId(nextMeeting.meetingNumber);
+                          }
+                        }}
+                        className="ml-4 animate-pulse bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      Start Next
+                    </button>
+                )}
               </div>
           )}
 

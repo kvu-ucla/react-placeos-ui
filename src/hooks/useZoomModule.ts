@@ -75,6 +75,21 @@ interface Camera {
   presets: string[];
 }
 
+interface Output {
+  ref: string;
+  locked: boolean;
+  name: string;
+  inputs: string[];
+}
+
+interface Input {
+  ref: string;
+  source: string;
+  locked: boolean;
+  name: string;
+  icon: string;
+}
+
 let subscriptions: (() => void)[] = [];
 
 export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
@@ -91,15 +106,18 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   const [gallery, setGallery] = useState<boolean>(true);
   const [mics, SetMics] = useState<Microphone[]>([]);
   const [cams, setCams] = useState<CameraMap>({});
+  const [outputs, setOutputs] = useState<OutputMap>({});
+  const [inputs, setInputs] = useState<InputMap>({});
   const [selectedCamera, setSelectedCamera] = useState<string>();
   const [muteEveryone, setMuteEveryone] = useState<boolean>();
   const [participants, setParticipants] = useState<ZoomParticipant[]>();
 
   type CameraMap = Record<string, Camera>;
+  type OutputMap = Record<string, Output>;
+  type InputMap = Record<string, Input>;
 
   const handleActiveRecordings = (data: string[] | null | undefined) => {
     const value = !!(data && data.length > 0);
-    console.log("new recording value: ", value);
     setRecording(value);
   };
 
@@ -122,6 +140,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   const patchCam = (id: string, patch: Partial<Camera>) => {
     setCams((prev) => ({ ...prev, [id]: { ...prev[id], ...patch } }));
   };
+  
 
   //clear subscriptions to PlaceOS Zoom driver
   const clearSubs = () => {
@@ -303,9 +322,8 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
       "available_cameras",
       getModule(systemId, "System"),
       (list) => {
-        console.log("cams enter?", cams);
         if (!list) return;
-
+        
         syncCameraSet(list);
 
         for (const camId of list) {
@@ -330,6 +348,57 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
           );
         }
       },
+    );
+
+    //bind local displays for control and device info. first, get the list of available displays
+    bindAndListen(
+        "available_outputs",
+        getModule(systemId, "System"),
+        (list) => {
+          if (!list) return;
+
+          for (const outputId of list) {
+            // name from System status "Output/<outputId>"
+            bindAndListen(
+                `output/${outputId}`,
+                getModule(systemId, "System"),
+                (newOutput) => {
+                  setOutputs(prevOutput => ({
+                    ...prevOutput,
+                    [outputId]: newOutput 
+                  }));
+                }
+            );
+          }
+        },
+    );
+
+    //bind local inputs for control and device info. first, get the list of available inputs
+    bindAndListen(
+        "inputs",
+        getModule(systemId, "System"),
+        (list) => {
+          if (!list) return;
+
+          //filter out camera inputs
+          const nonCameraInputs = list.filter( (input: string) =>
+              !input.toLowerCase().includes('camera')
+          );
+
+          for (const inputId of nonCameraInputs) {
+            // name from System status "input/<inputId>"
+            bindAndListen(
+                `input/${inputId}`,
+                getModule(systemId, "System"),
+                (newInput) => {
+                  setInputs(prevInputs => ({
+                    ...prevInputs,
+                    [inputId]: newInput
+                  }));
+                }
+            );
+          }
+        },
     );
 
     //bind call state for zoom, including mic and cam
@@ -391,6 +460,8 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     mics,
     selectedCamera,
     cams,
+    outputs,
+    inputs,
     muteEveryone,
     timeJoined,
     currentMeeting,
