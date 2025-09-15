@@ -82,37 +82,38 @@ export function DisplayTab() {
                         <div className="space-y-2">
                             {nonCameraInputs.map((inputId) => {
                                 const inputData = inputs[inputId]; // Get input data from context
-                                const inputModule = getModule(system_id, inputId); // Get module for this input
-                                const isActive = inputData?.source === display.source;
+                                //TODO sync info
+                                // const inputModule = getModule(system_id, inputId);
+                                const isSelectedSource = inputData?.source === display.source;
+                                const isSyncDetected = true;
 
                                 // Get name from the module itself
-                                const moduleName = inputModule?.name || inputData?.name || inputId;
+                                const moduleName = inputData?.name;
 
                                 return (
                                     <div
                                         key={inputId}
                                         className={`p-4 rounded-lg flex items-center justify-between ${
-                                            isActive
+                                            isSelectedSource
                                                 ? 'bg-blue-600 text-white'
                                                 : 'bg-gray-200 text-gray-700'
                                         }`}
                                     >
-                            <span className="font-semibold">
+                            <span className="flex items-center font-semibold">
                                 {moduleName}
-                                {isActive && (
+                                {isSelectedSource && (
                                     <span className="bg-white text-blue-600 text-xs font-bold px-3 py-1 rounded-full ml-2">
                                         CONNECTED
                                     </span>
                                 )}
                             </span>
-                                        {isActive && (
+                                        {isSyncDetected && (
                                             <div className="flex items-center gap-4">
                                     <span className="flex items-center gap-1">
                                         <div className="relative">
                                             <div className="absolute inline-flex h-4 w-4 rounded-full bg-green-400 opacity-75 animate-ping"></div>
                                             <div className="relative h-4 w-4 bg-green-400 rounded-full mr-4"></div>
                                         </div>
-                                        Active
                                     </span>
                                             </div>
                                         )}
