@@ -111,7 +111,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   const [inputs, setInputs] = useState<InputMap>({});
   const [selectedCamera, setSelectedCamera] = useState<string>();
   const [muteEveryone, setMuteEveryone] = useState<boolean>();
-  const [participants, setParticipants] = useState<ZoomParticipant[]>();
+  const [participants, setParticipants] = useState<ZoomParticipant[]>([]);
 
   type CameraMap = Record<string, Camera>;
   type OutputMap = Record<string, Output>;

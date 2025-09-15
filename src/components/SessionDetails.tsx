@@ -58,7 +58,7 @@ const SurveyToast = ({ onStartNext, onWait }: SurveyToastProps) => (
       <div className="flex gap-3">
         <button
             onClick={onWait}
-            className="flex-1 bg-blue-100 text-blue-700 font-semibold py-3 px-4 rounded-lg hover:bg-blue-200 transition-colors"
+            className="flex-1 bg-blue-100 text-blue-950 font-semibold py-3 px-4 rounded-lg hover:bg-blue-200 transition-colors"
         >
           No
         </button>
@@ -172,7 +172,12 @@ export default function SessionDetails() {
             autoClose: false,
             closeOnClick: false,
             draggable: false,
-            closeButton: false,
+            closeButton: true,
+            style: {
+              minWidth: '400px',
+              width: 'auto',
+              maxWidth: '600px'
+            }
           }
       );
 

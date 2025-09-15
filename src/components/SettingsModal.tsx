@@ -1,10 +1,10 @@
 import { useState } from "react";
 import type { TabSection } from "../models/Modal";
 import { Icon } from "@iconify/react";
-import { useZoomContext } from "../hooks/ZoomContext.tsx";
-import {CameraTab} from "./tabbed/CameraTab.tsx";
-import {MicTab} from "./tabbed/MicTab.tsx";
-import {DisplayTab} from "./tabbed/DisplayTab.tsx";
+import { CameraTab } from "./tabbed/CameraTab.tsx";
+import { MicTab } from "./tabbed/MicTab.tsx";
+import { DisplayTab } from "./tabbed/DisplayTab.tsx";
+import { StatusTab } from "./tabbed/StatusTab.tsx";
 
 export default function SettingsModal({
   onClose,
@@ -13,19 +13,12 @@ export default function SettingsModal({
   onClose: () => void;
   initialTab?: TabSection;
 }) {
-  const {
-    muteEveryone,
-    toggleAudioMuteEveryone,
-    currentMeeting
-  } = useZoomContext();
   const [activeTab, setActiveTab] = useState<TabSection>(initialTab);
   const audioTabs: TabSection[] = ["Volume"];
   // const audioTabs: TabSection[] = ["Volume", "Sources"];
   const videoTabs: TabSection[] = ["Display"];
   const meetingTabs: TabSection[] = ["Status", "Camera"];
   // const meetingTabs: TabSection[] = ["Status", "View", "Camera"];
-  
-  
 
   return (
     <div className="modal modal-open bg-black/40">
@@ -167,64 +160,9 @@ export default function SettingsModal({
                 </>
               )}
 
-              {activeTab === "Display" && (
-                  <DisplayTab/>
-              )}
+              {activeTab === "Display" && <DisplayTab />}
 
-              {activeTab === "Status" && (
-                <div className="border rounded-lg p-6 space-y-6">
-                  {/* Zoom Meeting Status Header */}
-                  <div>
-                    <h2 className="text-xl font-semibold mb-1">
-                      Zoom Meeting Status
-                    </h2>
-                  </div>
-                  {/* Room Info */}
-                  <div className="border rounded-md p-4 bg-white">
-                    <div className="font-semibold text-black">
-                      {currentMeeting?.meetingName}
-                    </div>
-                    <div className="text-gray-600">
-                      Meeting Number: {currentMeeting?.meetingNumber} &nbsp; •
-                      &nbsp;
-                    </div>
-                  </div>
-                  {/* Tabs and Global Tools */}
-                  {/* Global actions */}
-                  <div className="flex gap-4">
-                    {muteEveryone ? (
-                      <button
-                        onClick={toggleAudioMuteEveryone}
-                        className="bg-black text-white px-4 py-2 rounded text-2xl font-semibold"
-                      >
-                        Unmute all participants
-                      </button>
-                    ) : (
-                      <button
-                        onClick={toggleAudioMuteEveryone}
-                        className="bg-gray-300 px-4 py-2 rounded text-2xl font-semibold"
-                      >
-                        Mute all participants
-                      </button>
-                    )}
-                    {/*<button className="bg-gray-300 px-4 py-2 rounded text-sm font-semibold">*/}
-                    {/*  Disable video for all*/}
-                    {/*</button>*/}
-                  </div>
-                  {/* Participants list */}
-                  {/*<div>*/}
-                  {/*  {participants?.map(participant => (*/}
-                  {/*      <div key={participant.user_name}>*/}
-                  {/*        <div key={participant.is_host}>*/}
-                  {/*          <div key={participant.}>*/}
-                  {/*          </div>*/}
-                  {/*        </div>*/}
-                  {/*      </div>*/}
-                  {/*      */}
-                  {/*  )) ?? <div>No participants</div>}*/}
-                  {/*</div>*/}
-                </div>
-              )}
+              {activeTab === "Status" && <StatusTab />}
 
               {activeTab === "View" && (
                 <div className="border rounded-lg p-6 space-y-6">
