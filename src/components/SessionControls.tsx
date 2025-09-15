@@ -106,7 +106,7 @@ export default function SessionControls() {
 
       <h2 className="font-semibold mb-4">Join from your device</h2>
       <div id="zoom-join" className="grid grid-cols-2 gap-4">
-        <div className="collapse collapse-arrow p-2 bg-gray-200/20 border-base-200/20 backdrop-blur-xl">
+        <div className="self-start collapse collapse-arrow p-2 bg-gray-200/20 border-base-200/20 backdrop-blur-xl">
           <input type="radio" name="my-accordion-1" />
           <div
             className="collapse-title font-semibold inline-flex after:border-r-4 after:border-b-4 after:border-current
@@ -140,7 +140,7 @@ export default function SessionControls() {
           </div>
         </div>
 
-        <div className="collapse collapse-arrow p-2 bg-gray-200/20 border-base-200/20 backdrop-blur-xl">
+        <div className="self-start collapse collapse-arrow p-2 bg-gray-200/20 border-base-200/20 backdrop-blur-xl">
           <input type="radio" name="my-accordion-1" />
           <div
             className="collapse-title font-semibold inline-flex after:border-r-4 after:border-b-4 after:border-current
