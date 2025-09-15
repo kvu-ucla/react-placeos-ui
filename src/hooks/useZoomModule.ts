@@ -333,6 +333,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     );
 
     //bind call state for zoom, including mic and cam
+    
     bindAndListen("Call", module, (val) => {
       let tempMic = null;
       let tempCam = null;

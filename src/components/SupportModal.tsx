@@ -1,6 +1,6 @@
 // src/components/SupportModal.tsx
 import { useState } from "react";
-import { Info, XIcon } from "lucide-react";
+import { Icon } from "@iconify/react";
 
 interface ContactInfo {
   title: string;
@@ -41,8 +41,12 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
         {/* Header */}
         <div className="flex justify-between items-center border-b border-avit-grey pb-8">
           <h2 className="text-4xl font-semibold">Support</h2>
-          <button onClick={onClose}>
-            <XIcon className="h-8 w-8" />
+          <button onClick={onClose} className="btn-ghost text-2xl font-bold ">
+            <Icon
+              icon="material-symbols:close-small-outline-rounded"
+              width={48}
+              height={48}
+            ></Icon>
           </button>
         </div>
 
@@ -85,7 +89,11 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
                         <div className="flex-1">
                           <div className="mb-1 flex items-center gap-2">
                             <span className="text-blue-600">
-                              <Info />
+                              <Icon
+                                icon="material-symbols:info-rounded"
+                                width={48}
+                                height={48}
+                              ></Icon>
                             </span>
                             <span className="font-semibold text-2xl leading-tight">
                               {title}
