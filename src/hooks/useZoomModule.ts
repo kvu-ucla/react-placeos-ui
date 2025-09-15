@@ -82,6 +82,8 @@ interface Output {
   locked: boolean;
   name: string;
   inputs: string[];
+  mute: boolean;  
+  power: boolean;
 }
 
 interface Input {
@@ -367,9 +369,42 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
                 `output/${outputId}`,
                 getModule(systemId, "System"),
                 (newOutput) => {
-                  setOutputs(prevOutput => ({
-                    ...prevOutput,
-                    [outputId]: newOutput 
+                  setOutputs(prevOutputs => ({
+                    ...prevOutputs,
+                    [outputId]: {
+                      ...prevOutputs[outputId], 
+                      ...newOutput // Update with new output data
+                    }
+                  }));
+                }
+            );
+
+            //display video mute state
+            bindAndListen(
+                `mute`,
+                getModule(systemId, outputId),
+                (newMute) => {
+                  setOutputs(prevOutputs => ({
+                    ...prevOutputs,
+                    [outputId]: {
+                      ...prevOutputs[outputId], 
+                      mute: newMute // Add/update just the mute property
+                    }
+                  }));
+                }
+            );
+
+            //display power state 
+            bindAndListen(
+                `power`,
+                getModule(systemId, outputId),
+                (newPower) => {
+                  setOutputs(prevOutputs => ({
+                    ...prevOutputs,
+                    [outputId]: {
+                      ...prevOutputs[outputId], 
+                      power: newPower // Add/update just the power property
+                    }
                   }));
                 }
             );

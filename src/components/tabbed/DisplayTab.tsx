@@ -40,7 +40,7 @@ export function DisplayTab() {
       </div>
 
       {/* Container */}
-      <div className="max-h-96 overflow-y-auto space-y-3 pr-2">
+      <div className="max-h-96 overflow-y-auto space-y-3">
         {Object.entries(outputs).map(([dispId, display]) => {
           // Filter out camera inputs
           const nonCameraInputs = display.inputs.filter(
@@ -62,6 +62,25 @@ export function DisplayTab() {
                   height={24}
                 />
                 {display.name}
+                  <button
+                      onClick={(e) => {
+                          e.stopPropagation(); 
+                          const dispMuteState = outputs[dispId].mute;
+                          const displayMod = getModule(system_id, dispId);
+                          if (!displayMod) return;
+                          const newMuteState = !dispMuteState;
+                          newMuteState
+                              ? displayMod.execute("mute", [newMuteState])
+                              : displayMod.execute("unmute", [!newMuteState]);
+                      }}
+                      className={`btn w-[300px] h-[64px] ml-4 px-9 py-6 rounded-lg text-xl font-medium ${
+                          outputs[dispId].mute
+                              ? 'bg-black border-black text-white'
+                              : 'bg-gray-100 border-gray-100 text-avit-grey-80'
+                      }`}
+                  >
+                      {outputs[dispId].mute ? "Unmute Display" : "Mute Display"}
+                  </button>
                 <div className="badge badge-outline ml-auto">
                   {nonCameraInputs.length} inputs
                 </div>
@@ -95,12 +114,19 @@ export function DisplayTab() {
                     const friendlyName = inputData?.name;
 
                     return (
-                      <div
+                      <button
                         key={inputId}
-                        className={`p-4 rounded-lg flex items-center justify-between ${
+                        onClick={ () => {
+                          const routingMod = getModule(system_id, "System");
+                          if (!routingMod) return;
+                          
+                          console.log(`Routing Mod for display ${dispId} <= ` + inputId);
+                          routingMod.execute("route", [dispId, inputId]); 
+                        }}
+                        className={`w-full p-4 rounded-lg flex items-center justify-between transition-colors hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                           isSelectedSource
                             ? "bg-blue-600 text-white"
-                            : "bg-gray-200 text-gray-700"
+                            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                         }`}
                       >
                         <span className="flex items-center font-semibold">
@@ -121,7 +147,7 @@ export function DisplayTab() {
                             </span>
                           </div>
                         )}
-                      </div>
+                      </button>
                     );
                   })}
                 </div>
