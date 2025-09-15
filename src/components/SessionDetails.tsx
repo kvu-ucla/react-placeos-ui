@@ -294,14 +294,27 @@ export default function SessionDetails() {
           )}
 
           {isClass && (
-              <div className="text-[24px]">
+              <div className="text-[24px] mb-4">
                 Starts at {fmtTime(nextStartMs)} • Ends at {fmtTime(nextEndMs)}
+                
                 <button
-                    // onClick={onStartNext}
-                    className="flex-1 bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+                    onClick={() => {
+                      // TODO add zoom function to start next meeting by meetingNumber
+                    }}
+                    className="ml-4 animate-pulse bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
                 >
-                  Start Next Class
+                  Start Next
                 </button>
+                {/*{percent >= 95 && (*/}
+                {/*    <button*/}
+                {/*        onClick={() => {*/}
+                {/*          // TODO add zoom function to start next meeting by meetingNumber*/}
+                {/*        }}*/}
+                {/*        className="ml-4 animate-pulse bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"*/}
+                {/*    >*/}
+                {/*      Start Next*/}
+                {/*    </button>*/}
+                {/*)}*/}
               </div>
           )}
 
