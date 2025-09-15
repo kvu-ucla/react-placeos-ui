@@ -1,6 +1,7 @@
 // src/hooks/useZoomModule.ts
 import { useEffect, useState } from "react";
 import { getModule, PlaceModuleBinding } from "@placeos/ts-client";
+import {useParams} from "react-router-dom";
 
 type CallState =
   | "NOT_IN_MEETING"
@@ -115,6 +116,8 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   type CameraMap = Record<string, Camera>;
   type OutputMap = Record<string, Output>;
   type InputMap = Record<string, Input>;
+
+  const { system_id = 'sys-1234' }  = useParams();
 
   const handleActiveRecordings = (data: string[] | null | undefined) => {
     const value = !!(data && data.length > 0);
@@ -459,6 +462,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     toggleMasterMute,
     mics,
     selectedCamera,
+    system_id,
     cams,
     outputs,
     inputs,
