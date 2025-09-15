@@ -47,7 +47,7 @@ interface SharingStatus {
   wifiName: string;
 }
 
-interface ZoomBooking {
+export interface ZoomBooking {
   creatorName: string;
   startTime: string; //"2025-08-24T23:27:47Z", ISO8601 need to convert to epoch (unix) seconds
   endTime: string; //"2025-08-24T23:46:50Z",

@@ -1,6 +1,8 @@
 // src/components/SessionDetails.tsx
 import { useEffect, useMemo, useState } from "react";
+import { toast, type Id } from 'react-toastify';
 import { useZoomContext } from "../hooks/ZoomContext";
+import type {ZoomBooking} from "../hooks/useZoomModule.ts";
 
 function toMs(v?: number | null) {
   if (v == null) return NaN;
@@ -30,9 +32,47 @@ function fmtTime(ms: number) {
   }
 }
 
+
+interface NextMeetingToastProps {
+  nextMeeting: ZoomBooking;
+  onStartNext: () => void;
+  onWait: () => void;
+  waitCount: number;
+}
+
+const NextMeetingToast = ({ nextMeeting, onStartNext, onWait, waitCount }: NextMeetingToastProps) => (
+    <div>
+      {waitCount > 0 && (
+          <div className="text-xs text-gray-500 mb-2">
+            Reminder #{waitCount + 1}
+          </div>
+      )}
+      <div className="font-bold mb-2">Current meeting ended</div>
+      <div className="mb-3">
+        <div className="font-medium">{nextMeeting?.meetingName}</div>
+        <div className="text-sm text-gray-600">
+          Starts at {fmtTime(toMs(Number(nextMeeting?.startTime)))}
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <button
+            onClick={onStartNext}
+            className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+        >
+          Start Next Class
+        </button>
+        <button
+            onClick={onWait}
+            className="bg-gray-400 text-white px-3 py-1 rounded text-sm hover:bg-gray-500"
+        >
+          Wait
+        </button>
+      </div>
+    </div>
+);
+
 export default function SessionDetails() {
   const { nextMeeting, currentMeeting, timeJoined } = useZoomContext();
- 
 
   // Tick every second so progress/remaining update live
   const [now, setNow] = useState(() => Date.now());
@@ -41,6 +81,14 @@ export default function SessionDetails() {
     return () => clearInterval(id);
   }, []);
 
+  // Toast states
+  const [nextMeetingToastId, setNextMeetingToastId] = useState<Id | null>(null);
+  const [waitCount, setWaitCount] = useState(0);
+  const [hasNotified, setHasNotified] = useState(false);
+
+  // Debug mode for testing
+  const [debugMode, setDebugMode] = useState(false);
+
   // Pull and normalize times
   const startMs = toMs(Number(currentMeeting?.startTime));
   const endMs = toMs(Number(currentMeeting?.endTime));
@@ -48,9 +96,9 @@ export default function SessionDetails() {
   const nextEndMs = toMs(Number(nextMeeting?.endTime));
   const timeJoinedMs = toMs(timeJoined);
 
-
   const { isClass, percent, elapsedMs, remainingMs, sessionStart } = useMemo(() => {
-    const sessionStart = Math.min(startMs, timeJoinedMs); 
+    // Use the earlier of meeting start or when you joined
+    const sessionStart = Math.min(startMs, timeJoinedMs);
     const duration = endMs - sessionStart;
 
     const valid =
@@ -68,7 +116,9 @@ export default function SessionDetails() {
 
     const elapsed = clamp(now - sessionStart, 0, duration);
     const remaining = clamp(endMs - now, 0, duration);
+
     const pct = clamp(Math.round((elapsed / duration) * 100), 0, 100);
+
     const active = now >= sessionStart && now <= endMs;
 
     return {
@@ -78,7 +128,72 @@ export default function SessionDetails() {
       remainingMs: remaining,
       sessionStart,
     };
-  }, [now, startMs, endMs, timeJoinedMs]); 
+  }, [now, startMs, endMs, timeJoinedMs]);
+
+  // Toast logic for meeting end
+  useEffect(() => {
+    // Use debug mode or actual meeting end condition
+    const meetingEnded = debugMode || (now >= endMs && isClass);
+
+    // When current meeting ends and there's a next meeting
+    if (meetingEnded && nextMeeting && !hasNotified) {
+      const handleStartNext = () => {
+        console.log('Starting next meeting:', nextMeeting.meetingName);
+        if (nextMeetingToastId) {
+          toast.dismiss(nextMeetingToastId);
+        }
+        setNextMeetingToastId(null);
+        setHasNotified(true);
+        setWaitCount(0);
+        setDebugMode(false); // Reset debug mode
+      };
+
+      const handleWait = () => {
+        if (nextMeetingToastId) {
+          toast.dismiss(nextMeetingToastId);
+        }
+        setNextMeetingToastId(null);
+        setWaitCount(prev => prev + 1);
+
+        // Show toast again after delay (shorter for testing)
+        const WAIT_TIMEOUT = process.env.NODE_ENV === 'development' ?
+            10000 : // 10 seconds for testing
+            2 * 60 * 1000; // 2 minutes for production
+
+        setTimeout(() => {
+          setHasNotified(false);
+        }, WAIT_TIMEOUT);
+      };
+
+      const toastId = toast(
+          <NextMeetingToast
+              nextMeeting={nextMeeting}
+              onStartNext={handleStartNext}
+              onWait={handleWait}
+              waitCount={waitCount}
+          />,
+          {
+            autoClose: false,
+            closeOnClick: false,
+            draggable: false,
+            closeButton: false,
+          }
+      );
+
+      setNextMeetingToastId(toastId);
+      setHasNotified(true);
+    }
+
+    // Reset when new meeting starts or conditions change
+    if ((now < endMs || !nextMeeting) && !debugMode) {
+      setHasNotified(false);
+      setWaitCount(0);
+      if (nextMeetingToastId) {
+        toast.dismiss(nextMeetingToastId);
+        setNextMeetingToastId(null);
+      }
+    }
+  }, [now, endMs, isClass, nextMeeting, hasNotified, nextMeetingToastId, waitCount, debugMode]);
 
   const remainingMinutes = Math.ceil(remainingMs / 60000);
   const elapsedLabel = fmtHM(elapsedMs);
@@ -87,78 +202,92 @@ export default function SessionDetails() {
   const nextClassName = nextMeeting?.meetingName ?? "—";
 
   return (
-    <div id="details" className="first-step grid grid-cols-8 gap-4">
-      {/* Session progress */}
-      <div className="col-span-5 bg-white rounded-lg shadow justify-center p-6">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-3xl font-bold">Session progress</h2>
-          {isClass && (
-            <div className="text-xl">
-              Started at {fmtTime(sessionStart)} • Ends at{" "}
-              {fmtTime(endMs)}
-            </div>
-          )}
-        </div>
-
-        {/* Progress bar */}
-        {isClass && (
-          <div
-            className="w-full bg-gray-200 rounded-2xl overflow-hidden mb-4"
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={percent}
-          >
-            <div
-              className="h-5 bg-blue-600 transition-[width] duration-1000 ease-linear"
-              style={{ width: `${percent}%` }}
-            />
+      <div id="details" className="first-step grid grid-cols-8 gap-4">
+        {/* Session progress */}
+        <div className="col-span-5 bg-white rounded-lg shadow justify-center p-6">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-3xl font-bold">Session progress</h2>
+            {isClass && (
+                <div className="text-xl">
+                  Started at {fmtTime(sessionStart)} • Ends at{" "}
+                  {fmtTime(endMs)}
+                </div>
+            )}
           </div>
-        )}
 
-        <div className="flex items-center justify-between">
-          {isClass ? (
-            <div className="text-xl text-gray-500">
-              <span className="font-medium">{percent}%</span> Complete •{" "}
-              {elapsedLabel} Elapsed
-            </div>
-          ) : (
-            <div className="text-xl text-gray-500">
-              Not currently in a class
-            </div>
+          {/* Debug button for testing (only in development) */}
+              <div className="mb-4">
+                <button
+                    onClick={() => setDebugMode(!debugMode)}
+                    className={`px-3 py-1 text-xs rounded ${
+                        debugMode
+                            ? 'bg-red-500 text-white'
+                            : 'bg-gray-200 text-gray-700'
+                    }`}
+                >
+                  {debugMode ? 'Debug: Meeting Ended' : 'Debug: Force Meeting End'}
+                </button>
+              </div>
+
+          {/* Progress bar */}
+          {isClass && (
+              <div
+                  className="w-full bg-gray-200 rounded-2xl overflow-hidden mb-4"
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={percent}
+              >
+                <div
+                    className="h-5 bg-blue-600 transition-[width] duration-1000 ease-linear"
+                    style={{ width: `${percent}%` }}
+                />
+              </div>
           )}
 
-          <div className="text-xl text-gray-500">
+          <div className="flex items-center justify-between">
+            {isClass ? (
+                <div className="text-xl text-gray-500">
+                  <span className="font-medium">{percent}%</span> Complete •{" "}
+                  {elapsedLabel} Elapsed
+                </div>
+            ) : (
+                <div className="text-xl text-gray-500">
+                  Not currently in a class
+                </div>
+            )}
+
+            <div className="text-xl text-gray-500">
             <span className="text-blue-600 text-[30px] font-bold">
               {Math.max(0, remainingMinutes)}
             </span>{" "}
-            {isClass ? "Minutes remaining" : "Minutes until next"}
+              {isClass ? "Minutes remaining" : "Minutes until next"}
+            </div>
           </div>
         </div>
+
+        {/* Class info */}
+        <div className="col-span-3 bg-white rounded-lg shadow px-9 py-6">
+          <h2 className="truncate font-bold text-3xl mb-3">
+            Current class: {isClass ? currentClassName : "None"}
+          </h2>
+
+          {isClass ? (
+              <div className="truncate text-blue-600 text-3xl font-bold mb-4">
+                Next up: {nextClassName}
+              </div>
+          ) : (
+              <div className="truncate text-gray-500 font-bold text-2xl mb-4">
+                No classes after
+              </div>
+          )}
+
+          {isClass && (
+              <div className="text-[24px]">
+                Starts at {fmtTime(nextStartMs)} • Ends at {fmtTime(nextEndMs)}
+              </div>
+          )}
+        </div>
       </div>
-
-      {/* Class info */}
-      <div className="col-span-3 bg-white rounded-lg shadow px-9 py-6">
-        <h2 className="truncate font-bold text-3xl mb-3">
-          Current class: {isClass ? currentClassName : "None"}
-        </h2>
-
-        {isClass ? (
-          <div className="truncate text-blue-600 text-3xl font-bold mb-4">
-            Next up: {nextClassName}
-          </div>
-        ) : (
-          <div className="truncate text-gray-500 font-bold text-2xl mb-4">
-            No classes after
-          </div>
-        )}
-
-        {isClass && (
-          <div className="text-[24px]">
-            Starts at {fmtTime(nextStartMs)} • Ends at {fmtTime(nextEndMs)}
-          </div>
-        )}
-      </div>
-    </div>
   );
 }
