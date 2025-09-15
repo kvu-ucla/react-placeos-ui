@@ -42,7 +42,6 @@ export function StatusTab() {
           </button>
         )}
       </div>
-      Participants list
       <div className="space-y-2 max-w-md mx-auto">
         <h3 className="text-lg font-semibold text-gray-800 mb-3">
           Participants ({participants.length})
@@ -50,7 +49,7 @@ export function StatusTab() {
 
         {participants.map((participant) => (
           <div
-            key={participant.user_name} // Key should be on the outermost element
+            key={participant.user_name}
             className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors cursor-pointer shadow-sm"
           >
             {/* User info section */}
