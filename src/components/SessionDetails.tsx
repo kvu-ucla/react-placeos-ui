@@ -41,35 +41,46 @@ interface NextMeetingToastProps {
 }
 
 const NextMeetingToast = ({ nextMeeting, onStartNext, onWait, waitCount }: NextMeetingToastProps) => (
-    <div>
-      {waitCount > 0 && (
-          <div className="text-xs text-gray-500 mb-2">
-            Reminder #{waitCount + 1}
+    <div className="p-4">
+      <div className="flex items-start mb-4">
+        <div className="flex-shrink-0 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center mr-3 mt-0.5">
+          <span className="text-white text-sm font-bold">i</span>
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-1">
+            Ready for next class?
+          </h3>
+          {waitCount > 0 && (
+              <div className="text-sm text-gray-500 mb-2">
+                Reminder #{waitCount + 1}
+              </div>
+          )}
+          <div className="text-gray-600">
+            <div className="font-medium text-gray-900">{nextMeeting?.meetingName}</div>
+            <div className="text-sm">
+              Starts at {fmtTime(toMs(Number(nextMeeting?.startTime)))}
+            </div>
           </div>
-      )}
-      <div className="font-bold mb-2">Current meeting ended</div>
-      <div className="mb-3">
-        <div className="font-medium">{nextMeeting?.meetingName}</div>
-        <div className="text-sm text-gray-600">
-          Starts at {fmtTime(toMs(Number(nextMeeting?.startTime)))}
         </div>
       </div>
-      <div className="flex gap-2">
-        <button
-            onClick={onStartNext}
-            className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
-        >
-          Start Next Class
-        </button>
+
+      <div className="flex gap-3">
         <button
             onClick={onWait}
-            className="bg-gray-400 text-white px-3 py-1 rounded text-sm hover:bg-gray-500"
+            className="flex-1 bg-blue-100 text-blue-700 font-semibold py-3 px-4 rounded-lg hover:bg-blue-200 transition-colors"
         >
           Wait
+        </button>
+        <button
+            onClick={onStartNext}
+            className="flex-1 bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Start Now
         </button>
       </div>
     </div>
 );
+
 
 export default function SessionDetails() {
   const { nextMeeting, currentMeeting, timeJoined } = useZoomContext();
