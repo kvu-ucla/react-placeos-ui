@@ -11,6 +11,7 @@ type CallState =
   | "UNKNOWN";
 
 type AudioState = "AUDIO_MUTED" | "AUDIO_UNMUTED";
+type MediaType = "audio" | "video";
 
 interface ZoomParticipant {
   user_id: number;
@@ -225,21 +226,26 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   };
 
   //toggle individual participant audio
-  const participantAudioMute = async (participant_id: number) => {
-    if (!module) return;
-    
-    const newState = participants[participant_id].audio_state == "AUDIO_MUTED";
-    await module.execute("call_mute_participant_audio", [!newState, participant_id.toString()]);
-  };
-
-  //toggle individual participant video
-  const participantVideoMute = async (participant_id: number) => {
+  const participantMediaMute = async (type: MediaType, participant_id: number) => {
     if (!module) return;
 
-    const newState = !participants[participant_id].video_is_sending;
-    await module.execute("call_mute_participant_audio", [newState, participant_id.toString()]);
-  };
+    // Find the participant
+    const participant = participants.find(x => x.user_id === participant_id);
 
+    if (!participant) {
+      console.error(`Participant with ID ${participant_id} not found`);
+      return;
+    }
+
+    if (type === "audio") {
+      const newState = participant.audio_state !== "AUDIO_MUTED";
+      await module.execute("call_mute_participant_audio", [newState, participant_id.toString()]);
+    } else if (type === "video") {
+      const newState = !participant.video_is_sending;
+      await module.execute("call_mute_participant_video", [newState, participant_id.toString()]);
+    }
+  };
+  
   //toggle in-call wired-sharing, or cancel wireless or wired sharing
   const toggleSharing = async () => {
     if (!module) return;
@@ -537,7 +543,6 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     toggleSharing,
     toggleGallery,
     toggleAudioMuteEveryone,
-    participantAudioMute,
-    participantVideoMute
+    participantMediaMute
   };
 }
