@@ -50,7 +50,7 @@ export function DisplayTab() {
           return (
             <div
               key={dispId}
-              className="collapse collapse-arrow bg-base-200 border border-[#999]"
+              className="collapse collapse-arrow border border-[#999]"
             >
               <input type="checkbox" className="collapse-toggle" />
 

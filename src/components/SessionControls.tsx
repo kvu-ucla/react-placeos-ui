@@ -41,7 +41,7 @@ export default function SessionControls() {
   const isJoined = callStatus?.status === "IN_MEETING";
 
   return (
-    <div className="bg-gradient-to-r from-[#0331A9] to-[#2F69FF] rounded-lg px-13 py-7.5 shadow text-white">
+    <div className="bg-gradient-to-r from-[#0331A9] to-[#2F69FF] rounded-lg px-13 py-4 shadow text-white">
       <div className="inline-flex justify-between items-center w-full mb-4">
         <h2 className="font-semibold">Session Controls</h2>
         {isJoined && (
