@@ -10,8 +10,7 @@ export function StatusTab() {
     } = useZoomContext();
 
     const isAudioMuted = (audioState: any) => {
-        // Adjust this logic based on your AudioState enum
-        return audioState === 'AUDIO_MUTED' || audioState === 'AUDIO_UNMUTED' || audioState === false;
+        return audioState === 'AUDIO_MUTED';
     };
 
     // Separate participants by status
@@ -61,7 +60,7 @@ export function StatusTab() {
 
                 {/* Video Control */}
                 <button
-                    onClick={() => participant('video', participant.user_id)}
+                    onClick={() => participantMediaMute('video', participant.user_id)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                         !participant.video_is_sending
                             ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'

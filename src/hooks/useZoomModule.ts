@@ -238,11 +238,11 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     }
 
     if (type === "audio") {
-      const newState = participant.audio_state !== "AUDIO_MUTED";
-      await module.execute("call_mute_participant_audio", [newState, participant_id.toString()]);
+      const newAudio = participant.audio_state !== "AUDIO_MUTED";
+      await module.execute("call_mute_participant_audio", [newAudio, participant_id.toString()]);
     } else if (type === "video") {
-      const newState = !participant.video_is_sending;
-      await module.execute("call_mute_participant_video", [newState, participant_id.toString()]);
+      const newVideo = !participant.video_is_sending;
+      await module.execute("call_mute_participant_video", [newVideo, participant_id.toString()]);
     }
   };
   
