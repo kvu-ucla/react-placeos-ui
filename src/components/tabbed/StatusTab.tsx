@@ -6,17 +6,9 @@ export function StatusTab() {
         muteEveryone,
         toggleAudioMuteEveryone,
         participants,
+        participantAudioMute,
+        participantVideoMute,
     } = useZoomContext();
-
-    const handleToggleAudio = (participant: any) => {
-        console.log('Toggle audio for:', participant.user_name);
-        // TODO audio toggle
-    };
-
-    const handleToggleVideo = (participant: any) => {
-        console.log('Toggle video for:', participant.user_name);
-        // TODO video toggle
-    };
 
     const isAudioMuted = (audioState: any) => {
         // Adjust this logic based on your AudioState enum
@@ -58,7 +50,7 @@ export function StatusTab() {
             <div className="flex items-center space-x-3">
                 {/* Audio Control */}
                 <button
-                    onClick={() => handleToggleAudio(participant)}
+                    onClick={() => participantAudioMute(participant)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                         isAudioMuted(participant.audio_state)
                             ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -70,7 +62,7 @@ export function StatusTab() {
 
                 {/* Video Control */}
                 <button
-                    onClick={() => handleToggleVideo(participant)}
+                    onClick={() => participantVideoMute(participant)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                         !participant.video_is_sending
                             ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'

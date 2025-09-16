@@ -214,6 +214,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     await module.execute("call_mute_camera", [newState]);
   };
 
+  //toggle mute all participants
   const toggleAudioMuteEveryone = async () => {
     if (!module) return;
 
@@ -221,6 +222,20 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     await module.execute("call_mute_all", [newState]);
 
     setMuteEveryone(newState);
+  };
+
+  const participantAudioMute = async (participant_id: number) => {
+    if (!module) return;
+    
+    const newState = participants[participant_id].audio_state == "AUDIO_MUTED";
+    await module.execute("call_mute_participant_audio", [!newState]);
+  };
+
+  const participantVideoMute = async (participant_id: number) => {
+    if (!module) return;
+
+    const newState = !participants[participant_id].video_is_sending;
+    await module.execute("call_mute_participant_audio", [newState]);
   };
 
   //toggle in-call wired-sharing, or cancel wireless or wired sharing
@@ -520,5 +535,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     toggleSharing,
     toggleGallery,
     toggleAudioMuteEveryone,
+    participantAudioMute,
+    participantVideoMute
   };
 }
