@@ -1,4 +1,5 @@
 import { useZoomContext } from "../../hooks/ZoomContext";
+import {useEffect} from "react";
 
 export function StatusTab() {
     const {
@@ -12,6 +13,13 @@ export function StatusTab() {
     const isAudioMuted = (audioState: any) => {
         return audioState === 'AUDIO_MUTED';
     };
+
+    useEffect(() => {
+        console.log("=== REACT PARTICIPANTS STATE ===");
+        participants?.forEach(p => {
+            console.log(`${p.user_name}: video_is_sending=${p.video_is_sending}`);
+        });
+    }, [participants]);
 
     // Separate participants by status
     const activeParticipants = participants?.filter(p => !p.is_in_waiting_room) || [];

@@ -225,24 +225,25 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     setMuteEveryone(newState);
   };
 
-  //toggle individual participant audio
+  //toggle individual participant audio/video
   const participantMediaMute = async (type: MediaType, participant_id: number) => {
     if (!module) return;
 
-    setParticipants(currentParticipants => {
-      const participant = currentParticipants.find(x => x.user_id === participant_id);
-      if (!participant) return currentParticipants;
+    // Find the participant
+    const participant = participants.find(x => x.user_id === participant_id);
 
-      if (type === "audio") {
-        const newState = participant.audio_state !== "AUDIO_MUTED";
-        module.execute("call_mute_participant_audio", [newState, participant_id.toString()]);
-      } else if (type === "video") {
-        const newState = !participant.video_is_sending;
-        module.execute("call_mute_participant_video", [newState, participant_id.toString()]);
-      }
+    if (!participant) {
+      console.error(`Participant with ID ${participant_id} not found`);
+      return;
+    }
 
-      return currentParticipants;
-    });
+    if (type === "audio") {
+      const newAudio = participant.audio_state !== "AUDIO_MUTED";
+      await module.execute("call_mute_participant_audio", [newAudio, participant_id.toString()]);
+    } else if (type === "video") {
+      const newVideo = !participant.video_is_sending;
+      await module.execute("call_mute_participant_video", [newVideo, participant_id.toString()]);
+    }
   };
   
   //toggle in-call wired-sharing, or cancel wireless or wired sharing
@@ -488,8 +489,24 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
     //bind and get bookings from Zoom Rooms
     bindAndListen("Bookings", module, setBookings);
-    bindAndListen("Participants", module, setParticipants);
+    // bindAndListen("Participants", module, setParticipants);
 
+    bindAndListen("Participants", module, (newParticipants: ZoomParticipant[] ) => {
+      console.log("=== SUBSCRIPTION UPDATE ===");
+      newParticipants.forEach(p => {
+        console.log(`${p.user_name}: video_is_sending=${p.video_is_sending}`);
+      });
+
+      setParticipants(newParticipants);
+
+      // Check if React state actually updates
+      setTimeout(() => {
+        console.log("=== REACT STATE AFTER SUBSCRIPTION ===");
+        // This won't work due to closure, we need to check in component
+      }, 100);
+    });
+    
+    
     //bind to Recording (Epiphan) module in placeOS
     const recordingsMod = getModule(systemId, "Recording");
     if (!recordingsMod) return;
