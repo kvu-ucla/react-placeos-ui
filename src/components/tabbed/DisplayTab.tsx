@@ -64,7 +64,9 @@ export function DisplayTab() {
                 {display.name}
                   <button
                       onClick={(e) => {
-                          e.stopPropagation(); 
+                          e.stopPropagation();
+                          e.preventDefault();
+                          
                           const dispMuteState = outputs[dispId].mute;
                           const displayMod = getModule(system_id, dispId);
                           if (!displayMod) return;
@@ -119,9 +121,7 @@ export function DisplayTab() {
                         onClick={ () => {
                           const routingMod = getModule(system_id, "System");
                           if (!routingMod) return;
-                          
-                          console.log(`Routing Mod for display ${dispId} <= ` + inputId);
-                          routingMod.execute("route", [dispId, inputId]); 
+                          routingMod.execute("route", [inputId, dispId]); 
                         }}
                         className={`w-full p-4 rounded-lg flex items-center justify-between transition-colors hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                           isSelectedSource
