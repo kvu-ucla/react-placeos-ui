@@ -89,6 +89,8 @@ export function DisplayTab() {
               </div>
 
               <button
+                onMouseDown={(e) => e.stopPropagation()}
+                onMouseUp={(e) => e.stopPropagation()}
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
@@ -97,9 +99,10 @@ export function DisplayTab() {
                   const displayMod = getModule(system_id, dispId);
                   if (!displayMod) return;
                   const newMuteState = !dispMuteState;
+
                   newMuteState
-                    ? displayMod.execute("mute", [newMuteState])
-                    : displayMod.execute("unmute", [!newMuteState]);
+                    ? displayMod.execute("mute")
+                    : displayMod.execute("unmute");
                 }}
                 className={`btn w-[300px] h-[64px] ml-4 px-9 py-6 rounded-lg text-xl font-medium ${
                   outputs[dispId].mute
