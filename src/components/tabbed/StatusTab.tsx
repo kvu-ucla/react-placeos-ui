@@ -49,7 +49,7 @@ export function StatusTab() {
             <div className="flex items-center space-x-3">
                 {/* Audio Control */}
                 <button
-                    onClick={() => participantMediaMute('audio', participant)}
+                    onClick={() => participantMediaMute('audio', participant.user_id)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                         isAudioMuted(participant.audio_state)
                             ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -61,7 +61,7 @@ export function StatusTab() {
 
                 {/* Video Control */}
                 <button
-                    onClick={() => participant('video', participant)}
+                    onClick={() => participant('video', participant.user_id)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                         !participant.video_is_sending
                             ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
