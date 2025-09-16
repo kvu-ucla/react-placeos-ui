@@ -229,21 +229,20 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   const participantMediaMute = async (type: MediaType, participant_id: number) => {
     if (!module) return;
 
-    // Find the participant
-    const participant = participants.find(x => x.user_id === participant_id);
+    setParticipants(currentParticipants => {
+      const participant = currentParticipants.find(x => x.user_id === participant_id);
+      if (!participant) return currentParticipants;
 
-    if (!participant) {
-      console.error(`Participant with ID ${participant_id} not found`);
-      return;
-    }
+      if (type === "audio") {
+        const newState = participant.audio_state !== "AUDIO_MUTED";
+        module.execute("call_mute_participant_audio", [newState, participant_id.toString()]);
+      } else if (type === "video") {
+        const newState = !participant.video_is_sending;
+        module.execute("call_mute_participant_video", [newState, participant_id.toString()]);
+      }
 
-    if (type === "audio") {
-      const newAudio = participant.audio_state !== "AUDIO_MUTED";
-      await module.execute("call_mute_participant_audio", [newAudio, participant_id.toString()]);
-    } else if (type === "video") {
-      const newVideo = !participant.video_is_sending;
-      await module.execute("call_mute_participant_video", [newVideo, participant_id.toString()]);
-    }
+      return currentParticipants;
+    });
   };
   
   //toggle in-call wired-sharing, or cancel wireless or wired sharing
