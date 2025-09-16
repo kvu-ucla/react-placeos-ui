@@ -226,7 +226,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   };
 
   //toggle individual participant audio/video
-  const participantMediaMute = async (type: MediaType, participant_id: number) => {
+  const participantMediaMute = async (type: MediaType, state: boolean, participant_id: number) => {
     if (!module) return;
 
     // Find the participant
@@ -238,11 +238,9 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     }
 
     if (type === "audio") {
-      const newAudio = participant.audio_state !== "AUDIO_MUTED";
-      await module.execute("call_mute_participant_audio", [newAudio, participant_id.toString()]);
+      await module.execute("call_mute_participant_audio", [!state, participant_id.toString()]);
     } else if (type === "video") {
-      const newVideo = !participant.video_is_sending;
-      await module.execute("call_mute_participant_video", [newVideo, participant_id.toString()]);
+      await module.execute("call_mute_participant_video", [!state, participant_id.toString()]);
     }
   };
   
@@ -489,24 +487,8 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
     //bind and get bookings from Zoom Rooms
     bindAndListen("Bookings", module, setBookings);
-    // bindAndListen("Participants", module, setParticipants);
-
-    bindAndListen("Participants", module, (rawData) => {
-      console.log("=== SUBSCRIPTION UPDATE ===");
-
-      // Convert object with string keys to array
-      const participantsArray: ZoomParticipant[] = Object.values(rawData);
-
-      if (Array.isArray(participantsArray)) {
-        console.log("Converted to array, length:", participantsArray.length);
-        participantsArray.forEach(p => {
-          console.log(`${p.user_name}: video_is_sending=${p.video_is_sending}`);
-        });
-        setParticipants(participantsArray);
-      } else {
-        console.log("Conversion failed!");
-      }
-    });
+    bindAndListen("Participants", module, setParticipants);
+    
     
     //bind to Recording (Epiphan) module in placeOS
     const recordingsMod = getModule(systemId, "Recording");

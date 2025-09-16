@@ -1,5 +1,4 @@
 import { useZoomContext } from "../../hooks/ZoomContext";
-import {useEffect} from "react";
 
 export function StatusTab() {
     const {
@@ -13,13 +12,6 @@ export function StatusTab() {
     const isAudioMuted = (audioState: any) => {
         return audioState === 'AUDIO_MUTED';
     };
-
-    useEffect(() => {
-        console.log("=== REACT PARTICIPANTS STATE ===");
-        participants?.forEach(p => {
-            console.log(`${p.user_name}: video_is_sending=${p.video_is_sending}`);
-        });
-    }, [participants]);
 
     // Separate participants by status
     const activeParticipants = participants?.filter(p => !p.is_in_waiting_room) || [];
@@ -56,7 +48,7 @@ export function StatusTab() {
             <div className="flex items-center space-x-3">
                 {/* Audio Control */}
                 <button
-                    onClick={() => participantMediaMute('audio', participant.user_id)}
+                    onClick={() => participantMediaMute('audio', isAudioMuted(participant.audio_state), participant.user_id)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                         isAudioMuted(participant.audio_state)
                             ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -68,7 +60,7 @@ export function StatusTab() {
 
                 {/* Video Control */}
                 <button
-                    onClick={() => participantMediaMute('video', participant.user_id)}
+                    onClick={() => participantMediaMute('video', participant.video_is_sending, participant.user_id)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                         !participant.video_is_sending
                             ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
