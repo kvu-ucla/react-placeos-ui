@@ -62,37 +62,11 @@ export function DisplayTab() {
                   height={24}
                 />
                 {display.name}
-                  <button
-                      onMouseDown={(e) => e.stopPropagation()}
-                      onMouseUp={(e) => e.stopPropagation()}
-                      onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-
-                          const dispMuteState = outputs[dispId].mute;
-                          const displayMod = getModule(system_id, dispId);
-                          if (!displayMod) return;
-                          const newMuteState = !dispMuteState;
-
-                          newMuteState
-                              ? displayMod.execute("mute")
-                              : displayMod.execute("unmute");
-                      }}
-                      className={`btn w-[300px] h-[64px] ml-4 px-9 py-6 rounded-lg text-xl font-medium ${
-                          outputs[dispId].mute
-                              ? "bg-black border-black text-white"
-                              : "bg-gray-100 border-gray-100 text-avit-grey-80"
-                      }`}
-                  >
-                      {outputs[dispId].mute ? "Unmute Display" : "Mute Display"}
-                  </button>
                 <div className="badge badge-outline ml-auto">
                   {nonCameraInputs.length} inputs
                 </div>
               </div>
-
-
-
+                
               {/* Accordion Content */}
               <div className="collapse-content">
                 <div className="bg-gray-100 text-gray-700 p-3 rounded flex items-center gap-2 mb-4">
@@ -106,6 +80,30 @@ export function DisplayTab() {
                   <span className="font-medium">
                     Sources are automatically connected via Zoom.
                   </span>
+                    <button
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onMouseUp={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+
+                            const dispMuteState = outputs[dispId].mute;
+                            const displayMod = getModule(system_id, dispId);
+                            if (!displayMod) return;
+                            const newMuteState = !dispMuteState;
+
+                            newMuteState
+                                ? displayMod.execute("mute")
+                                : displayMod.execute("unmute");
+                        }}
+                        className={`btn w-[300px] h-[64px] ml-4 px-9 py-6 rounded-lg text-xl font-medium ${
+                            outputs[dispId].mute
+                                ? "bg-black border-black text-white"
+                                : "bg-gray-100 border-gray-100 text-avit-grey-80"
+                        }`}
+                    >
+                        {outputs[dispId].mute ? "Unmute Display" : "Mute Display"}
+                    </button>
                 </div>
 
                 <div className="space-y-2">
