@@ -1,4 +1,5 @@
 import { useZoomContext } from "../../hooks/ZoomContext";
+import type {ZoomParticipant} from "../../hooks/useZoomModule.ts";
 
 export function StatusTab() {
     const {
@@ -12,12 +13,13 @@ export function StatusTab() {
     const isAudioMuted = (audioState: any) => {
         return audioState === 'AUDIO_MUTED';
     };
+    
 
     // Separate participants by status
     const activeParticipants = participants?.filter(p => !p.is_in_waiting_room) || [];
     const waitingParticipants = participants?.filter(p => p.is_in_waiting_room) || [];
 
-    const ParticipantRow = ({ participant }: { participant: any }) => (
+    const ParticipantRow = ({ participant }: { participant: ZoomParticipant }) => (
         <div className="flex items-center justify-between py-4 px-0">
             {/* User info section */}
             <div className="flex items-center space-x-3">
@@ -48,7 +50,7 @@ export function StatusTab() {
             <div className="flex items-center space-x-3">
                 {/* Audio Control */}
                 <button
-                    onClick={() => participantMediaMute('audio', isAudioMuted(participant.audio_state), participant.user_id)}
+                    onClick={() => participantMediaMute('audio', participant.user_id)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                         isAudioMuted(participant.audio_state)
                             ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -60,7 +62,7 @@ export function StatusTab() {
 
                 {/* Video Control */}
                 <button
-                    onClick={() => participantMediaMute('video', participant.video_is_sending, participant.user_id)}
+                    onClick={() => participantMediaMute('video', participant.user_id)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                         !participant.video_is_sending
                             ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'

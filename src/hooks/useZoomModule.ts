@@ -13,7 +13,7 @@ type CallState =
 type AudioState = "AUDIO_MUTED" | "AUDIO_UNMUTED";
 type MediaType = "audio" | "video";
 
-interface ZoomParticipant {
+export interface ZoomParticipant {
   user_id: number;
   user_name: string;
   audio_state: AudioState;
@@ -226,7 +226,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   };
 
   //toggle individual participant audio/video
-  const participantMediaMute = async (type: MediaType, state: boolean, participant_id: number) => {
+  const participantMediaMute = async (type: MediaType, participant_id: number) => {
     if (!module) return;
 
     // Find the participant
@@ -238,9 +238,11 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     }
 
     if (type === "audio") {
-      await module.execute("call_mute_participant_audio", [!state, participant_id.toString()]);
+      const newAudio = participant.audio_state !== "AUDIO_MUTED";
+      await module.execute("call_mute_participant_audio", [newAudio, participant_id.toString()]);
     } else if (type === "video") {
-      await module.execute("call_mute_participant_video", [!state, participant_id.toString()]);
+      const newVideo = !participant.video_is_sending;
+      await module.execute("call_mute_participant_video", [newVideo, participant_id.toString()]);
     }
   };
   
