@@ -66,10 +66,10 @@ export function DisplayTab() {
                   {nonCameraInputs.length} inputs
                 </div>
               </div>
-                
+
               {/* Accordion Content */}
               <div className="collapse-content">
-                <div className="bg-gray-100 text-gray-700 p-3 rounded flex items-center gap-2 mb-4">
+                <div className="text-gray-700 p-3 rounded flex items-center gap-2 mb-4">
                   <span className="text-avit-grey-80">
                     <Icon
                       icon="material-symbols:info-rounded"
@@ -80,30 +80,30 @@ export function DisplayTab() {
                   <span className="font-medium">
                     Sources are automatically connected via Zoom.
                   </span>
-                    <button
-                        onMouseDown={(e) => e.stopPropagation()}
-                        onMouseUp={(e) => e.stopPropagation()}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            e.preventDefault();
+                  <button
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onMouseUp={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
 
-                            const dispMuteState = outputs[dispId].mute;
-                            const displayMod = getModule(system_id, dispId);
-                            if (!displayMod) return;
-                            const newMuteState = !dispMuteState;
+                      const dispMuteState = outputs[dispId].mute;
+                      const displayMod = getModule(system_id, dispId);
+                      if (!displayMod) return;
+                      const newMuteState = !dispMuteState;
 
-                            newMuteState
-                                ? displayMod.execute("mute")
-                                : displayMod.execute("unmute");
-                        }}
-                        className={`btn w-[300px] h-[64px] ml-4 px-9 py-6 rounded-lg text-xl font-medium ${
-                            outputs[dispId].mute
-                                ? "bg-black border-black text-white"
-                                : "bg-gray-100 border-gray-100 text-avit-grey-80"
-                        }`}
-                    >
-                        {outputs[dispId].mute ? "Unmute Display" : "Mute Display"}
-                    </button>
+                      newMuteState
+                        ? displayMod.execute("mute")
+                        : displayMod.execute("unmute");
+                    }}
+                    className={`btn w-[300px] h-[64px] ml-4 px-9 py-6 rounded-lg text-xl font-medium ${
+                      outputs[dispId].mute
+                        ? "bg-black border-black text-white"
+                        : "bg-gray-100 border-gray-100 text-avit-grey-80"
+                    }`}
+                  >
+                    {outputs[dispId].mute ? "Unmute Display" : "Mute Display"}
+                  </button>
                 </div>
 
                 <div className="space-y-2">
@@ -126,7 +126,7 @@ export function DisplayTab() {
                           if (!routingMod) return;
                           routingMod.execute("route", [inputId, dispId]);
                         }}
-                        className={`w-full p-4 rounded-lg flex items-center justify-between transition-colors hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                        className={`relative w-full p-4 rounded-lg flex items-center justify-between transition-colors hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                           isSelectedSource
                             ? "bg-blue-600 text-white"
                             : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -140,14 +140,14 @@ export function DisplayTab() {
                             </span>
                           )}
                         </span>
+
+                        {/* Absolutely positioned green circle + pulse */}
                         {isSyncDetected && (
-                          <div className="flex items-center gap-4">
-                            <span className="flex items-center gap-1">
-                              <div className="relative">
-                                <div className="absolute inline-flex h-4 w-4 rounded-full bg-green-400 opacity-75 animate-ping"></div>
-                                <div className="relative h-4 w-4 bg-green-400 rounded-full mr-4"></div>
-                              </div>
-                            </span>
+                          <div className="absolute top-4 right-4">
+                            <div className="relative">
+                              <div className="absolute inline-flex h-4 w-4 rounded-full bg-green-400 opacity-75 animate-ping"></div>
+                              <div className="relative h-4 w-4 bg-green-400 rounded-full"></div>
+                            </div>
                           </div>
                         )}
                       </button>
