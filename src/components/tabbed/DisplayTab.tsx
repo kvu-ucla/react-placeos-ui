@@ -143,7 +143,7 @@ export function DisplayTab() {
 
                         {/* Absolutely positioned green circle + pulse */}
                         {isSyncDetected && (
-                          <div className="absolute top-4 right-4">
+                          <div className="absolute top-1/2 right-6 transform -translate-y-1/2">
                             <div className="relative">
                               <div className="absolute inline-flex h-4 w-4 rounded-full bg-green-400 opacity-75 animate-ping"></div>
                               <div className="relative h-4 w-4 bg-green-400 rounded-full"></div>
