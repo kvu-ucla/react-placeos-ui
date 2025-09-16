@@ -493,21 +493,18 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
     bindAndListen("Participants", module, (rawData) => {
       console.log("=== SUBSCRIPTION UPDATE ===");
-      console.log("Raw data received:", rawData);
-      console.log("typeof rawData:", typeof rawData);
-      console.log("Object.keys(rawData):", Object.keys(rawData));
 
-      // If it's wrapped, extract the array
-      const participantsArray = rawData?.Participants || rawData;
+      // Convert object with string keys to array
+      const participantsArray: ZoomParticipant[] = Object.values(rawData);
 
       if (Array.isArray(participantsArray)) {
-        console.log("Found participants array:", participantsArray.length);
+        console.log("Converted to array, length:", participantsArray.length);
         participantsArray.forEach(p => {
           console.log(`${p.user_name}: video_is_sending=${p.video_is_sending}`);
         });
         setParticipants(participantsArray);
       } else {
-        console.log("Still not an array!");
+        console.log("Conversion failed!");
       }
     });
     
