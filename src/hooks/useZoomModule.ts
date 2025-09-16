@@ -491,21 +491,25 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     bindAndListen("Bookings", module, setBookings);
     // bindAndListen("Participants", module, setParticipants);
 
-    bindAndListen("Participants", module, (newParticipants: ZoomParticipant[] ) => {
+    bindAndListen("Participants", module, (rawData) => {
       console.log("=== SUBSCRIPTION UPDATE ===");
-      newParticipants.forEach(p => {
-        console.log(`${p.user_name}: video_is_sending=${p.video_is_sending}`);
-      });
+      console.log("Raw data received:", rawData);
+      console.log("typeof rawData:", typeof rawData);
+      console.log("Object.keys(rawData):", Object.keys(rawData));
 
-      setParticipants(newParticipants);
+      // If it's wrapped, extract the array
+      const participantsArray = rawData?.Participants || rawData;
 
-      // Check if React state actually updates
-      setTimeout(() => {
-        console.log("=== REACT STATE AFTER SUBSCRIPTION ===");
-        // This won't work due to closure, we need to check in component
-      }, 100);
+      if (Array.isArray(participantsArray)) {
+        console.log("Found participants array:", participantsArray.length);
+        participantsArray.forEach(p => {
+          console.log(`${p.user_name}: video_is_sending=${p.video_is_sending}`);
+        });
+        setParticipants(participantsArray);
+      } else {
+        console.log("Still not an array!");
+      }
     });
-    
     
     //bind to Recording (Epiphan) module in placeOS
     const recordingsMod = getModule(systemId, "Recording");
