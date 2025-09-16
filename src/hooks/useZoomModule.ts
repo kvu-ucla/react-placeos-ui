@@ -228,6 +228,8 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   //toggle individual participant audio/video
   const participantMediaMute = async (type: MediaType, participant_id: number) => {
     if (!module) return;
+    
+    console.log("participants object ", participants);
 
     // Find the participant
     const participant = participants.find(x => x.user_id === participant_id);
@@ -236,6 +238,8 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
       console.error(`Participant with ID ${participant_id} not found`);
       return;
     }
+    
+    console.log("participants object ", participant)
 
     if (type === "audio") {
       const newAudio = participant.audio_state !== "AUDIO_MUTED";
