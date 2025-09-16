@@ -224,18 +224,20 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     setMuteEveryone(newState);
   };
 
+  //toggle individual participant audio
   const participantAudioMute = async (participant_id: number) => {
     if (!module) return;
     
     const newState = participants[participant_id].audio_state == "AUDIO_MUTED";
-    await module.execute("call_mute_participant_audio", [!newState]);
+    await module.execute("call_mute_participant_audio", [!newState, participant_id.toString()]);
   };
 
+  //toggle individual participant video
   const participantVideoMute = async (participant_id: number) => {
     if (!module) return;
 
     const newState = !participants[participant_id].video_is_sending;
-    await module.execute("call_mute_participant_audio", [newState]);
+    await module.execute("call_mute_participant_audio", [newState, participant_id.toString()]);
   };
 
   //toggle in-call wired-sharing, or cancel wireless or wired sharing
