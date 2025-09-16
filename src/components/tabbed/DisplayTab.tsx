@@ -62,31 +62,53 @@ export function DisplayTab() {
                   height={24}
                 />
                 {display.name}
-                  <button
-                      onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          
-                          const dispMuteState = outputs[dispId].mute;
-                          const displayMod = getModule(system_id, dispId);
-                          if (!displayMod) return;
-                          const newMuteState = !dispMuteState;
-                          newMuteState
-                              ? displayMod.execute("mute", [newMuteState])
-                              : displayMod.execute("unmute", [!newMuteState]);
-                      }}
-                      className={`btn w-[300px] h-[64px] ml-4 px-9 py-6 rounded-lg text-xl font-medium ${
-                          outputs[dispId].mute
-                              ? 'bg-black border-black text-white'
-                              : 'bg-gray-100 border-gray-100 text-avit-grey-80'
-                      }`}
-                  >
-                      {outputs[dispId].mute ? "Unmute Display" : "Mute Display"}
-                  </button>
+                {/*<button*/}
+                {/*    onClick={(e) => {*/}
+                {/*        e.stopPropagation();*/}
+                {/*        e.preventDefault();*/}
+                {/*        */}
+                {/*        const dispMuteState = outputs[dispId].mute;*/}
+                {/*        const displayMod = getModule(system_id, dispId);*/}
+                {/*        if (!displayMod) return;*/}
+                {/*        const newMuteState = !dispMuteState;*/}
+                {/*        newMuteState*/}
+                {/*            ? displayMod.execute("mute", [newMuteState])*/}
+                {/*            : displayMod.execute("unmute", [!newMuteState]);*/}
+                {/*    }}*/}
+                {/*    className={`btn w-[300px] h-[64px] ml-4 px-9 py-6 rounded-lg text-xl font-medium ${*/}
+                {/*        outputs[dispId].mute*/}
+                {/*            ? 'bg-black border-black text-white'*/}
+                {/*            : 'bg-gray-100 border-gray-100 text-avit-grey-80'*/}
+                {/*    }`}*/}
+                {/*>*/}
+                {/*    {outputs[dispId].mute ? "Unmute Display" : "Mute Display"}*/}
+                {/*</button>*/}
                 <div className="badge badge-outline ml-auto">
                   {nonCameraInputs.length} inputs
                 </div>
               </div>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+
+                  const dispMuteState = outputs[dispId].mute;
+                  const displayMod = getModule(system_id, dispId);
+                  if (!displayMod) return;
+                  const newMuteState = !dispMuteState;
+                  newMuteState
+                    ? displayMod.execute("mute", [newMuteState])
+                    : displayMod.execute("unmute", [!newMuteState]);
+                }}
+                className={`btn w-[300px] h-[64px] ml-4 px-9 py-6 rounded-lg text-xl font-medium ${
+                  outputs[dispId].mute
+                    ? "bg-black border-black text-white"
+                    : "bg-gray-100 border-gray-100 text-avit-grey-80"
+                }`}
+              >
+                {outputs[dispId].mute ? "Unmute Display" : "Mute Display"}
+              </button>
 
               {/* Accordion Content */}
               <div className="collapse-content">
@@ -118,10 +140,10 @@ export function DisplayTab() {
                     return (
                       <button
                         key={inputId}
-                        onClick={ () => {
+                        onClick={() => {
                           const routingMod = getModule(system_id, "System");
                           if (!routingMod) return;
-                          routingMod.execute("route", [inputId, dispId]); 
+                          routingMod.execute("route", [inputId, dispId]);
                         }}
                         className={`w-full p-4 rounded-lg flex items-center justify-between transition-colors hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                           isSelectedSource
