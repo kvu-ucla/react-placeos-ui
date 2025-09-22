@@ -580,7 +580,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
             // bind to dsp mute state
             bindAndListen(
-                `audio_mute_0${micId.mute_id[0]}`, // Use mute_id instead of level_id
+                `audio_mute_0${micId.mute_id[0]}`, 
                 getModule(systemId, "Mixer"),
                 //dsp current mute state as a string
                 (isMuted: string) => {
@@ -588,7 +588,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
                     ...prevMics,
                     [micId.level_id[0]]: { 
                       ...prevMics[micId.level_id[0]], // Preserve existing state
-                      is_muted: isMuted === "on"
+                      is_muted: isMuted.toLowerCase() === "on"
                     }
                   }));
                 }
