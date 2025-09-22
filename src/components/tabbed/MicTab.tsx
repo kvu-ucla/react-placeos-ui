@@ -18,23 +18,12 @@ export function MicTab() {
 
     const [value, setValue] = useState(volume);
     const [percentage, setPercentage] = useState(0);
-    const [micValues, setMicValues] = useState<Record<string, number>>({});
-
     //speaker volume percentage
     useEffect(() => {
         if (!volume) return;
         let percent = (100 * (volume - 800)) / (1200 - 800);
         setPercentage(Math.round(percent));
     }, [value, volume]);
-
-    //mic volume percentage - initialize local mic values from context
-    useEffect(() => {
-        const initialMicValues: Record<string, number> = {};
-        Object.values(mics).forEach((mic) => {
-            initialMicValues[mic.id] = mic.level;
-        });
-        setMicValues(initialMicValues);
-    }, [mics]);
 
     //handle speaker volume
     const handleRelease = () => {
@@ -46,11 +35,8 @@ export function MicTab() {
     };
 
     //handle mics volume
-    const handleMicRelease = (mic: DspMicrophone) => {
-        const micId = mic.id;
-        if (!micValues[micId]) return;
-
-        adjustDspVolume(micValues[micId], micId);
+    const handleMicRelease = (micId: string, micLevel: number) => {
+        adjustDspVolume(micLevel, micId);
     };
 
     // Calculate mic percentage
@@ -61,11 +47,24 @@ export function MicTab() {
 
     function MicControl({ mic }: { mic: DspMicrophone }) {
         const micId = mic.id;
-        const muted = mic.is_muted;
-        const mic_volume = micValues[micId] ?? mic.level;
         const min = mic.min_level;
         const max = mic.max_level;
-        const micPercentage = getMicPercentage(mic, mic_volume);
+
+        // Each mic has its own local state for smooth sliding
+        const [localMicValue, setLocalMicValue] = useState(mic.level);
+        // Each mic has its own local mute state for immediate UI feedback
+        const [localMuted, setLocalMuted] = useState(mic.is_muted);
+
+        // Update local values when context values change
+        useEffect(() => {
+            setLocalMicValue(mic.level);
+        }, [mic.level]);
+
+        useEffect(() => {
+            setLocalMuted(mic.is_muted);
+        }, [mic.is_muted]);
+
+        const micPercentage = getMicPercentage(mic, localMicValue);
 
         return (
             <div className="border border-[#999] rounded-lg p-4">
@@ -84,15 +83,12 @@ export function MicTab() {
                         min={min}
                         max={max}
                         step={10}
-                        value={[mic_volume]}
+                        value={[localMicValue]}
                         onValueChange={([val]) => {
-                            // Set local mic value for immediate UI feedback
-                            setMicValues(prev => ({
-                                ...prev,
-                                [micId]: val
-                            }));
+                            // Update only this mic's local state for immediate UI feedback
+                            setLocalMicValue(val);
                         }}
-                        onValueCommit={() => handleMicRelease(mic)}
+                        onValueCommit={() => handleMicRelease(micId, localMicValue)}
                     >
                         <Slider.Track className="relative grow rounded-full h-6 bg-gray-300">
                             <Slider.Range className="absolute h-full bg-blue-500 rounded-full" />
@@ -110,15 +106,18 @@ export function MicTab() {
                 </div>
                 <button
                     onClick={() => {
+                        // Toggle local mute state immediately for UI feedback
+                        setLocalMuted(!localMuted);
+                        // Also call the context function to update backend
                         toggleDspMute(micId);
                     }}
                     className={`btn w-full h-[64px] rounded-lg text-xl font-medium ${
-                        muted
+                        localMuted
                             ? "bg-gray-800 text-white"
                             : "text-avit-grey-80 bg-gray-100 border-gray-100"
                     }`}
                 >
-                    {muted ? "Unmute Mic" : "Mute Mic"}
+                    {localMuted ? "Unmute Mic" : "Mute Mic"}
                 </button>
             </div>
         );
