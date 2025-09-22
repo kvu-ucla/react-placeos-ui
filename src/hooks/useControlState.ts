@@ -121,36 +121,6 @@ export function useControlState(
       console.log("System object: ", sys);
     });
 
-    const nvxMod = getModule(systemId, "Decoder_1");
-
-    const nvxBinding = nvxMod.binding("subscriptions");
-    const nvxSub = nvxBinding.listen().subscribe((val) => {
-      console.log("NVX RX 1 state", val);
-    });
-    subs.current.push(nvxSub);
-    const nvxUnbind = nvxBinding.bind();
-    subs.current.push(new Subscription(nvxUnbind));
-
-    const camMod = getModule(systemId, "Display_2");
-
-    const camBinding = camMod.binding("connected");
-    const camSub = camBinding.listen().subscribe((val) => {
-      console.log("camera 1 state", val);
-    });
-    subs.current.push(camSub);
-    const camUnbind = camBinding.bind();
-    subs.current.push(new Subscription(camUnbind));
-
-    const recMod = getModule(systemId, "Recording_1");
-
-    const recBinding = recMod.binding("active_recordings");
-    const recSub = recBinding.listen().subscribe((val) => {
-      console.log("recSub active recordings ", val);
-    });
-    subs.current.push(recSub);
-    const recUnbind = camBinding.bind();
-    subs.current.push(new Subscription(recUnbind));
-
     const mod = getModule(systemId, moduleAlias);
 
     const bind = (name: keyof SystemState, onChange: (val: any) => void) => {
@@ -214,21 +184,6 @@ export function useControlState(
   const togglePower = async () => {
     const system = getModule(systemId, moduleAlias);
     await system.execute("power", [!activeRef.current]);
-
-    const mixer = getModule(systemId, 'Mixer_1');
-    
-    const zoom = getModule(systemId, 'ZoomCSAPI_1');
-
-    console.log("activeRef State", activeRef.current);
-    
-    if (activeRef.current) {
-      mixer.execute("set_preset", [1]);
-    }
-    else
-    {
-      mixer.execute("set_preset", [2]);
-      zoom.execute("call_disconnect");
-    }
   };
 
   const setVolume = async (val: number) => {
