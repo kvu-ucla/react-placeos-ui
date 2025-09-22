@@ -71,6 +71,15 @@ interface Microphone {
   rooms: null;
 }
 
+export interface DspMicrophone {
+  name: string;
+  id: string;
+  level: number;
+  is_muted: boolean;
+  min_level: number;
+  max_level: number;
+}
+
 interface Camera {
   camera_id: string;
   camera_name: string;
@@ -109,7 +118,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   const [volume, setVolume] = useState<number>();
   const [volumeMute, setVolumeMute] = useState<boolean>();
   const [gallery, setGallery] = useState<boolean>(true);
-  const [mics, SetMics] = useState<Microphone[]>([]);
+  const [mics, SetMics] = useState<MicsMap>({});
   const [cams, setCams] = useState<CameraMap>({});
   const [outputs, setOutputs] = useState<OutputMap>({});
   const [inputs, setInputs] = useState<InputMap>({});
@@ -120,6 +129,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   type CameraMap = Record<string, Camera>;
   type OutputMap = Record<string, Output>;
   type InputMap = Record<string, Input>;
+  type MicsMap = Record<string, DspMicrophone>;
 
   const { system_id = 'sys-1234' }  = useParams();
 
@@ -315,6 +325,25 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     volumeMod.execute("set_audio_mute", [27, state]);
   };
 
+  //adjust Shure IMX volume for generic fader
+  const adjustDspVolume = (value: number, id: string) => {
+    const volumeMod = getModule(systemId, "Mixer");
+    if (!volumeMod) return;
+
+    volumeMod.execute("set_audio_gain_hi_res", [Number(id), value]);
+  };
+
+  //adjust Shure IMX toggle mute for generic fader
+  const toggleDspMute = (id: string) => {
+    const volumeMod = getModule(systemId, "Mixer");
+    if (!volumeMod) return;
+
+    const newState = !volumeMute;
+    volumeMod.execute("set_audio_mute", [Number(id), newState]);
+  };
+
+
+
   const listenToBindings = () => {
     clearSubs();
 
@@ -338,20 +367,6 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     };
 
     if (!module) return;
-
-    //bind local microphones for tag and min/max info
-    bindAndListen(
-      "microphones",
-      getModule(systemId, "System"),
-      (val: Microphone[]) => {
-        console.log("mics enter?: ", mics);
-        if (!val) return;
-
-        SetMics(val);
-
-        console.log("mics?: ", val);
-      },
-    );
 
     //bind selected camera
     bindAndListen(
@@ -534,6 +549,53 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
       muteVal == "on" ? setVolumeMute(true) : setVolumeMute(false);
     });
+
+    //bind local microphones for tag and min/max info
+    bindAndListen(
+        "microphones",
+        getModule(systemId, "System"),
+        (list: Microphone[]) => {
+          if (!list) return;
+
+          for (const micId of list) {
+            // bind to dsp level state
+            bindAndListen(
+                `audio_gain_hi_res_${micId.level_id[0]}`,
+                getModule(systemId, "Mixer"),
+                // dsp current value
+                (newVal: number) => {
+                  SetMics(prevMics => ({
+                    ...prevMics,
+                    [micId.level_id[0]]: {
+                      ...prevMics[micId.level_id[0]], // Preserve existing state
+                      name: micId.name,
+                      id: micId.level_id[0],
+                      level: newVal,
+                      min_level: micId.min_level,
+                      max_level: micId.max_level,
+                    }
+                  }));
+                }
+            );
+
+            // bind to dsp mute state
+            bindAndListen(
+                `audio_mute_${micId.mute_id[0]}`, // Use mute_id instead of level_id
+                getModule(systemId, "Mixer"),
+                //dsp current mute state as a string
+                (isMuted: string) => {
+                  SetMics(prevMics => ({
+                    ...prevMics,
+                    [micId.level_id[0]]: { 
+                      ...prevMics[micId.level_id[0]], // Preserve existing state
+                      is_muted: isMuted === "on"
+                    }
+                  }));
+                }
+            );
+          }
+        },
+    );
   };
 
   return {
@@ -543,6 +605,9 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     adjustMasterVolume,
     toggleMasterMute,
     mics,
+    SetMics,
+    toggleDspMute,
+    adjustDspVolume,
     selectedCamera,
     system_id,
     cams,
