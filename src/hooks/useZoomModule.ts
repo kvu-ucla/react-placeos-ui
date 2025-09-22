@@ -588,7 +588,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
                     ...prevMics,
                     [micId.level_id[0]]: { 
                       ...prevMics[micId.level_id[0]], // Preserve existing state
-                      is_muted: isMuted.toLowerCase() === "on"
+                      is_muted: isMuted?.toLowerCase() === "on"
                     }
                   }));
                 }
