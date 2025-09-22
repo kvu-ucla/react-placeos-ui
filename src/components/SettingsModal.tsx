@@ -24,7 +24,7 @@ export default function SettingsModal({
     <div className="modal modal-open bg-black/40">
       <div
         id="settings"
-        className="modal-box bg-white p-8 w-[1547px] h-[1098px] max-w-full rounded-lg"
+        className="modal-box bg-white p-8 w-[90vw] h-[90vh] max-w-full rounded-lg"
       >
         <div className="">
           {/* Header */}
