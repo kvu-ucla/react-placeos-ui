@@ -560,7 +560,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
           for (const micId of list) {
             // bind to dsp level state
             bindAndListen(
-                `audio_gain_hi_res_${micId.level_id[0]}`,
+                `audio_gain_hi_res_0${micId.level_id[0]}`,
                 getModule(systemId, "Mixer"),
                 // dsp current value
                 (newVal: number) => {
@@ -580,7 +580,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
             // bind to dsp mute state
             bindAndListen(
-                `audio_mute_${micId.mute_id[0]}`, // Use mute_id instead of level_id
+                `audio_mute_0${micId.mute_id[0]}`, // Use mute_id instead of level_id
                 getModule(systemId, "Mixer"),
                 //dsp current mute state as a string
                 (isMuted: string) => {
