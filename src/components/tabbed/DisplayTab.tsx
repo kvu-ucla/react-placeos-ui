@@ -26,7 +26,7 @@ export function DisplayTab() {
     <>
       <h3 className="font-semibold mb-2">Displays</h3>
 
-      {/* Toggle All Display Screens - Fixed at top */}
+      {/* Toggle All Display Screens*/}
       <div className="border border-[#999] text-avit-grey-80 rounded-lg p-4 flex items-center justify-between mb-4">
         <h3 className="text-xl font-semibold">All display screens</h3>
         <label className="cursor-pointer label">
@@ -52,7 +52,7 @@ export function DisplayTab() {
               key={dispId}
               className="collapse collapse-arrow border border-[#999]"
             >
-              <input type="checkbox" className="collapse-toggle" />
+              <input type="radio" name="display-accordion" className="collapse-toggle" />
 
               {/* Accordion Header */}
               <div className="collapse-title text-xl font-medium flex items-center gap-2">
@@ -141,7 +141,7 @@ export function DisplayTab() {
                           )}
                         </span>
 
-                        {/* Absolutely positioned green circle + pulse */}
+                        {/* Sync Detection */}
                           {isSyncDetected && (
                               <div className="absolute top-1/2 right-6 transform -translate-y-1/2 w-4 h-4">
                                   <div className="absolute top-0 left-0 w-full h-full rounded-full bg-green-400 opacity-75 animate-ping"></div>

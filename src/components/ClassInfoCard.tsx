@@ -125,7 +125,7 @@ export function ClassInfoCard() {
             {meetingDetails.classTitle}
           </h1>
           <p className="mt-4 text-3xl">{meetingDetails.instructor}</p>
-          <div className="mt-8 text-3xl flex items-center justify-center gap-2">
+          <div className="mt-8 mb-8 text-3xl flex items-center justify-center gap-2">
             <span>Ends at</span>
             <span>{meetingDetails.classEnd}</span>
             <span className="text-xs mx-2">●</span>
