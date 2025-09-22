@@ -49,20 +49,12 @@ export function MicTab() {
         const micId = mic.id;
         const min = mic.min_level;
         const max = mic.max_level;
-
-        // Each mic has its own local state for smooth sliding
+        
         const [localMicValue, setLocalMicValue] = useState(mic.level);
-        // Each mic has its own local mute state for immediate UI feedback
-        const [localMuted, setLocalMuted] = useState(mic.is_muted);
-
-        // Update local values when context values change
+        
         useEffect(() => {
             setLocalMicValue(mic.level);
         }, [mic.level]);
-
-        useEffect(() => {
-            setLocalMuted(mic.is_muted);
-        }, [mic.is_muted]);
 
         const micPercentage = getMicPercentage(mic, localMicValue);
 
@@ -85,7 +77,6 @@ export function MicTab() {
                         step={10}
                         value={[localMicValue]}
                         onValueChange={([val]) => {
-                            // Update only this mic's local state for immediate UI feedback
                             setLocalMicValue(val);
                         }}
                         onValueCommit={() => handleMicRelease(micId, localMicValue)}
@@ -106,18 +97,15 @@ export function MicTab() {
                 </div>
                 <button
                     onClick={() => {
-                        // Toggle local mute state immediately for UI feedback
-                        setLocalMuted(!localMuted);
-                        // Also call the context function to update backend
                         toggleDspMute(micId);
                     }}
                     className={`btn w-full h-[64px] rounded-lg text-xl font-medium ${
-                        localMuted
+                        mic.is_muted
                             ? "bg-gray-800 text-white"
                             : "text-avit-grey-80 bg-gray-100 border-gray-100"
                     }`}
                 >
-                    {localMuted ? "Unmute Mic" : "Mute Mic"}
+                    {mic.is_muted ? "Unmute Mic" : "Mute Mic"}
                 </button>
             </div>
         );
@@ -126,12 +114,10 @@ export function MicTab() {
     return(
         <>
             <h3 className="font-semibold mb-2">Volume</h3>
-
-            {/* Make the row fill the parent width */}
+            
             <div className="w-full border border-[#999] flex items-center justify-between p-4 rounded-lg">
-                {/* Main column takes all remaining space */}
                 <div className="flex flex-col w-full items-start">
-                    {/* Row spans full width */}
+                    {/* Title */}
                     <div className="flex w-full items-center justify-between">
                         <p className="font-semibold">Speaker volume</p>
                         <span className="text-blue-600 font-bold">
@@ -139,7 +125,7 @@ export function MicTab() {
                         </span>
                     </div>
 
-                    {/* Slider row also spans full width */}
+                    {/* Slider */}
                     <div className="flex w-full items-center">
                         <Icon
                             icon="material-symbols:volume-mute-outline-rounded"
@@ -189,15 +175,16 @@ export function MicTab() {
                 </div>
             </div>
 
-            {/* Microphones section also fills width */}
-            <div className="w-full">
+            {/* Microphones, render only if mics exists */}
+            {mics && Object.keys(mics).length > 0 &&  
+                (<div className="w-full">
                 <h3 className="font-semibold mb-2">Microphones</h3>
                 <div className="grid grid-cols-2 gap-4 w-full">
                     {Object.values(mics).map((mic) => (
                         <MicControl key={mic.id} mic={mic} />
                     ))}
                 </div>
-            </div>
+            </div>)}
         </>
     );
 }
