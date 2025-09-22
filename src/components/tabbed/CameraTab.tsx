@@ -8,6 +8,7 @@ export function CameraTab() {
     const {
         cams,
         selectedCamera,
+        recording
     } = useZoomContext();
     const { system_id } = useParams();
     const cameraSelection = (camera_id: string) => {
@@ -18,7 +19,7 @@ export function CameraTab() {
     }
     
     return (
-        <div className="border rounded-lg p-6 space-y-6">
+        !recording ? (<div className="border rounded-lg p-6 space-y-6">
             {/* Section Title */}
             <h2 className="text-xl font-semibold">Camera Management</h2>
 
@@ -78,7 +79,11 @@ export function CameraTab() {
                     })()}
                 </div>
             </div>
-        </div>
+        </div>)
+        : 
+            (
+            <div>Cameras are automated when BruinCasting!</div>
+            )
     );
 }
 

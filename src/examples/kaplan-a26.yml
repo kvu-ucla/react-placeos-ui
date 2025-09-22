@@ -1,5 +1,4 @@
 calendar_id: law-01310
-
 local_outputs:
   - Display_1
   - Display_2
@@ -28,6 +27,10 @@ connections:
   Display_3:
     hdmi: Switcher_1.2
   Switcher_1:
+    #   # '1': '*Zoom_Output_1'
+    #   # '2': '*Zoom_Output_2'
+    #   # '3': '*Production_Input_HDMI'
+    # Should match subscription table in NVX decoder
     KAPLAN-A26-NVX-TX1-CRED-89B6: '*Zoom_Output_1'
     KAPLAN-A26-NVX-TX2-CRED-8BBA: '*Zoom_Output_2'
     KAPLAN-A26-NVX-TX-PROD-3A2D: '*Production_Input_HDMI'
@@ -41,6 +44,9 @@ outputs:
   Display_3:
     name: Side Display
 inputs:
+  # Credenza_Input_HDMI:
+  #   name: Credenza Input
+  #   icon: laptop
   Zoom_Output_1:
     name: Zoom Output 1
     icon: laptop
@@ -48,7 +54,7 @@ inputs:
     name: Zoom Output 2
     icon: connected_tv
   Production_Input_HDMI:
-    name: Production Input HMDI
+    name: Production Input HDMI
     icon: connected_tv
   Camera_1:
     name: Audience Camera
@@ -60,6 +66,16 @@ inputs:
     icon: videocam
     type: cam
     mod: Camera_2
+  # Camera_1:
+  #   name: Presenter Camera
+  #   icon: videocam
+  #   type: cam
+  #   mod: Camera_1
+  # Camera_2:
+  #   name: Audience Camera
+  #   icon: video_camera_front
+  #   type: cam
+  #   mod: Camera_2
 default_routes:
   Display_1: Zoom_Output_1
   Display_2: Zoom_Output_1

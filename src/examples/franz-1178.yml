@@ -1,0 +1,95 @@
+local_outputs:
+  - Display_1
+#cameras that are in the system but aren't physically wired or routed
+local_cameras:
+  - Camera_1
+  - Camera_2
+  - Camera_3
+shutdown_devices:
+  - Display_1
+connections:
+#    "FRANZ-1178-NVX-RX-CRED-8929",
+#      "FRANZ-1178-NVX-RX-PROJ-8B84",
+#      "FRANZ-1178-NVX-RX-PROD-881F"
+  # Main Projector NVX-RX-PROJ-8B84 
+  Display_1:
+    hdmi: Switcher_1.2
+  Switcher_1:
+    #      "FRANZ-1178-NVX-TX1-CRED-5637",
+    #        "FRANZ-1178-NVX-TX2-CRED-88B5",
+    #        "FRANZ-1178-NVX-TX-PROD-3DD5"
+    # Should match subscription table in NVX decoder
+    KAPLAN-A65-NVX-TX1-CRED-461E: '*Zoom_Output_1'
+    KAPLAN-A65-NVX-TX2-CRED-492C: '*Zoom_Output_2'
+    KAPLAN-A65-NVX-TX-PROD-3A43: '*Production_Input_HDMI'
+    '4': '*Camera_1'
+    '5': '*Camera_2'
+    '6': '*Camera_3'
+outputs:
+  Display_1:
+    name: Main Projector
+inputs:
+  Zoom_Output_1:
+    name: Zoom Output 1
+    icon: laptop
+  Zoom_Output_2:
+    name: Zoom Output 2
+    icon: connected_tv
+  Production_Input_HDMI:
+    name: Production Input HDMI
+    icon: connected_tv
+  Camera_1:
+    name: Audience Camera
+    icon: videocam
+    type: cam
+    mod: Camera_1
+  Camera_2:
+    name: Presenter Left Camera
+    icon: videocam
+    type: cam
+    mod: Camera_2
+  Camera_3:
+    name: Presenter Right Camera
+    icon: videocam
+    type: cam
+    mod: Camera_3
+default_routes:
+  Display_1: Zoom_Output_1
+local_microphones:
+  - name: Catchbox 1
+    level_id: '5'
+    mute_id: '5'
+    # optional keys
+    module_id: 'Mixer_1'
+    default_muted: true
+    default_level: 1100
+    min_level: 1000
+    max_level: 1200
+  - name: Catchbox 2
+    level_id: '6'
+    mute_id: '6'
+    # optional keys
+    module_id: 'Mixer_1'
+    default_muted: true
+    default_level: 1100
+    min_level: 1000
+    max_level: 1200
+  - name: Catchbox 3
+    level_id: '7'
+    mute_id: '7'
+    # optional keys
+    module_id: 'Mixer_1'
+    default_muted: true
+    default_level: 1100
+    min_level: 1000
+    max_level: 1200
+  - name: Catchbox 4
+    level_id: '8'
+    mute_id: '8'
+    # optional keys
+    module_id: 'Mixer_1'
+    default_muted: true
+    default_level: 1100
+    min_level: 1000
+    max_level: 1200
+

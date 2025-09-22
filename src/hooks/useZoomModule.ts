@@ -228,8 +228,28 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   //toggle individual participant audio/video
   const participantMediaMute = async (type: MediaType, participant_id: number) => {
     if (!module) return;
-    
-    console.log("participants object ", participants);
+
+    // Find the participant
+    const participant = participants.find(x => x.user_id === participant_id);
+
+    if (!participant) {
+      console.error(`Participant with ID ${participant_id} not found`);
+      return;
+    }
+
+    if (type === "audio") {
+      const newAudio = participant.audio_state !== "AUDIO_MUTED";
+      await module.execute("call_mute_participant_audio", [newAudio, participant_id.toString()]);
+    } else if (type === "video") {
+      const newVideo = participant.video_is_sending;
+      await module.execute("call_mute_participant_video", [newVideo, participant_id.toString()]);
+    }
+  };
+
+
+  //toggle individual participant audio/video
+  const participantExpel = async ( participant_id: number) => {
+    if (!module) return;
 
     // Find the participant
     const participant = participants.find(x => x.user_id === participant_id);
@@ -239,15 +259,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
       return;
     }
     
-    console.log("participants object ", participant)
-
-    if (type === "audio") {
-      const newAudio = participant.audio_state !== "AUDIO_MUTED";
-      await module.execute("call_mute_participant_audio", [newAudio, participant_id.toString()]);
-    } else if (type === "video") {
-      const newVideo = participant.video_is_sending;
-      await module.execute("call_mute_participant_video", [newVideo, participant_id.toString()]);
-    }
+    await module.execute("call_expel_participant", [participant_id.toString()]);
   };
   
   //toggle in-call wired-sharing, or cancel wireless or wired sharing
@@ -484,9 +496,15 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
       setCallStatus(data);
     });
+    
+    
 
     //bind sharing status for wireless and wired sharing
     bindAndListen("Sharing", module, setSharing);
+    
+    // bindAndListen("mic_mute", module, setMicState);
+    //
+    // bindAndListen("cam_mute", module, setCamState);
 
     //
     bindAndListen("meeting_started_time", module, setTimeJoined);
@@ -539,6 +557,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     sharing,
     bookings,
     participants,
+    participantExpel,
     gallery,
     leave,
     joinPmi,

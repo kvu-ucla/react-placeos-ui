@@ -9,9 +9,9 @@ shutdown_devices:
   - Display_1
   - Display_2
 connections:
-  #"KAPLAN-A40-NVX-RX-CRED-4C8A"
-  #"DM-NVX-384-C44268744AE6"
-  #"KAPLAN-A40-NVX-RX2-PROJ-4B3A"
+  #"KAPLAN-A40-NVX-RX-CRED-4C8A",
+  #"KAPLAN-A40-NVX-RX1-PROJ-4AE6",
+  #"KAPLAN-A40-NVX-RX2-PROJ-4B3A",
   #"KAPLAN-A40-NVX-RX-PROD-490F"
   #Front Projector RX1-PROJ-4AE6
   Display_1:
@@ -20,9 +20,9 @@ connections:
   Display_2:
     hdmi: Switcher_1.3
   Switcher_1:
-      #"KAPLAN-A40-NVX-TX1-CRED-A315"
-      #"KAPLAN-A40-NVX-TX2-CRED-4CA9"
-      #"KAPLAN-A40-NVX-TX-PROD-717A"
+    #"KAPLAN-A40-NVX-TX1-CRED-A315"
+    #"KAPLAN-A40-NVX-TX2-CRED-4CA9"
+    #"KAPLAN-A40-NVX-TX-PROD-717A"
     KAPLAN-A40-NVX-TX1-CRED-A315: '*Zoom_Output_1'
     KAPLAN-A40-NVX-TX2-CRED-4CA9: '*Zoom_Output_2'
     KAPLAN-A40-NVX-TX-PROD-717A: '*Production_Input_HDMI'

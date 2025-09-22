@@ -98,16 +98,7 @@ export default function Footer() {
             </Slider.Root>
           </div>
         </div>
-
-        {/*<input*/}
-        {/*  type="range"*/}
-        {/*  min={800}*/}
-        {/*  max={1200}*/}
-        {/*  value={value}*/}
-        {/*  onChange={(e) => setValue(Number(e.target.value))}*/}
-        {/*  onPointerUp={handleRelease}*/}
-        {/*  className="w-full range rounded-3xl [--range-thumb:white] text-[#C8D7FF] range-xl touch-none"*/}
-        {/*/>*/}
+        
         {isJoined && (
           <button
             onClick={() => showModal("end-meeting")}
