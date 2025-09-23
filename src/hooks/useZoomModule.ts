@@ -125,6 +125,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   const [selectedCamera, setSelectedCamera] = useState<string>();
   const [muteEveryone, setMuteEveryone] = useState<boolean>();
   const [participants, setParticipants] = useState<ZoomParticipant[]>([]);
+  const [activeBooking, setActiveBooking] = useState<ZoomBooking>();
 
   type CameraMap = Record<string, Camera>;
   type OutputMap = Record<string, Output>;
@@ -180,12 +181,12 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     return () => clearSubs();
   }, [module]);
 
-  useEffect(() => {
-    const [first, second] = bookings ?? [];
-
-    setCurrentMeeting(first);
-    setNextMeeting(second);
-  }, [bookings]);
+  // useEffect(() => {
+  //   const [first, second] = bookings ?? [];
+  //
+  //   setCurrentMeeting(first);
+  //   setNextMeeting(second);
+  // }, [bookings]);
 
   //disconnect from Zoom call
   const leave = async () => {
@@ -284,7 +285,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     } else await module.execute("sharing_start_hdmi");
   };
 
-  //toggle "gallery", which is just routing different NVX routes to each display
+  //toggle "gallery"/"participant", which is just routing different NVX routes to each display
   const toggleGallery = async () => {
     const sysMod = getModule(systemId, "System");
     if (!module) return;
@@ -293,9 +294,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
       await sysMod.execute("apply_default_routes");
       setGallery(false);
     } else {
-      await sysMod.execute("route", ["Zoom_Output_1", "Display_1"]);
-      await sysMod.execute("route", ["Zoom_Output_1", "Display_2"]);
-      await sysMod.execute("route", ["Zoom_Output_1", "Display_3"]);
+      await sysMod.execute("apply_participant_routes");
       setGallery(true);
     }
   };
@@ -526,6 +525,9 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
     //bind and get bookings from Zoom Rooms
     bindAndListen("Bookings", module, setBookings);
+    bindAndListen("active_booking", module, setActiveBooking);
+    bindAndListen("current_booking", module, setCurrentMeeting);
+    bindAndListen("next_booking", module, setNextMeeting);
     bindAndListen("Participants", module, setParticipants);
     
     
@@ -621,6 +623,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     callStatus,
     sharing,
     bookings,
+    activeBooking,
     participants,
     participantExpel,
     gallery,

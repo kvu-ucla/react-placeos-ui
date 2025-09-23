@@ -74,7 +74,7 @@ const SurveyToast = ({ onStartNext, onWait }: SurveyToastProps) => (
 
 
 export default function SessionDetails() {
-  const { nextMeeting, currentMeeting, joinMeetingId, timeJoined } = useZoomContext();
+  const { nextMeeting, joinMeetingId, timeJoined, activeBooking } = useZoomContext();
 
   // Tick every second so progress/remaining update live
   const [now, setNow] = useState(() => Date.now());
@@ -91,8 +91,8 @@ export default function SessionDetails() {
   const [debugMode, setDebugMode] = useState(false);
 
   // Pull and normalize times
-  const startMs = toMs(Number(currentMeeting?.startTime));
-  const endMs = toMs(Number(currentMeeting?.endTime));
+  const startMs = toMs(Number(activeBooking?.startTime));
+  const endMs = toMs(Number(activeBooking?.endTime));
   const nextStartMs = toMs(Number(nextMeeting?.startTime));
   const nextEndMs = toMs(Number(nextMeeting?.endTime));
   const timeJoinedMs = toMs(timeJoined);
@@ -198,7 +198,7 @@ export default function SessionDetails() {
   const remainingMinutes = Math.ceil(remainingMs / 60000);
   const elapsedLabel = fmtHM(elapsedMs);
 
-  const currentClassName = currentMeeting?.meetingName ?? "—";
+  const currentClassName = activeBooking?.meetingName ?? "—";
   const nextClassName = nextMeeting?.meetingName ?? "—";
 
   return (
