@@ -215,19 +215,19 @@ export default function SessionDetails() {
             )}
           </div>
 
-          {/* Debug button for testing (only in development) */}
-              <div className="mb-4">
-                <button
-                    onClick={() => setDebugMode(!debugMode)}
-                    className={`px-3 py-1 text-xs rounded ${
-                        debugMode
-                            ? 'bg-red-500 text-white'
-                            : 'bg-gray-200 text-gray-700'
-                    }`}
-                >
-                  {debugMode ? 'Debug: Meeting Ended' : 'Debug: Force Meeting End'}
-                </button>
-              </div>
+          {/*/!* Debug button for testing (only in development) *!/*/}
+          {/*    <div className="mb-4">*/}
+          {/*      <button*/}
+          {/*          onClick={() => setDebugMode(!debugMode)}*/}
+          {/*          className={`px-3 py-1 text-xs rounded ${*/}
+          {/*              debugMode*/}
+          {/*                  ? 'bg-red-500 text-white'*/}
+          {/*                  : 'bg-gray-200 text-gray-700'*/}
+          {/*          }`}*/}
+          {/*      >*/}
+          {/*        {debugMode ? 'Debug: Meeting Ended' : 'Debug: Force Meeting End'}*/}
+          {/*      </button>*/}
+          {/*    </div>*/}
 
           {/* Progress bar */}
           {isClass && (
