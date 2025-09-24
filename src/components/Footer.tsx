@@ -13,6 +13,7 @@ export default function Footer() {
     volumeMute,
     adjustMasterVolume,
     setMasterMute,
+    toggleMasterMute,
     callStatus,
     recording,
   } = useZoomContext();
@@ -62,22 +63,32 @@ export default function Footer() {
       <div className="flex items-center space-x-2">
         <div className="flex items-center mr-8">
           <div className="flex flex-col items-center mr-4">
-            <div className="text-3xl font-semibold">Speaker</div>
-            <div className="text-3xl font-semibold">Volume</div>
+            <div className="text-3xl font-semibold">Speaker Volume</div>
           </div>
-          {volumeMute ? (
-            <Icon
-              icon="material-symbols:volume-off-outline-rounded"
-              width={96}
-              height={96}
-            />
-          ) : (
-            <Icon
-              icon="material-symbols:volume-up-outline-rounded"
-              width={96}
-              height={96}
-            />
-          )}
+            {/*<button onClick={toggleMasterMute} className="">*/}
+            {/*  {volumeMute ? <Icon*/}
+            {/*          icon="material-symbols:volume-off-outline-rounded"*/}
+            {/*          width={96}*/}
+            {/*          height={96}*/}
+            {/*      />*/}
+            {/*      :*/}
+            {/*      <Icon*/}
+            {/*          icon="material-symbols:volume-up-outline-rounded"*/}
+            {/*          width={96}*/}
+            {/*          height={96}*/}
+            {/*      />}*/}
+            {/*</button>*/}
+                {volumeMute ? <Icon
+                    icon="material-symbols:volume-off-outline-rounded"
+                    width={96}
+                    height={96}
+                />
+                :
+                <Icon
+                    icon="material-symbols:volume-up-outline-rounded"
+                    width={96}
+                    height={96}
+                />}
           <div className="ml-4 w-[500px] min-h-[48px] overflow-visible">
             <Slider.Root
                 className="relative flex items-center select-none touch-none w-full h-16"

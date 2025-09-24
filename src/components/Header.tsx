@@ -82,19 +82,19 @@ export function Header() {
             <span className="text-xl font-semibold">Settings</span>
           </button>
         )}
-        {active && (
-            <button
-                onClick={() => showModal("survey")}
-                className={`btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "survey" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
-            >
-              <Icon
-                  icon="material-symbols:quiz-rounded"
-                  width={72}
-                  height={72}
-              />
-              <span className="text-xl font-semibold">Survey</span>
-            </button>
-        )}
+        {/*{active && (*/}
+        {/*    <button*/}
+        {/*        onClick={() => showModal("survey")}*/}
+        {/*        className={`btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "survey" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}*/}
+        {/*    >*/}
+        {/*      <Icon*/}
+        {/*          icon="material-symbols:quiz-rounded"*/}
+        {/*          width={72}*/}
+        {/*          height={72}*/}
+        {/*      />*/}
+        {/*      <span className="text-xl font-semibold">Survey</span>*/}
+        {/*    </button>*/}
+        {/*)}*/}
         {active && (
           <button
             onClick={() => showModal("shutdown")}

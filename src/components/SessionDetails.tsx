@@ -1,6 +1,6 @@
 // src/components/SessionDetails.tsx
 import { useEffect, useMemo, useState } from "react";
-import { toast, type Id } from 'react-toastify';
+// import { toast, type Id } from 'react-toastify';
 import { useZoomContext } from "../hooks/ZoomContext";
 
 function toMs(v?: number | null) {
@@ -32,45 +32,45 @@ function fmtTime(ms: number) {
 }
 
 
-interface SurveyToastProps {
-  onStartNext: () => void;
-  onWait: () => void;
-}
-
-const SurveyToast = ({ onStartNext, onWait }: SurveyToastProps) => (
-    <div className="p-4">
-      <div className="flex items-start mb-4">
-        <div className="flex-shrink-0 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center mr-3 mt-0.5">
-          <span className="text-white text-sm font-bold">i</span>
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">
-            Have feedback to share?
-          </h3>
-          <div className="text-gray-600">
-            <div className="text-sm">
-              Take our survey in under 30 seconds.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex gap-3">
-        <button
-            onClick={onWait}
-            className="flex-1 bg-blue-100 text-blue-950 font-semibold py-3 px-4 rounded-lg hover:bg-blue-200 transition-colors"
-        >
-          No
-        </button>
-        <button
-            onClick={onStartNext}
-            className="flex-1 bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          Yes
-        </button>
-      </div>
-    </div>
-);
+// interface SurveyToastProps {
+//   onStartNext: () => void;
+//   onWait: () => void;
+// }
+//
+// const SurveyToast = ({ onStartNext, onWait }: SurveyToastProps) => (
+//     <div className="p-4">
+//       <div className="flex items-start mb-4">
+//         <div className="flex-shrink-0 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center mr-3 mt-0.5">
+//           <span className="text-white text-sm font-bold">i</span>
+//         </div>
+//         <div>
+//           <h3 className="text-lg font-semibold text-gray-900 mb-1">
+//             Have feedback to share?
+//           </h3>
+//           <div className="text-gray-600">
+//             <div className="text-sm">
+//               Take our survey in under 30 seconds.
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//
+//       <div className="flex gap-3">
+//         <button
+//             onClick={onWait}
+//             className="flex-1 bg-blue-100 text-blue-950 font-semibold py-3 px-4 rounded-lg hover:bg-blue-200 transition-colors"
+//         >
+//           No
+//         </button>
+//         <button
+//             onClick={onStartNext}
+//             className="flex-1 bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+//         >
+//           Yes
+//         </button>
+//       </div>
+//     </div>
+// );
 
 
 export default function SessionDetails() {
@@ -84,8 +84,8 @@ export default function SessionDetails() {
   }, []);
 
   // Toast states
-  const [surveyToastId, setSurveyToastId] = useState<Id | null>(null);
-  const [hasNotified, setHasNotified] = useState(false);
+  // const [surveyToastId, setSurveyToastId] = useState<Id | null>(null);
+  // const [hasNotified, setHasNotified] = useState(false);
 
   // Debug mode for testing
   const [debugMode, setDebugMode] = useState(false);
@@ -98,7 +98,7 @@ export default function SessionDetails() {
   const timeJoinedMs = toMs(timeJoined);
 
   const { isClass, percent, elapsedMs, remainingMs, sessionStart } = useMemo(() => {
-    // Use the earlier of meeting start or when you joined
+    // Use actual join time or meeting time
     const sessionStart = Math.min(startMs, timeJoinedMs);
     const duration = endMs - sessionStart;
 
@@ -132,68 +132,68 @@ export default function SessionDetails() {
   }, [now, startMs, endMs, timeJoinedMs]);
 
   // Toast logic for meeting end
-  useEffect(() => {
-    // Use debug mode or actual meeting end condition
-    const meetingEnded = debugMode || (now >= endMs);
-
-    // When current meeting ends and there's a next meeting
-    if (meetingEnded && !hasNotified) {
-      const handleStartSurvey = () => {
-        if (surveyToastId) {
-          toast.dismiss(surveyToastId);
-        }
-        setSurveyToastId(null);
-        setHasNotified(true);
-        setDebugMode(false); // Reset debug mode
-      };
-
-      const handleWait = () => {
-        if (surveyToastId) {
-          toast.dismiss(surveyToastId);
-        }
-        setSurveyToastId(null);
-
-        // Show toast again after delay (shorter for testing)
-        const WAIT_TIMEOUT = process.env.NODE_ENV === 'development' ?
-            10000 : // 10 seconds for testing
-            2 * 60 * 1000; // 2 minutes for production
-
-        setTimeout(() => {
-          setHasNotified(false);
-        }, WAIT_TIMEOUT);
-      };
-
-      const toastId = toast(
-          <SurveyToast
-              onStartNext={handleStartSurvey}
-              onWait={handleWait}
-          />,
-          {
-            autoClose: false,
-            closeOnClick: false,
-            draggable: false,
-            closeButton: true,
-            style: {
-              minWidth: '400px',
-              width: 'auto',
-              maxWidth: '600px'
-            }
-          }
-      );
-
-      setSurveyToastId(toastId);
-      setHasNotified(true);
-    }
-
-    // Reset when new meeting starts or conditions change
-    if ((now < endMs ) && !debugMode) {
-      setHasNotified(false);
-      if (surveyToastId) {
-        toast.dismiss(surveyToastId);
-        setSurveyToastId(null);
-      }
-    }
-  }, [now, endMs, isClass, hasNotified, surveyToastId, debugMode]);
+  // useEffect(() => {
+  //   // Use debug mode or actual meeting end condition
+  //   const meetingEnded = debugMode || (now >= endMs);
+  //
+  //   // When current meeting ends and there's a next meeting
+  //   if (meetingEnded && !hasNotified) {
+  //     const handleStartSurvey = () => {
+  //       if (surveyToastId) {
+  //         toast.dismiss(surveyToastId);
+  //       }
+  //       setSurveyToastId(null);
+  //       setHasNotified(true);
+  //       setDebugMode(false); // Reset debug mode
+  //     };
+  //
+  //     const handleWait = () => {
+  //       if (surveyToastId) {
+  //         toast.dismiss(surveyToastId);
+  //       }
+  //       setSurveyToastId(null);
+  //
+  //       // Show toast again after delay (shorter for testing)
+  //       const WAIT_TIMEOUT = process.env.NODE_ENV === 'development' ?
+  //           10000 : // 10 seconds for testing
+  //           2 * 60 * 1000; // 2 minutes for production
+  //
+  //       setTimeout(() => {
+  //         setHasNotified(false);
+  //       }, WAIT_TIMEOUT);
+  //     };
+  //
+  //     const toastId = toast(
+  //         <SurveyToast
+  //             onStartNext={handleStartSurvey}
+  //             onWait={handleWait}
+  //         />,
+  //         {
+  //           autoClose: false,
+  //           closeOnClick: false,
+  //           draggable: false,
+  //           closeButton: true,
+  //           style: {
+  //             minWidth: '400px',
+  //             width: 'auto',
+  //             maxWidth: '600px'
+  //           }
+  //         }
+  //     );
+  //
+  //     setSurveyToastId(toastId);
+  //     setHasNotified(true);
+  //   }
+  //
+  //   // Reset when new meeting starts or conditions change
+  //   if ((now < endMs ) && !debugMode) {
+  //     setHasNotified(false);
+  //     if (surveyToastId) {
+  //       toast.dismiss(surveyToastId);
+  //       setSurveyToastId(null);
+  //     }
+  //   }
+  // }, [now, endMs, isClass, hasNotified, surveyToastId, debugMode]);
 
   const remainingMinutes = Math.ceil(remainingMs / 60000);
   const elapsedLabel = fmtHM(elapsedMs);
@@ -256,7 +256,7 @@ export default function SessionDetails() {
                   Not currently in a class
                 </div>
             )}
-
+            
             <div className="text-xl text-gray-500">
             <span className="text-blue-600 text-[30px] font-bold">
               {Math.max(0, remainingMinutes)}

@@ -55,6 +55,7 @@ export interface ZoomBooking {
   endTime: string; //"2025-08-24T23:46:50Z",
   meetingName: string;
   meetingNumber: string;
+  isInstantMeeting: boolean;
 }
 
 interface Microphone {

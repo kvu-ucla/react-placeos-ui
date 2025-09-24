@@ -61,7 +61,7 @@ export function MicTab() {
         return (
             <div className="border border-[#999] rounded-lg p-4">
                 <div className="flex items-center justify-between">
-                    <h4 className="font-semibold mb-2">Mic {mic.name} volume (output)</h4>
+                    <h4 className="font-semibold mb-2">{mic.name} volume</h4>
                     <span className="font-bold text-blue-600">{micPercentage}%</span>
                 </div>
                 <div className="flex items-center justify-between mb-2">

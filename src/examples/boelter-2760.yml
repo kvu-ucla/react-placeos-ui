@@ -133,8 +133,19 @@ default_routes:
   Display_8: Zoom_Output_1
   Display_9: Zoom_Output_1
   Display_10: Zoom_Output_1
+participant_routes:
+  Display_1: Zoom_Output_1
+  Display_2: Zoom_Output_1
+  Display_3: Zoom_Output_1
+  Display_4: Zoom_Output_1
+  Display_5: Zoom_Output_1
+  Display_6: Zoom_Output_1
+  Display_7: Zoom_Output_1
+  Display_8: Zoom_Output_1
+  Display_9: Zoom_Output_1
+  Display_10: Zoom_Output_1
 local_microphones:
-  - name: Catchbox 1
+  - name: Catchbox
     level_id: '5'
     mute_id: '5'
     # optional keys
@@ -143,7 +154,7 @@ local_microphones:
     default_level: 1100
     min_level: 1000
     max_level: 1200
-  - name: Catchbox 2
+  - name: Clip
     level_id: '6'
     mute_id: '6'
     # optional keys
@@ -152,22 +163,3 @@ local_microphones:
     default_level: 1100
     min_level: 1000
     max_level: 1200
-  - name: Catchbox 3
-    level_id: '7'
-    mute_id: '7'
-    # optional keys
-    module_id: 'Mixer_1'
-    default_muted: true
-    default_level: 1100
-    min_level: 1000
-    max_level: 1200
-  - name: Catchbox 4
-    level_id: '8'
-    mute_id: '8'
-    # optional keys
-    module_id: 'Mixer_1'
-    default_muted: true
-    default_level: 1100
-    min_level: 1000
-    max_level: 1200
-

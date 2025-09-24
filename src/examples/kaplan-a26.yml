@@ -66,18 +66,11 @@ inputs:
     icon: videocam
     type: cam
     mod: Camera_2
-  # Camera_1:
-  #   name: Presenter Camera
-  #   icon: videocam
-  #   type: cam
-  #   mod: Camera_1
-  # Camera_2:
-  #   name: Audience Camera
-  #   icon: video_camera_front
-  #   type: cam
-  #   mod: Camera_2
 default_routes:
   Display_1: Zoom_Output_1
   Display_2: Zoom_Output_1
   Display_3: Zoom_Output_2
-
+participant_routes:
+  Display_1: Zoom_Output_1
+  Display_2: Zoom_Output_1
+  Display_3: Zoom_Output_1
