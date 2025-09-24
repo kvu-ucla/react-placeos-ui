@@ -88,7 +88,7 @@ export default function SessionDetails() {
   // const [hasNotified, setHasNotified] = useState(false);
 
   // Debug mode for testing
-  const [debugMode, setDebugMode] = useState(false);
+  // const [debugMode, setDebugMode] = useState(false);
 
   // Pull and normalize times
   const startMs = toMs(Number(activeBooking?.startTime));
