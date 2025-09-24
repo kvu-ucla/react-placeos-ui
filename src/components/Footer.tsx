@@ -13,7 +13,7 @@ export default function Footer() {
     volumeMute,
     adjustMasterVolume,
     setMasterMute,
-    toggleMasterMute,
+    // toggleMasterMute,
     callStatus,
     recording,
   } = useZoomContext();
