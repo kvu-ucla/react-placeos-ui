@@ -8,7 +8,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 //////////////////////////////////////////////////////////////
 
 /** FQDN to proxy requests. i.e. No protocol and path should be in the value */
-const domain = 'placeos-nonprod.avit.it.ucla.edu';
+const domain = 'placeos-prod.avit.it.ucla.edu';
 /** Whether the proxied endpoints use SSL */
 const secure = true;
 /** Whether the SSL certificate used is valid on the internet */

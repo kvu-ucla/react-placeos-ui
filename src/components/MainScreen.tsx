@@ -1,26 +1,30 @@
-import {Header} from "./Header.tsx";
-import SessionDetails from "./SessionDetails.tsx";
-import Footer from "./Footer.tsx";
-import SessionControls from "./SessionControls.tsx";
+import { Header } from "./Header";
+import SessionDetails from "./SessionDetails";
+import Footer from "./Footer";
+import SessionControls from "./SessionControls";
 
 export default function MainScreen() {
+  return (
+    <div className="first-step relative isolate w-[1920px] h-[1200px] bg-avit-bg overflow-hidden">
+      <div className="flex flex-col w-full h-full">
+        {/* Header */}
+        <div className="z-10 shrink-0">
+          <Header />
+        </div>
 
-    return (
-            <div className="first-step flex flex-col min-h-screen bg-avit-bg">
-                {/* Header with logo, system name, nav buttons */}
-                <Header/>
+        {/* Content body (fills remaining height) */}
+        <main className="z-0 grow flex flex-col px-12 py-8 gap-4">
+          {/* Top section */}
+          <SessionDetails />
+          {/* Controls */}
+          <SessionControls />
+        </main>
 
-                {/* Content body */}
-                <main className="flex-1 mx-12 my-8 space-y-4">
-                    {/* Top section with progress bar and class info */}
-                    <SessionDetails/>
-
-                    {/* Control panel for mic, camera, zoom, etc. */}
-                    <SessionControls/>
-                </main>
-
-                {/* Footer with volume and session feedback */}
-                <Footer/>
-            </div>
-    );
+        {/* Footer */}
+        <div className="shrink-0">
+          <Footer />
+        </div>
+      </div>
+    </div>
+  );
 }

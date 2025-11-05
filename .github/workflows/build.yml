@@ -95,7 +95,7 @@ jobs:
     #run using prod mode to use .env.prod to embed api key for dev purposes and avoid SSO
       - name: Build affected applications
         run: |
-          npm run build -- --mode prod
+          npm run build
 
       - name: Deploy the application(${{ matrix.package }})
         uses: MrYuion/git-publish-subdir-action@develop

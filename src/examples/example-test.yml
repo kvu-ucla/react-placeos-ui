@@ -1,0 +1,327 @@
+door_zone_id: 137558
+join_modes:
+  type: independent
+  merge_outputs: false
+  modes:
+    - id: unlinked
+      name: Independent
+      room_ids: []
+      merge_outputs: false
+    - id: join_all
+      merge_outputs: false
+      name: All Rooms
+      room_ids:
+        - sys-HWr2VJZ~-M
+        - sys-HczIXSKJaU
+shutdown_devices:
+  - Display_1
+  - Display_2
+  - Display_3
+channel_number: 0
+help:
+  laptop-help:
+    title: Laptop
+    icon: computer
+    content: >-
+      <li>PlaceHolder Help - Please plug in the USB-C Cable into your
+      device.</li>
+
+      <li>Open up Teams Call, Zoom or collaborate</li>
+
+      <li>Select INOGENI device for Microphone and Camera.</li>
+
+      <li>Select CRESTRON Device for Speakers</li>
+
+      <img src="https://placeos-img.cdu.edu.au/lectern_input.png" alt="Swytch"
+      title="Swytch help" style="max-width:360px; max-height:270px" />
+  wireless-help:
+    title: VIA Go Wireless
+    icon: connected_tv
+    content: |-
+      <li>Select Screen to Output Wireless Presenter to</li>
+      <li>Follow Instructions displayed on Screen</li>
+      <li>Use the code displayed on Screen</li>
+tabs:
+  - name: Lectern Input
+    icon: laptop
+    help: laptop-help
+    inputs:
+      - Lectern_Input_HDMI
+  - name: Signage Player
+    icon: laptop
+    help: laptop-help
+    inputs:
+      - Signage_Player
+  - name: Wireless
+    icon: connected_tv
+    help: wireless-help
+    inputs:
+      - Wireless_Presenter
+connections:
+  Display_1:
+    hdmi: Switcher_1.1
+  Display_2:
+    hdmi: Switcher_1.2
+  Display_3:
+    hdmi: Switcher_1.3
+  Ex_Display_1:
+    hdmi: Switcher_1.6
+  "*Preview_Monitor": Switcher_1.4
+  "*Lectern_Capture": Switcher_1.5
+  Switcher_1:
+    ECP101-LeftCam-NVXE30: Camera_1
+    ECP101-MidCam-NVXE30: Camera_5
+    ECP101-RightCam-NVXE30: Camera_2
+    ECP101-MidRightCam-NVXE30: Camera_3
+    ECP101-RearCam-NVXE30: Camera_4
+    ECP101-ViaGo-NVXE30: "*Wireless_Presenter"
+    ECP101-LectHDMI-NVXE30: "*Lectern_Input_HDMI"
+    ECP-Level1Brightsign-NVXE30: "*Signage_Player"
+local_outputs:
+  - Display_1
+  - Display_2
+  - Display_3
+  - Preview_Monitor
+outputs:
+  Display_1:
+    name: Front LED Wall
+  Display_2:
+    name: West Display 1
+  Display_3:
+    name: East Display 1
+  Ex_Display_1:
+    name: REAR LED WALL (EXTERNAL WALL)
+  Preview_Monitor:
+    name: Lectern Display 1
+inputs:
+  Lectern_Input_HDMI:
+    name: Lectern HDMI Port 1
+    icon: laptop
+  Signage_Player:
+    name: Digital Signage Player 1
+    icon: laptop
+  Wireless_Presenter:
+    name: ViaGo Wireless Presenter
+    icon: connected_tv
+  Camera_1:
+    name: Camera Left
+    icon: videocam
+    type: cam
+    mod: Camera_1
+  Camera_2:
+    name: Camera Right
+    icon: video_camera_front
+    type: cam
+    mod: Camera_2
+  Camera_3:
+    name: Camera Middle Right
+    icon: videocam
+    type: cam
+    mod: Camera_3
+  Camera_4:
+    name: Camera Rear
+    icon: videocam
+    type: cam
+    mod: Camera_4
+  Camera_5:
+    name: Camera Middle Left
+    icon: videocam
+    type: cam
+    mod: Camera_5
+vc_camera_in:
+  - Lectern_Capture
+local_microphones:
+  - name: Handheld Mic 1
+    level_id: handheld1Gain
+    mute_id: handheld1Mute
+    default_muted: false
+  - name: Handheld Mic 2
+    level_id: handheld2Gain
+    mute_id: handheld2Mute
+    default_muted: false
+  - name: Lapel Mic 1
+    level_id: lapel1Gain
+    mute_id: lapel1Mute
+    default_muted: false
+  - name: Lapel Mic 2
+    level_id: lapel2Gain
+    mute_id: lapel2Mute
+    default_muted: false
+  - name: Catchbox Lapel
+    level_id: catchLapelGain
+    mute_id: catchLapelMute
+    default_muted: false
+  - name: Catchbox Handheld
+    level_id: catchHHGain
+    mute_id: catchHHMute
+    default_muted: false
+master_audio:
+  name: FOH Speakers
+  level_id:
+    - streamingSourceGain
+  mute_id: streamingSourceMute
+  level_feedback: faderstreamingSourceGain
+  mute_feedback: faderstreamingSourceMute_mute
+  module_id: Mixer_1
+  default_muted: false
+  default_level: 60
+lighting_independent: true
+lighting_scenes:
+  - id: 0
+    name: Full
+    icon: lightbulb
+    opacity: 1
+  - id: 1
+    name: Medium
+    icon: lightbulb
+    opacity: 0.8
+  - id: 4
+    name: Presentation
+    icon: lightbulb
+    opacity: 0.5
+  - id: 2
+    name: Low
+    icon: lightbulb
+    opacity: 0.2
+  - id: 3
+    name: "Off"
+    icon: lightbulb_outline
+    opacity: 0.8
+room_accessories:
+  - name: Blockout Blinds All
+    module: Lighting_1
+    controls:
+      - name: Up
+        icon: vertical_align_top
+        function_name: switch_off
+        arguments:
+          - blockout_blinds_all
+      - name: Down
+        icon: vertical_align_bottom
+        function_name: switch_on
+        arguments:
+          - blockout_blinds_all
+  - name: Blockout Blinds Stage
+    module: Lighting_1
+    controls:
+      - name: Up
+        icon: vertical_align_top
+        function_name: switch_off
+        arguments:
+          - blockout_blinds_stage
+      - name: Down
+        icon: vertical_align_bottom
+        function_name: switch_on
+        arguments:
+          - blockout_blinds_stage
+  - name: Blockout Blinds Viewing
+    module: Lighting_1
+    controls:
+      - name: Up
+        icon: vertical_align_top
+        function_name: switch_off
+        arguments:
+          - blockout_blinds_viewing
+      - name: Down
+        icon: vertical_align_bottom
+        function_name: switch_on
+        arguments:
+          - blockout_blinds_viewing
+  - name: Sheer Blinds All
+    module: Lighting_1
+    controls:
+      - name: Up
+        icon: vertical_align_top
+        function_name: switch_off
+        arguments:
+          - sheer_blinds_all
+      - name: Down
+        icon: vertical_align_bottom
+        function_name: switch_on
+        arguments:
+          - sheer_blinds_all
+  - name: Sheer Blinds Stage
+    module: Lighting_1
+    controls:
+      - name: Up
+        icon: vertical_align_top
+        function_name: switch_off
+        arguments:
+          - sheer_blinds_stage
+      - name: Down
+        icon: vertical_align_bottom
+        function_name: switch_on
+        arguments:
+          - sheer_blinds_stage
+  - name: Sheer Blinds Viewing
+    module: Lighting_1
+    controls:
+      - name: Up
+        icon: vertical_align_top
+        function_name: switch_off
+        arguments:
+          - sheer_blinds_viewing
+      - name: Down
+        icon: vertical_align_bottom
+        function_name: switch_on
+        arguments:
+          - sheer_blinds_viewing
+  - name: Front LED Wall Power
+    module: Display_1
+    controls:
+      - name: "On"
+        icon: power
+        function_name: power
+        arguments:
+          - true
+      - name: "Off"
+        icon: power_off
+        function_name: power
+        arguments:
+          - false
+  - name: West Display 1 Power
+    module: Display_2
+    controls:
+      - name: "On"
+        icon: power
+        function_name: power
+        arguments:
+          - true
+      - name: "Off"
+        icon: power_off
+        function_name: power
+        arguments:
+          - false
+  - name: East Display 1 Power
+    module: Display_3
+    controls:
+      - name: "On"
+        icon: power
+        function_name: power
+        arguments:
+          - true
+      - name: "Off"
+        icon: power_off
+        function_name: power
+        arguments:
+          - false
+knx_scene_group: 1/5/162
+switch_groups:
+  blockout_blinds_all: 1/5/145
+  sheer_blinds_all: 1/5/143
+  blockout_blinds_stage: 1/5/137
+  sheer_blinds_stage: 1/5/147
+  blockout_blinds_viewing: 1/5/141
+  sheer_blinds_viewing: 1/5/139
+show_qr_code: true
+calendar_id: ae8d231c-1d32-f4e6-76eb-3054f888813a@cdu.edu.au
+maintenance_do_not_disturb: true
+blinds_up_switch: switch_off
+blinds_down_switch: switch_on
+blinds_down_on_power_off: false
+default_routes:
+  Display_1: Lectern_Input_HDMI
+  Display_2: Lectern_Input_HDMI
+  Display_3: Lectern_Input_HDMI
+  Preview_Monitor: Lectern_Input_HDMI
+  Lectern_Capture: Camera_4

@@ -1,0 +1,165 @@
+local_outputs:
+  - Display_1
+  - Display_2
+  - Display_3
+  - Display_4
+  - Display_5
+  - Display_6
+  - Display_7
+  - Display_8
+  - Display_9
+  - Display_10
+#cameras that are in the system but aren't physically wired or routed
+local_cameras:
+  - Camera_1
+  - Camera_2
+  - Camera_3
+shutdown_devices:
+  - Display_1
+  - Display_2
+  - Display_3
+  - Display_4
+  - Display_5
+  - Display_6
+  - Display_7
+  - Display_8
+  - Display_9
+  - Display_10
+connections:
+  #"BOELTER-2760-NVX-RX-CRED-8805",
+  #"BOELTER-2760-NVX-RX-PROD-885E",
+  #"BOELTER-2760-NVX-RX1-DISP-493C",
+  #"BOELTER-2760-NVX-RX2-DISP-47D0",
+  #"BOELTER-2760-NVX-RX3-DISP-89C1",
+  #"BOELTER-2750-NVX-RX4-DISP-8BB1",
+  #"BOELTER-2760-NVX-RX5-DISP-8A85",
+  #"BOELTER-2760-NVX-RX6-DISP-4902",
+  #"BOELTER-2760-NVX-RX7-DISP-8B69",
+  #"BOELTER-2760-NVX-RX8-DISP-89E4",
+  #"BOELTER-2760-NVX-RX9-DISP-87FF",
+  #"BOELTER-2760-NVX-RX10-DISP-8A02"
+  #Stage Monitors: Right, Left, Confidence Right, Confidence Left  
+  Display_1:
+    hdmi: Switcher_1.3
+  Display_2:
+    hdmi: Switcher_1.4
+  Display_3:
+    hdmi: Switcher_1.5
+  Display_4:
+    hdmi: Switcher_1.6
+  #Row 1: Left, Right  
+  Display_5:
+    hdmi: Switcher_1.7
+  Display_6:
+    hdmi: Switcher_1.8
+  #Row 2: Left, Right  
+  Display_7:
+    hdmi: Switcher_1.9
+  Display_8:
+    hdmi: Switcher_1.10
+  #Row 3: Left, Right  
+  Display_9:
+    hdmi: Switcher_1.11
+  Display_10:
+    hdmi: Switcher_1.12
+  Switcher_1:
+    #   # '1': '*Zoom_Output_1'
+    #   # '2': '*Zoom_Output_2'
+    #   # '3': '*Production_Input_HDMI'
+    #"BOELTER-2760-NVX-TX1-CRED-8900",
+    #"BOELTER-2760-NVX-TX2-CRED-8A9F",
+    #"BOELTER-2760-NVX-TX-PROD-7204"
+    # Should match subscription table in NVX decoder
+    'BOELTER-2760-NVX-TX1-CRED-8900': '*Zoom_Output_1'
+    'BOELTER-2760-NVX-TX2-CRED-8A9F': '*Zoom_Output_2'
+    'BOELTER-2760-NVX-TX-PROD-7204': '*Production_Input_HDMI'
+    '4': '*Camera_1'
+    '5': '*Camera_2'
+    '6': '*Camera_3'
+outputs:
+  Display_1:
+    name: Stage Right Display
+  Display_2:
+    name: Stage Left Display
+  Display_3:
+    name: Stage Right Confidence
+  Display_4:
+    name: Stage Left Confidence
+  Display_5:
+    name: Row 1 Left
+  Display_6:
+    name: Row 1 Right
+  Display_7:
+    name: Row 2 Left
+  Display_8:
+    name: Row 2 Right
+  Display_9:
+    name: Row 3 Left
+  Display_10:
+    name: Row 3 Right
+inputs:
+  Zoom_Output_1:
+    name: Zoom Output 1
+    icon: laptop
+  Zoom_Output_2:
+    name: Zoom Output 2
+    icon: connected_tv
+  Production_Input_HDMI:
+    name: Production Input HDMI
+    icon: connected_tv
+  Camera_1:
+    name: Audience Camera
+    icon: videocam
+    type: cam
+    mod: Camera_1
+  Camera_2:
+    name: Presenter Camera
+    icon: videocam
+    type: cam
+    mod: Camera_2
+  Camera_3:
+    name: Whiteboard Camera
+    icon: videocam
+    type: cam
+    mod: Camera_3
+default_routes:
+  Display_1: Zoom_Output_1
+  Display_2: Zoom_Output_1
+  Display_3: Zoom_Output_2
+  Display_4: Zoom_Output_1
+  Display_5: Zoom_Output_1
+  Display_6: Zoom_Output_1
+  Display_7: Zoom_Output_1
+  Display_8: Zoom_Output_1
+  Display_9: Zoom_Output_1
+  Display_10: Zoom_Output_1
+participant_routes:
+  Display_1: Zoom_Output_1
+  Display_2: Zoom_Output_1
+  Display_3: Zoom_Output_1
+  Display_4: Zoom_Output_1
+  Display_5: Zoom_Output_1
+  Display_6: Zoom_Output_1
+  Display_7: Zoom_Output_1
+  Display_8: Zoom_Output_1
+  Display_9: Zoom_Output_1
+  Display_10: Zoom_Output_1
+local_microphones:
+  - name: Catchbox
+    level_id: '5'
+    mute_id: '5'
+    # optional keys
+    module_id: 'Mixer_1'
+    default_muted: true
+    default_level: 1100
+    min_level: 1000
+    max_level: 1200
+  - name: Clip
+    level_id: '6'
+    mute_id: '6'
+    # optional keys
+    module_id: 'Mixer_1'
+    default_muted: true
+    default_level: 1100
+    min_level: 1000
+    max_level: 1200
