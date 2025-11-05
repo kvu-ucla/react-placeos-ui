@@ -1,5 +1,5 @@
 import { Header } from "./Header";
-import { ClassInfoCard } from "./ClassInfoCard";
+// import { ClassInfoCard } from "./ClassInfoCard";
 import { useControlContext } from "../hooks/ControlStateContext";
 import { ModalProvider } from "../hooks/ModalContext";
 import { useZoomContext } from "../hooks/ZoomContext";
