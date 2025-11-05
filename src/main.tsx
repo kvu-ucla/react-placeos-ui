@@ -7,6 +7,7 @@ import { HashRouter } from "react-router-dom";
 import { AuthProvider } from "./AuthContext";
 import AppFrame from "./components/AppFrame.tsx";
 
+
 const container = document.getElementById("root");
 if (container) {
   const root = createRoot(container);
