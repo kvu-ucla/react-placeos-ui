@@ -30,7 +30,8 @@ export default function SplashScreen() {
             Welcome to {system.name ?? "Unknown Room"}
           </h1>
           <main className="flex-1 flex items-center justify-center px-4">
-            <ClassInfoCard />
+            {/*<ClassInfoCard />*/}
+            <iframe src="https://uclaapoanonsurvey.qualtrics.com/jfe/form/SV_9H4E6e9mv9VJnTg" height="800px" width="600px"></iframe>
           </main>
           <footer className="p-6">
             <button
@@ -56,10 +57,11 @@ export default function SplashScreen() {
               </b>{" "}
               to present. Instructions on next screen.
             </p>
+            
           </footer>
         </div>
       </div>
-      <iframe src="https://uclaapoanonsurvey.qualtrics.com/jfe/form/SV_9H4E6e9mv9VJnTg" height="800px" width="600px"></iframe>
+
     </ModalProvider>
   );
 }
