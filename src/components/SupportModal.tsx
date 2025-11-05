@@ -1,6 +1,7 @@
 // src/components/SupportModal.tsx
 import { useState } from "react";
 import { Icon } from "@iconify/react";
+import { useZoomContext } from "../hooks/ZoomContext.tsx";
 
 interface ContactInfo {
   title: string;
@@ -35,9 +36,15 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
     "Contact",
   );
 
+  const {
+  wsConnection
+  } = useZoomContext();
+  
+  
+
   return (
     <div className="modal modal-open bg-black/40">
-      <div className="modal-box bg-white p-8 w-[1547px] h-[1098px] max-w-full rounded-lg">
+      <div className="modal-box bg-white p-8 max-w-full rounded-lg">
         {/* Header */}
         <div className="flex justify-between items-center border-b border-avit-grey pb-8">
           <h2 className="text-4xl font-semibold">Support</h2>
@@ -84,7 +91,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
                     {contacts.map(({ title, description, phone, href }) => (
                       <div
                         key={title}
-                        className="flex items-start justify-between gap-6 rounded-lg border border-avit-grey bg-white p-12"
+                        className="flex items-start justify-between gap-6 rounded-lg border border-avit-grey bg-white p-4"
                       >
                         <div className="flex-1">
                           <div className="mb-1 flex items-center gap-2">
@@ -95,16 +102,16 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
                                 height={48}
                               ></Icon>
                             </span>
-                            <span className="font-semibold text-2xl leading-tight">
+                            <span className="font-semibold text-xl leading-tight">
                               {title}
                             </span>
                           </div>
-                          <p className="text-2xl leading-relaxed whitespace-pre-line text-gray-600">
+                          <p className="text-xl leading-relaxed whitespace-pre-line text-gray-600">
                             {description}
                           </p>
                         </div>
 
-                        <div className="flex items-center justify-center text-4xl">
+                        <div className="flex items-center justify-center text-2xl">
                           <a
                             href={href}
                             className="whitespace-nowrap text-blue-600 font-semibold text-right hover:underline"
@@ -118,9 +125,9 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
 
                   <div className="mt-6 text-left">
                     <div className="inline-flex items-center gap-2 rounded bg-gray-100 px-3 py-1 text-sm">
-                      <div className="h-4 w-4 rounded-full bg-green-500 mr-1 animate-pulse" />
+                      <div className={`h-4 w-4 rounded-full ${wsConnection ? 'bg-green-500' : 'bg-gray-400' } mr-1 animate-pulse`}/>
                       <span className="text-gray-700 text-base font-medium">
-                        All systems online
+                        All systems {wsConnection ? 'online' : 'offline'}
                       </span>
                     </div>
                   </div>

@@ -1,6 +1,6 @@
 // src/hooks/useZoomModule.ts
 import { useEffect, useState } from "react";
-import { getModule, PlaceModuleBinding } from "@placeos/ts-client";
+import { getModule, PlaceModuleBinding, connectionState } from "@placeos/ts-client";
 import {useParams} from "react-router-dom";
 
 type CallState =
@@ -109,6 +109,7 @@ let subscriptions: (() => void)[] = [];
 
 export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   const [module, setModule] = useState<PlaceModuleBinding>();
+  const [wsConnection, setWsConnection] = useState<any>();
   const [currentMeeting, setCurrentMeeting] = useState<ZoomBooking>();
   const [nextMeeting, setNextMeeting] = useState<ZoomBooking>();
   const [sharing, setSharing] = useState<SharingStatus>();
@@ -181,6 +182,26 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
     return () => clearSubs();
   }, [module]);
+
+  //get websocket communication
+  useEffect(() => {
+    const state = connectionState();
+
+    try {
+      const subscription = state.subscribe(
+        (value) => {
+
+          setWsConnection(value);
+        }
+      );
+
+      return () => {
+        subscription.unsubscribe();
+      };
+    } catch (error) {
+      console.error('Error during subscription:', error);
+    }
+  }, []);
 
   // useEffect(() => {
   //   const [first, second] = bookings ?? [];
@@ -602,6 +623,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   };
 
   return {
+    wsConnection,
     volume,
     volumeMute,
     setMasterMute,
