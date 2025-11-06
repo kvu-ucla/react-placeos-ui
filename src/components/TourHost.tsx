@@ -1,6 +1,5 @@
 // TourHost.tsx
 import { TourProvider, type StepType } from "@reactour/tour";
-import FramePortal from "./FramePortal";
 import App from "../App";
 
 export default function TourHost() {
@@ -114,7 +113,6 @@ export default function TourHost() {
   return (
     <TourProvider
       steps={steps}
-      Wrapper={FramePortal}
       scrollSmooth={false}
       styles={{
         maskWrapper: (base) => ({
