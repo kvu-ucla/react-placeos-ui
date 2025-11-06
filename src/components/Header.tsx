@@ -18,7 +18,7 @@ export function Header() {
 
   return (
     <header
-      className={`first-step relative w-full flex justify-between items-center px-6 py-3 ${active ? "bg-avit-grey shadow-lg" : ""}`}
+      className={`first-step relative min-h-32 w-full flex justify-between items-center px-6 py-3 ${active ? "bg-avit-grey shadow-lg" : ""}`}
     >
       <div className="pointer-events-none absolute inset-2 overflow-hidden rounded bg-base-200 opacity-0">
         <div className="h-full w-full"></div>

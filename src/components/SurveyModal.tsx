@@ -1,9 +1,15 @@
 // src/components/SurveyModal.tsx
 import {Icon} from "@iconify/react";
+import { useControlContext } from "../hooks/ControlStateContext.tsx";
 
 
 export default function SupportModal({ onClose }: { onClose: () => void }) {
+  const { system } = useControlContext();
 
+  const room = system?.name?.replace(/\s/g, '') ?? '';
+
+  const surveyURL = `https://uclaapoanonsurvey.qualtrics.com/jfe/form/SV_9H4E6e9mv9VJnTg?room_location=${room}`;
+  
   return (
     <div className="modal modal-open bg-black/40">
       <div className="modal-box bg-white p-8 rounded-lg">
@@ -17,7 +23,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
             ></Icon>
           </button>
         </div>
-        <iframe src="https://uclaapoanonsurvey.qualtrics.com/jfe/form/SV_9H4E6e9mv9VJnTg" height="800px" width="600px"></iframe>
+        <iframe src={surveyURL} height="800px" width="600px"></iframe>
       </div>
 
       {/* Optional: backdrop click closes modal */}
