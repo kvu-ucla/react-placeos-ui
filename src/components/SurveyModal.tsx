@@ -1,14 +1,21 @@
 // src/components/SurveyModal.tsx
 import {Icon} from "@iconify/react";
 import { useControlContext } from "../hooks/ControlStateContext.tsx";
+import { useEffect, useState } from "react";
 
 
 export default function SupportModal({ onClose }: { onClose: () => void }) {
   const { system } = useControlContext();
-
+  const [refreshKey, setRefreshKey] = useState(Date.now());
+  
   const room = system?.name?.replace(/\s/g, '') ?? '';
 
-  const surveyURL = `https://uclaapoanonsurvey.qualtrics.com/jfe/form/SV_9H4E6e9mv9VJnTg?room_location=${room}`;
+  //refresh when opening modal
+  useEffect(() => {
+    setRefreshKey(Date.now());
+  }, []);
+
+  const surveyURL = `https://uclaapoanonsurvey.qualtrics.com/jfe/form/SV_9H4E6e9mv9VJnTg?room_location=${room}&t=${refreshKey}`;
   
   return (
     <div className="modal modal-open bg-black/40">

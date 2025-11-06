@@ -40,12 +40,12 @@ export function Header() {
         {active && (
           <button
             onClick={() => showModal("none")}
-            className={`btn-primary flex flex-col justify-center items-center w-15 h-14 ${modalType == "none" ? "btn-active rounded-2xl bg-blue-600 text-white text-white" : ""}`}
+            className={`btn-primary flex flex-col justify-center items-center w-24 h-24 ${modalType == "none" ? "btn-active rounded-2xl bg-blue-600 text-white text-white" : ""}`}
           >
             <Icon
               icon="material-symbols:home-outline-rounded"
-              width={72}
-              height={72}
+              width={48}
+              height={48}
             />
             <div className="text-xl font-semibold">Home</div>
           </button>
@@ -53,21 +53,21 @@ export function Header() {
         {active && (
           <button
             onClick={() => setIsOpen(true)}
-            className={`btn-primary flex flex-col justify-center items-center w-15 h-14 ${modalType == "tour" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
+            className={`btn-primary flex flex-col justify-center items-center w-24 h-24 ${modalType == "tour" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
           >
             <Icon
               icon="material-symbols:explore-outline-rounded"
-              width={72}
-              height={72}
+              width={48}
+              height={48}
             />
             <span className="text-xl font-semibold">Tour</span>
           </button>
         )}
         <button
           onClick={() => showModal("support")}
-          className={`btn-primary flex flex-col justify-center items-center w-15 h-14 ${modalType == "support" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
+          className={`btn-primary flex flex-col justify-center items-center w-24 h-24 ${modalType == "support" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
         >
-          <Icon icon="material-symbols:support" width={72} height={72} />
+          <Icon icon="material-symbols:support" width={48} height={48} />
           <span className="text-xl font-semibold">Support</span>
         </button>
         {active && (
@@ -76,21 +76,21 @@ export function Header() {
             onClick={() => {
               showModal("settings", { tab: "Volume" });
             }}
-            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-15 h-14 ${modalType == "settings" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
+            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-24 h-24 ${modalType == "settings" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
           >
-            <Icon icon="material-symbols:tune-rounded" width={72} height={72} />
+            <Icon icon="material-symbols:tune-rounded" width={48} height={48} />
             <span className="text-xl font-semibold">Settings</span>
           </button>
         )}
         {active && (
             <button
                 onClick={() => showModal("survey")}
-                className={`btn-primary btn-ghost flex flex-col justify-center items-center w-15 h-14 ${modalType == "survey" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
+                className={`btn-primary btn-ghost flex flex-col justify-center items-center w-24 h-24 ${modalType == "survey" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
             >
               <Icon
                   icon="material-symbols:quiz-rounded"
-                  width={72}
-                  height={72}
+                  width={48}
+                  height={48}
               />
               <span className="text-xl font-semibold">Survey</span>
             </button>
@@ -98,12 +98,12 @@ export function Header() {
         {active && (
           <button
             onClick={() => showModal("shutdown")}
-            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-15 h-14 ${modalType == "shutdown" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
+            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-24 h-24 ${modalType == "shutdown" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
           >
             <Icon
               icon="material-symbols:cancel-outline"
-              width={72}
-              height={72}
+              width={48}
+              height={48}
             />
             <span className="text-xl font-semibold">End</span>
           </button>
