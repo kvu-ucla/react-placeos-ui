@@ -1,5 +1,5 @@
 import { Header } from "./Header";
-// import { ClassInfoCard } from "./ClassInfoCard";
+import { ClassInfoCard } from "./ClassInfoCard";
 import { useControlContext } from "../hooks/ControlStateContext";
 import { ModalProvider } from "../hooks/ModalContext";
 import { useZoomContext } from "../hooks/ZoomContext";
@@ -30,8 +30,7 @@ export default function SplashScreen() {
             Welcome to {system.name ?? "Unknown Room"}
           </h1>
           <main className="flex-1 flex items-center justify-center px-4">
-            {/*<ClassInfoCard />*/}
-            <iframe src="https://uclaapoanonsurvey.qualtrics.com/jfe/form/SV_9H4E6e9mv9VJnTg" height="800px" width="600px"></iframe>
+            <ClassInfoCard />
           </main>
           <footer className="p-6">
             <button
