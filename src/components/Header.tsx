@@ -18,7 +18,7 @@ export function Header() {
 
   return (
     <header
-      className={`first-step relative min-h-42 w-full flex justify-between items-center px-13 py-6 ${active ? "bg-avit-grey shadow-lg" : ""}`}
+      className={`first-step relative w-full flex justify-between items-center px-6 py-3 ${active ? "bg-avit-grey shadow-lg" : ""}`}
     >
       <div className="pointer-events-none absolute inset-2 overflow-hidden rounded bg-base-200 opacity-0">
         <div className="h-full w-full"></div>
@@ -40,7 +40,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => showModal("none")}
-            className={`btn-primary flex flex-col justify-center items-center w-30 h-29 ${modalType == "none" ? "btn-active rounded-2xl bg-blue-600 text-white text-white" : ""}`}
+            className={`btn-primary flex flex-col justify-center items-center w-15 h-14 ${modalType == "none" ? "btn-active rounded-2xl bg-blue-600 text-white text-white" : ""}`}
           >
             <Icon
               icon="material-symbols:home-outline-rounded"
@@ -53,7 +53,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => setIsOpen(true)}
-            className={`btn-primary flex flex-col justify-center items-center w-30 h-29 ${modalType == "tour" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
+            className={`btn-primary flex flex-col justify-center items-center w-15 h-14 ${modalType == "tour" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
           >
             <Icon
               icon="material-symbols:explore-outline-rounded"
@@ -65,7 +65,7 @@ export function Header() {
         )}
         <button
           onClick={() => showModal("support")}
-          className={`btn-primary flex flex-col justify-center items-center w-30 h-29 ${modalType == "support" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
+          className={`btn-primary flex flex-col justify-center items-center w-15 h-14 ${modalType == "support" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
         >
           <Icon icon="material-symbols:support" width={72} height={72} />
           <span className="text-xl font-semibold">Support</span>
@@ -76,7 +76,7 @@ export function Header() {
             onClick={() => {
               showModal("settings", { tab: "Volume" });
             }}
-            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "settings" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
+            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-15 h-14 ${modalType == "settings" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
           >
             <Icon icon="material-symbols:tune-rounded" width={72} height={72} />
             <span className="text-xl font-semibold">Settings</span>
@@ -85,7 +85,7 @@ export function Header() {
         {active && (
             <button
                 onClick={() => showModal("survey")}
-                className={`btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "survey" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
+                className={`btn-primary btn-ghost flex flex-col justify-center items-center w-15 h-14 ${modalType == "survey" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
             >
               <Icon
                   icon="material-symbols:quiz-rounded"
@@ -98,7 +98,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => showModal("shutdown")}
-            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-30 h-29 ${modalType == "shutdown" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
+            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-15 h-14 ${modalType == "shutdown" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
           >
             <Icon
               icon="material-symbols:cancel-outline"

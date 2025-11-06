@@ -17,13 +17,13 @@ export default function EndMeetingModal({ onClose }: { onClose: () => void }) {
         </p>
         <div className="flex items-center justify-center w-full gap-4">
           <button
-            className="btn text-3xl min-w-64 min-h-24 rounded-lg btn-outline px-3 py-6"
+            className="btn text-3xl rounded-lg btn-outline px-3 py-6"
             onClick={() => onClose()}
           >
             Go back
           </button>
           <button
-            className="btn text-3xl min-w-64 min-h-24 text-white rounded-lg bg-avit-blue px-3 py-6"
+            className="btn text-3xl text-white rounded-lg bg-avit-blue px-3 py-6"
             onClick={endMeeting}
           >
             End class
