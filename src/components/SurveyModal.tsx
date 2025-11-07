@@ -19,9 +19,10 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
   
   return (
     <div className="modal modal-open bg-black/40">
-      <div className="modal-box bg-white p-8 rounded-lg">
+      <div className="bg-white p-8 rounded-lg">
         {/* Header */}
         <div className="flex justify-between items-center border-b border-avit-grey pb-8">
+          <h2 className="text-4xl font-semibold">Survey</h2>
           <button onClick={onClose} className="btn-ghost text-2xl font-bold ">
             <Icon
                 icon="material-symbols:close-small-outline-rounded"
@@ -30,7 +31,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
             ></Icon>
           </button>
         </div>
-        <iframe src={surveyURL} height="800px" width="600px"></iframe>
+        <iframe src={surveyURL} height="650px" width="650px"></iframe>
       </div>
 
       {/* Optional: backdrop click closes modal */}
