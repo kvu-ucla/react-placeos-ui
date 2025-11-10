@@ -119,12 +119,12 @@ export default function SessionControls() {
             />
             <div className="flex flex-col ml-4">
               Join wirelessly
-              <div className="text-2xl font-normal mt-2">
+              <div className="text-xl font-normal mt-2">
                 Connect via Zoom to share your screen.
               </div>
             </div>
           </div>
-          <div className="collapse-content text-2xl font-normal">
+          <div className="collapse-content text-xl font-normal">
             <ol className="list-decimal list-inside">
               <li>
                 Open the Zoom client application on the device you wish to
@@ -153,12 +153,12 @@ export default function SessionControls() {
             ></Icon>
             <div className="flex flex-col ml-4">
               Connect with USB-C / HDMI
-              <div className="text-2xl font-normal mt-2">
+              <div className="text-xl font-normal mt-2">
                 Use a physical USB-C or HDMI cable for direct connection.
               </div>
             </div>
           </div>
-          <div className="collapse-content text-2xl font-normal">
+          <div className="collapse-content text-xl font-normal">
             <ol className="list-decimal list-inside">
               <li>
                 Connect one end of the USB-C or HDMI cable into your laptop.
@@ -201,7 +201,7 @@ function ControlCard({
         if (buttonAction) buttonAction();
       }}
       id={id}
-      className="w-full h-[206px] btn btn-primary bg-white active:bg-gray-100 p-0 border-none rounded-lg text-avit-grey-80"
+      className="w-full btn btn-primary bg-white active:bg-gray-100 p-0 border-none rounded-lg text-avit-grey-80"
     >
       <div className="px-8 py-6 w-full h-full flex flex-col items-center justify-center relative">
         {!disabled && detailsButton && (
@@ -221,7 +221,7 @@ function ControlCard({
             />
           </button>
         )}
-        <div className="relative text-3xl mb-3.5">
+        <div className="relative text-xl mb-3.5">
           <div
             aria-disabled={disabled}
             className="ui-disabled bg-avit-grey-button border-avit-grey rounded-2xl h-25 w-25 flex justify-center items-center"
@@ -264,7 +264,7 @@ function ControlCard({
         </div>
         <div
           aria-disabled={disabled}
-          className="aria-disabled:text-white text-2xl font-medium"
+          className="aria-disabled:text-white text-xl font-medium"
         >
           {label} {hasButtonState && (buttonState ? "Off" : "On")}
         </div>
