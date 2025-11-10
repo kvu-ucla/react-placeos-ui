@@ -72,7 +72,7 @@ export default function SessionControls() {
           disabled={recording}
           buttonAction={() => toggleAudioMuteAll()}
           buttonState={isMicAudioMuted}
-          detailsButton={() => showModal("settings", { tab: "Volume" })}
+          // detailsButton={() => showModal("settings", { tab: "Volume" })}
         />
         <ControlCard
           id="camera"
@@ -81,7 +81,7 @@ export default function SessionControls() {
           disabled={recording}
           buttonAction={() => toggleVideoMuteAll()}
           buttonState={isVideoMuted}
-          detailsButton={() => showModal("settings", { tab: "Camera" })}
+          // detailsButton={() => showModal("settings", { tab: "Camera" })}
         />
         <ControlCard
           id="screenshare"
@@ -201,9 +201,9 @@ function ControlCard({
         if (buttonAction) buttonAction();
       }}
       id={id}
-      className="w-full btn btn-primary bg-white active:bg-gray-100 p-0 border-none rounded-lg text-avit-grey-80"
+      className="w-full h-full btn btn-primary bg-white active:bg-gray-100 p-0 border-none rounded-lg text-avit-grey-80"
     >
-      <div className="px-8 py-6 w-full h-full flex flex-col items-center justify-center relative">
+      <div className="px-4 py-3 w-full h-full flex flex-col items-center justify-center relative">
         {!disabled && detailsButton && (
           <button
             onClick={(e) => {
