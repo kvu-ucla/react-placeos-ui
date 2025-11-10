@@ -30,13 +30,26 @@ export function Header() {
           className="h-16"
         />
       </div>
-      <div className="absolute left-1/2 transform -translate-x-1/2 flex flex-col justify-center items-center">
+      <div className="flex flex-col justify-center items-center">
         <Clock format="12h" />
         <div className="space-x-2 text-2xl font-bold text-gray-500">
           <span>{system.name}</span>
         </div>
       </div>
       <div className="flex items-center justify-end">
+        {active && (
+          <button
+            onClick={() => showModal("survey")}
+            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-24 h-24 ${modalType == "survey" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
+          >
+            <Icon
+              icon="material-symbols:quiz-rounded"
+              width={48}
+              height={48}
+            />
+            <span className="text-xl font-semibold">Survey</span>
+          </button>
+        )}
         {active && (
           <button
             onClick={() => showModal("none")}
@@ -81,19 +94,6 @@ export function Header() {
             <Icon icon="material-symbols:tune-rounded" width={48} height={48} />
             <span className="text-xl font-semibold">Settings</span>
           </button>
-        )}
-        {active && (
-            <button
-                onClick={() => showModal("survey")}
-                className={`btn-primary btn-ghost flex flex-col justify-center items-center w-24 h-24 ${modalType == "survey" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
-            >
-              <Icon
-                  icon="material-symbols:quiz-rounded"
-                  width={48}
-                  height={48}
-              />
-              <span className="text-xl font-semibold">Survey</span>
-            </button>
         )}
         {active && (
           <button
