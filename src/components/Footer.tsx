@@ -34,7 +34,7 @@ export default function Footer() {
   }, [volume]);
 
   return (
-    <footer className="min-h-38 bg-blue-900 text-white py-4 px-8 flex justify-between items-center">
+    <footer className="min-h-32 bg-blue-900 text-white px-4 py-2  flex justify-between items-center">
       {recording && (
         <div className="flex flex-col items-center p-2">
           <div className="inline-flex justify-evenly items-center bg-gray-400/15 rounded-[10px] px-4 py-4">

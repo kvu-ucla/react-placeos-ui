@@ -41,7 +41,7 @@ export default function SessionControls() {
   const isJoined = callStatus?.status === "IN_MEETING";
 
   return (
-    <div className="bg-gradient-to-r from-[#0331A9] to-[#2F69FF] rounded-lg px-13 py-4 shadow text-white">
+    <div className="rounded-lg px-6 py-4">
       <div className="inline-flex justify-between items-center w-full mb-4">
         <h2 className="font-semibold">Session Controls</h2>
         {isJoined && (
@@ -201,7 +201,7 @@ function ControlCard({
         if (buttonAction) buttonAction();
       }}
       id={id}
-      className="w-full h-full btn btn-primary bg-white active:bg-gray-100 p-0 border-none rounded-lg text-avit-grey-80"
+      className="w-full h-full btn-primary bg-white active:bg-gray-100 p-0 border-none rounded-lg text-avit-grey-80"
     >
       <div className="px-4 py-3 w-full h-full flex flex-col items-center justify-center relative">
         {!disabled && detailsButton && (
