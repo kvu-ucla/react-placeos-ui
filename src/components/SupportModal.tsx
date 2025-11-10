@@ -37,7 +37,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="modal modal-open bg-black/40">
-      <div className="modal-box bg-white p-8 w-[1547px] h-[1098px] max-w-full rounded-lg">
+      <div className="modal-box bg-white p-8 max-w-full rounded-lg">
         {/* Header */}
         <div className="flex justify-between items-center border-b border-avit-grey pb-8">
           <h2 className="text-4xl font-semibold">Support</h2>
