@@ -6,14 +6,14 @@ import SessionControls from "./SessionControls";
 export default function MainScreen() {
   return (
     <div className="first-step relative isolate bg-avit-bg overflow-hidden">
-      <div className="flex flex-col w-full h-full">
+      <div className="flex flex-col w-full h-screen">
         {/* Header */}
         <div className="z-10 shrink-0">
           <Header />
         </div>
 
-        {/* Content body (fills remaining height) */}
-        <main className="z-0 grow flex flex-col px-12 py-8 gap-4">
+        {/* Content */}
+        <main className="z-0 flex-1 flex flex-col px-12 py-8 gap-4 overflow-y-auto">
           {/* Top section */}
           <SessionDetails />
           {/* Controls */}

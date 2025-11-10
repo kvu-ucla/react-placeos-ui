@@ -29,14 +29,15 @@ export function Header() {
           alt="UCLA Digital Technology Solutions logo"
           className="h-16"
         />
-      </div>
-      <div className="flex flex-col justify-center items-center">
-        <Clock format="12h" />
-        <div className="space-x-2 text-2xl font-bold text-gray-500">
-          <span>{system.name}</span>
+        <div className="flex flex-col justify-center items-center">
+          <Clock format="12h" />
+          <div className="space-x-2 text-2xl font-bold text-gray-500">
+            <span>{system.name}</span>
+          </div>
         </div>
       </div>
-      <div className="flex items-center justify-end">
+
+      <div className="flex items-center justify-end gap-3">
         {active && (
           <button
             onClick={() => showModal("survey")}

@@ -11,7 +11,7 @@ export default function Clock({ format = "24h" }: { format?: "12h" | "24h" }) {
     return () => clearInterval(interval);
   }, [format]);
 
-  return <span className="text-5xl font-bold text-blue-600">{time}</span>;
+  return <span className="text-3xl font-bold">{time}</span>;
 }
 
 function getFormattedTime(format: "12h" | "24h") {
