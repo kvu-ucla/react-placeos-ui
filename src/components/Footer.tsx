@@ -80,16 +80,16 @@ export default function Footer() {
             {/*</button>*/}
                 {volumeMute ? <Icon
                     icon="material-symbols:volume-off-outline-rounded"
-                    width={96}
-                    height={96}
+                    width={72}
+                    height={72}
                 />
                 :
                 <Icon
                     icon="material-symbols:volume-up-outline-rounded"
-                    width={96}
-                    height={96}
+                    width={72}
+                    height={72}
                 />}
-          <div className="ml-4 w-[500px] min-h-[48px] overflow-visible">
+          <div className="ml-4 w-[360px] min-h-[48px] overflow-visible">
             <Slider.Root
                 className="relative flex items-center select-none touch-none w-full h-16"
                 min={800}

@@ -41,7 +41,7 @@ export default function SessionControls() {
   const isJoined = callStatus?.status === "IN_MEETING";
 
   return (
-    <div className="rounded-lg px-6 py-4">
+    <div className="rounded-lg">
       <div className="inline-flex justify-between items-center w-full mb-4">
         <h2 className="font-semibold">Session Controls</h2>
         {isJoined && (
@@ -54,12 +54,12 @@ export default function SessionControls() {
           </div>
         )}
         {!isJoined && (
-          <div className="inline-flex justify-evenly items-center bg-avit-blue rounded-lg py-4 px-8">
+          <div className="inline-flex justify-evenly items-center bg-avit-blue rounded-lg px-4 py-2">
             <div className="relative mr-4">
               <div className="absolute inline-flex h-4 w-4 rounded-full bg-gray-400 opacity-75"></div>
               <div className="relative h-4 w-4 bg-gray-400 rounded-full"></div>
             </div>
-            <span className="font-semibold">Not Joined</span>
+            <span className="font-semibold text-xl text-white">Not Joined</span>
           </div>
         )}
       </div>
