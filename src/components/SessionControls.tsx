@@ -211,7 +211,7 @@ function ControlCard({
               e.preventDefault();
               if (detailsButton) detailsButton();
             }}
-            className="btn-ghost bg-[#3664DA] active:bg-avit-grey-button active:border-avit-grey absolute bottom-4 right-4 w-16 h-16 flex items-center justify-center text-white"
+            className="btn-ghost bg-transparent active:bg-avit-grey-button active:border-avit-grey absolute bottom-4 right-4 w-16 h-16 flex items-center justify-center text-avit-grey-80"
           >
             <Icon
               icon="material-symbols:more-horiz"
@@ -224,7 +224,7 @@ function ControlCard({
         <div className="relative text-xl mb-3.5">
           <div
             aria-disabled={disabled}
-            className="ui-disabled bg-avit-grey-button border-avit-grey rounded-2xl h-25 w-25 flex justify-center items-center"
+            className={`ui-disabled bg-avit-grey-button border-avit-grey rounded-2xl h-25 w-25 flex justify-center items-center ${buttonState ? 'bg-[#3664DA] border-[#3664DA]' : ' '}`}
           >
             {hasButtonState &&
               (buttonState ? (
