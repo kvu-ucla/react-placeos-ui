@@ -37,12 +37,12 @@ export default function Footer() {
     <footer className="min-h-32 bg-blue-900 text-white px-4 py-2  flex justify-between items-center">
       {recording && (
         <div className="flex flex-col items-center p-2">
-          <div className="inline-flex justify-evenly items-center bg-gray-400/15 rounded-[10px] px-4 py-4">
+          <div className="inline-flex justify-evenly items-center bg-gray-400/15 rounded-[10px] px-4 py-2">
             <div className="relative">
               <div className="absolute inline-flex h-4 w-4 rounded-full bg-[#48E960] opacity-75 animate-ping"></div>
               <div className="relative h-4 w-4 bg-[#48E960] rounded-full mr-4"></div>
             </div>
-            <div className="font-semibold">BruinCasting</div>
+            <div className="font-semibold text-xl text-white">BruinCasting</div>
           </div>
           <div className="text-lg text-gray-300">
             Recording powered by BruinCast
@@ -51,9 +51,9 @@ export default function Footer() {
       )}
       {!recording && (
         <div className="flex flex-col items-center p-2">
-          <div className="inline-flex justify-evenly items-center bg-[#001A5C] rounded-[10px] px-4 py-4">
+          <div className="inline-flex justify-evenly items-center bg-[#001A5C] rounded-[10px] px-4 py-2">
             <div className="h-4 w-4 bg-[#CCCCCC] rounded-full mr-4"></div>
-            <div className="font-semibold">Not Bruincasting</div>
+            <div className="font-semibold text-xl text-white">Not Bruincasting</div>
           </div>
           <div className="text-lg text-gray-300">
             Recording powered by BruinCast

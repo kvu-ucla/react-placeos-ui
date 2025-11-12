@@ -45,12 +45,12 @@ export default function SessionControls() {
       <div className="inline-flex justify-between items-center w-full mb-4">
         <h2 className="font-semibold">Session Controls</h2>
         {isJoined && (
-          <div className="inline-flex justify-evenly items-center bg-avit-blue rounded-lg py-4 px-8">
+          <div className="inline-flex justify-evenly items-center bg-avit-blue rounded-lg px-4 py-2">
             <div className="relative mr-4">
               <div className="absolute inline-flex h-4 w-4 rounded-full bg-green-400 opacity-75 animate-ping"></div>
               <div className="relative h-4 w-4 bg-green-400 rounded-full"></div>
             </div>
-            <span className="font-semibold">In Meeting</span>
+            <span className="font-semibold text-xl text-white">In Meeting</span>
           </div>
         )}
         {!isJoined && (
@@ -201,9 +201,9 @@ function ControlCard({
         if (buttonAction) buttonAction();
       }}
       id={id}
-      className="w-full h-full btn-primary bg-white active:bg-gray-100 p-0 border-none rounded-lg text-avit-grey-80"
+      className="w-full h-full btn-primary bg-avit-blue active:bg-gray-100 p-0 border-none rounded-[10px] text-white"
     >
-      <div className="px-4 py-3 w-full h-full flex flex-col items-center justify-center relative">
+      <div className="px-4 py-4 w-full h-full flex flex-col items-center justify-center relative">
         {!disabled && detailsButton && (
           <button
             onClick={(e) => {
@@ -211,7 +211,7 @@ function ControlCard({
               e.preventDefault();
               if (detailsButton) detailsButton();
             }}
-            className="btn-ghost bg-transparent active:bg-avit-grey-button active:border-avit-grey absolute bottom-4 right-4 w-16 h-16 flex items-center justify-center text-avit-grey-80"
+            className="btn-ghost bg-[#3664DA] active:bg-avit-grey-button active:border-avit-grey absolute bottom-4 right-4 w-16 h-16 flex items-center justify-center text-white"
           >
             <Icon
               icon="material-symbols:more-horiz"
