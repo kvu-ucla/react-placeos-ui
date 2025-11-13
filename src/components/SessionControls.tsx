@@ -137,7 +137,7 @@ export default function SessionControls() {
   return (
     <div className="rounded-lg">
       <div className="inline-flex justify-between items-center w-full mb-4">
-        <h2 className="font-semibold">Session Controls</h2>
+        <h2 className="font-semibold font-2xl">Session Controls</h2>
         {isJoined && (
           <div className="inline-flex justify-evenly items-center bg-avit-blue rounded-lg px-4 py-2">
             <div className="relative mr-4">
@@ -202,9 +202,10 @@ export default function SessionControls() {
         />
       </div>
 
-      <h2 className="font-semibold mb-4">Join from your device</h2>
+      <h2 className="font-semibold text-2xl mb-4">Join from your device</h2>
       <div id="zoom-join" className="grid grid-cols-2 gap-4">
-        <div className="self-start collapse collapse-arrow p-2 bg-gray-200/20 border-base-200/20 backdrop-blur-xl">
+        {/*Share Wirelessly*/}
+        <div className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
           <input type="radio" name="my-accordion-1" />
           <div
             className="collapse-title font-semibold inline-flex after:border-r-4 after:border-b-4 after:border-current
@@ -215,7 +216,7 @@ export default function SessionControls() {
               alt="zoom logo"
               className="h-16"
             />
-            <div className="flex flex-col ml-4">
+            <div className="flex flex-col text-[#3664DA] ml-4">
               Join wirelessly
               <div className="text-xl font-normal mt-2">
                 Connect via Zoom to share your screen.
@@ -237,19 +238,19 @@ export default function SessionControls() {
             </ol>
           </div>
         </div>
-
-        <div className="self-start collapse collapse-arrow p-2 bg-gray-200/20 border-base-200/20 backdrop-blur-xl">
+        {/*Share Local*/}
+        <div className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
           <input type="radio" name="my-accordion-1" />
           <div
             className="collapse-title font-semibold inline-flex after:border-r-4 after:border-b-4 after:border-current
            after:!w-8 after:!h-8 after:!top-12 after:!right-12"
           >
-            <Icon
+            <Icon className="text-[#3664DA]"
               icon="material-symbols:cable-rounded"
               width={64}
               height={64}
             ></Icon>
-            <div className="flex flex-col ml-4">
+            <div className="flex flex-col text-[#3664DA] ml-4">
               Connect with USB-C / HDMI
               <div className="text-xl font-normal mt-2">
                 Use a physical USB-C or HDMI cable for direct connection.
@@ -257,7 +258,7 @@ export default function SessionControls() {
             </div>
           </div>
           <div className="collapse-content text-xl font-normal">
-            <ol className="list-decimal list-inside">
+            <ol className="list-decimal list-inside ">
               <li>
                 Connect one end of the USB-C or HDMI cable into your laptop.
               </li>
