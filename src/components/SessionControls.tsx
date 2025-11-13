@@ -113,7 +113,7 @@ export default function SessionControls() {
            after:!w-8 after:!h-8 after:!top-12 after:!right-12"
           >
             <img
-              src={import.meta.env.BASE_URL + "zoom_logo_white.svg"}
+              src={import.meta.env.BASE_URL + "zoom_logo.svg"}
               alt="zoom logo"
               className="h-16"
             />
@@ -251,7 +251,7 @@ function ControlCard({
               ))}
             {icon == null && (
               <img
-                src={import.meta.env.BASE_URL + "zoom_logo.svg"}
+                src={import.meta.env.BASE_URL + "zoom_logo_white.svg"}
                 alt="Zoom logo"
                 className="h-16 w-16"
               />
