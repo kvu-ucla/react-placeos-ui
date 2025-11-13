@@ -209,14 +209,14 @@ export default function SessionControls() {
           <input type="radio" name="my-accordion-1" />
           <div
             className="collapse-title font-semibold inline-flex after:border-r-4 after:border-b-4 after:border-current
-           after:!w-8 after:!h-8 after:!top-12 after:!right-12"
+           after:!w-6 after:!h-6 after:!top-10 after:!right-10"
           >
             <img
               src={import.meta.env.BASE_URL + "zoom_logo.svg"}
               alt="zoom logo"
               className="h-16"
             />
-            <div className="flex flex-col text-[#3664DA] ml-4">
+            <div className="flex flex-col text-xl font-semibold text-[#3664DA] ml-4">
               Join wirelessly
               <div className="text-xl font-normal mt-2">
                 Connect via Zoom to share your screen.
@@ -250,7 +250,7 @@ export default function SessionControls() {
               width={64}
               height={64}
             ></Icon>
-            <div className="flex flex-col text-[#3664DA] ml-4">
+            <div className="flex flex-col text-xl font-semibold text-[#3664DA] ml-4">
               Connect with USB-C / HDMI
               <div className="text-xl font-normal mt-2">
                 Use a physical USB-C or HDMI cable for direct connection.
