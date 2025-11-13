@@ -91,7 +91,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
                     {contacts.map(({ title, description, phone, href }) => (
                       <div
                         key={title}
-                        className="flex items-start justify-between gap-6 rounded-lg border border-avit-grey bg-white p-12"
+                        className="flex items-start justify-between gap-6 rounded-lg border border-avit-grey bg-white p-4"
                       >
                         <div className="flex-1">
                           <div className="mb-1 flex items-center gap-2">
@@ -102,16 +102,16 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
                                 height={48}
                               ></Icon>
                             </span>
-                            <span className="font-semibold text-2xl leading-tight">
+                            <span className="font-semibold text-xl leading-tight">
                               {title}
                             </span>
                           </div>
-                          <p className="text-2xl leading-relaxed whitespace-pre-line text-gray-600">
+                          <p className="text-xl leading-relaxed whitespace-pre-line text-gray-600">
                             {description}
                           </p>
                         </div>
 
-                        <div className="flex items-center justify-center text-4xl">
+                        <div className="flex items-center justify-center text-2xl">
                           <a
                             href={href}
                             className="whitespace-nowrap text-blue-600 font-semibold text-right hover:underline"
