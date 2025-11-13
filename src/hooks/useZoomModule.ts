@@ -191,13 +191,22 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
     try {
       console.log('About to subscribe...');
-      const subscription = state.subscribe(
-        (value) => {
-          console.log('Received value:', value);
-          
-          setWsConnection(value);
-          
-          console.log("connection status:", wsConnection);
+      // const subscription = state.subscribe(
+      //   (value) => {
+      //     console.log('Received value:', value);
+      //     console.log('Value type:', typeof value);
+      //     console.log('Is array?', Array.isArray(value));
+      //    
+      //     setWsConnection(value);
+      //    
+      //     console.log("connection status:", wsConnection);
+      //   }
+      // );
+
+      const subscription = connectionState().subscribe(
+        ([connNumber, connTime]) => {
+          console.log('Connection:', connNumber, connTime);
+          setWsConnection(connNumber > 0);
         }
       );
 
