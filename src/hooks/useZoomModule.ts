@@ -210,6 +210,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
         }
       );
 
+      console.log("connection status:", wsConnection);
       console.log('Subscription successful!');
 
       return () => {
