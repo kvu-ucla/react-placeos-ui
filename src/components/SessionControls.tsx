@@ -206,7 +206,7 @@ export default function SessionControls() {
       <div id="zoom-join" className="grid grid-cols-2 gap-4">
         {/*Share Wirelessly*/}
         <div className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
-          <input type="radio" name="wireless-accordion" />
+          <input type="checkbox" />
           <div
             className="collapse-title font-semibold inline-flex after:border-r-3 after: after:border-b-3 after:border-current
            after:!w-6 after:!h-6 after:!top-10 after:!right-10"
@@ -240,12 +240,13 @@ export default function SessionControls() {
         </div>
         {/*Share Local*/}
         <div className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
-          <input type="radio" name="local-accordion" />
+          <input type="checkbox" />
           <div
             className="collapse-title font-semibold inline-flex after:border-r-3 after:border-b-3 after:border-current
            after:!w-6 after:!h-6 after:!top-10 after:!right-10"
           >
-            <Icon className="text-[#3664DA]"
+            <Icon
+              className="text-[#3664DA]"
               icon="material-symbols:cable-rounded"
               width={64}
               height={64}
