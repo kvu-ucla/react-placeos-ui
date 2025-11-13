@@ -88,6 +88,22 @@ export default function SessionControls() {
       prevStates.current.gallery = gallery;
     }
   }, [gallery]);
+  
+  //accordion logic
+  const [openAccordion, setOpenAccordion] = useState<'wireless' | 'local' | null>(null);
+
+  const handleAccordionClick = (accordionName: 'wireless' | 'local', element: HTMLElement | null) => {
+    if (openAccordion === accordionName) {
+      setOpenAccordion(null);
+    } else {
+      setTimeout(() => {
+        element?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 300); 
+    }
+  };
 
   // Wrapper functions that handle loading states
   const handleToggleMic = async () => {
@@ -206,10 +222,14 @@ export default function SessionControls() {
       <div id="zoom-join" className="grid grid-cols-2 gap-4">
         {/*Share Wirelessly*/}
         <div className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            checked={openAccordion === 'wireless'}
+            onChange={(e) => handleAccordionClick('wireless', e.target.closest('.collapse'))}
+          />
           <div
             className="collapse-title font-semibold inline-flex after:border-r-3 after: after:border-b-3 after:border-current
-           after:!w-6 after:!h-6 after:!top-10 after:!right-10"
+     after:!w-6 after:!h-6 after:!top-10 after:!right-10"
           >
             <img
               src={import.meta.env.BASE_URL + "zoom_logo.svg"}
@@ -232,18 +252,23 @@ export default function SessionControls() {
               <li>
                 Tap "Share Screen" and input Sharing key:{" "}
                 <span className="font-semibold">
-                  {sharing?.directPresentationSharingKey}
-                </span>
+            {sharing?.directPresentationSharingKey}
+          </span>
               </li>
             </ol>
           </div>
         </div>
+
         {/*Share Local*/}
         <div className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            checked={openAccordion === 'local'}
+            onChange={(e) => handleAccordionClick('local', e.target.closest('.collapse'))}
+          />
           <div
             className="collapse-title font-semibold inline-flex after:border-r-3 after:border-b-3 after:border-current
-           after:!w-6 after:!h-6 after:!top-10 after:!right-10"
+     after:!w-6 after:!h-6 after:!top-10 after:!right-10"
           >
             <Icon
               className="text-[#3664DA]"
@@ -252,9 +277,9 @@ export default function SessionControls() {
               height={64}
             ></Icon>
             <div className="flex flex-col text-xl font-semibold text-[#3664DA] ml-4">
-              Connect with USB-C / HDMI
+              Connect with USB-C
               <div className="text-xl font-normal mt-2">
-                Use a physical USB-C or HDMI cable for direct connection.
+                Use a physical USB-C cable for direct connection.
               </div>
             </div>
           </div>
