@@ -224,12 +224,10 @@ function ControlCard({
         <div className="relative text-xl mb-3.5">
           <div
             aria-disabled={disabled}
-            className={`ui-disabled rounded-2xl h-25 w-25 flex justify-center items-center
-              ${disabled
-              ? 'bg-avit-blue border-[#3664DA] border-2'
-              : buttonState
-                ? 'bg-avit-grey-button border-avit-grey border-2'
-                : 'bg-[#3664DA] border-[#3664DA] border-2'
+            className={`ui-disabled rounded-2xl h-25 w-25 flex justify-center items-center aria-disabled:!bg-avit-blue aria-disabled:!border-[#507AE7] aria-disabled:!border-[3px]
+            ${buttonState
+                ? 'bg-avit-grey-button border-avit-grey border-[3px]'
+                : 'bg-[#3664DA] border-[#3664DA] border-[3px]'
             }`}
           >
             {hasButtonState &&
