@@ -13,7 +13,7 @@ export default function MainScreen() {
         </div>
 
         {/* Content */}
-        <main className="z-0 flex-1 flex flex-col px-12 py-8 gap-4 overflow-y-auto">
+        <main className="z-0 flex-1 flex flex-col px-6 py-4 gap-4 overflow-y-auto">
           {/* Top section */}
           <SessionDetails />
           {/* Controls */}
