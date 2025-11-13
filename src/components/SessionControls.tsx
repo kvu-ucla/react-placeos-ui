@@ -1,9 +1,9 @@
 // src/components/SessionControls.tsx
 import { Icon } from "@iconify/react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useModalContext } from "../hooks/ModalContext";
 import { useZoomContext } from "../hooks/ZoomContext";
-import { ControlCard } from "./ControlCard.tsx";
+import {ControlCard } from "./ControlCard.tsx";
 
 export const IconType = {
   Mic: {
@@ -45,19 +45,59 @@ export default function SessionControls() {
     gallery: false,
   });
 
+  // Track previous states to detect changes
+  const prevStates = useRef({
+    isMicMuted: callStatus?.isMicMuted,
+    isCamMuted: callStatus?.isCamMuted,
+    isSharing:
+      sharing?.isDirectPresentationConnected || sharing?.isSharingBlackMagic,
+    gallery: gallery,
+  });
+
   const isSharing =
     sharing?.isDirectPresentationConnected || sharing?.isSharingBlackMagic;
   const isVideoMuted = callStatus?.isCamMuted;
   const isMicAudioMuted = callStatus?.isMicMuted;
   const isJoined = callStatus?.status === "IN_MEETING";
 
+  // Watch for state changes and clear loading when detected
+  useEffect(() => {
+    if (prevStates.current.isMicMuted !== isMicAudioMuted) {
+      setLoadingStates((prev) => ({ ...prev, mic: false }));
+      prevStates.current.isMicMuted = isMicAudioMuted;
+    }
+  }, [isMicAudioMuted]);
+
+  useEffect(() => {
+    if (prevStates.current.isCamMuted !== isVideoMuted) {
+      setLoadingStates((prev) => ({ ...prev, camera: false }));
+      prevStates.current.isCamMuted = isVideoMuted;
+    }
+  }, [isVideoMuted]);
+
+  useEffect(() => {
+    if (prevStates.current.isSharing !== isSharing) {
+      setLoadingStates((prev) => ({ ...prev, share: false }));
+      prevStates.current.isSharing = isSharing;
+    }
+  }, [isSharing]);
+
+  useEffect(() => {
+    if (prevStates.current.gallery !== gallery) {
+      setLoadingStates((prev) => ({ ...prev, gallery: false }));
+      prevStates.current.gallery = gallery;
+    }
+  }, [gallery]);
+
   // Wrapper functions that handle loading states
   const handleToggleMic = async () => {
     setLoadingStates((prev) => ({ ...prev, mic: true }));
     try {
       await toggleAudioMuteAll();
-    } finally {
-      setLoadingStates((prev) => ({ ...prev, mic: false }));
+      // Note: loading will be cleared by useEffect when state changes
+    } catch (error) {
+      console.error("Failed to toggle mic:", error);
+      setLoadingStates((prev) => ({ ...prev, mic: false })); // Clear on error
     }
   };
 
@@ -65,8 +105,10 @@ export default function SessionControls() {
     setLoadingStates((prev) => ({ ...prev, camera: true }));
     try {
       await toggleVideoMuteAll();
-    } finally {
-      setLoadingStates((prev) => ({ ...prev, camera: false }));
+      // Note: loading will be cleared by useEffect when state changes
+    } catch (error) {
+      console.error("Failed to toggle camera:", error);
+      setLoadingStates((prev) => ({ ...prev, camera: false })); // Clear on error
     }
   };
 
@@ -74,8 +116,10 @@ export default function SessionControls() {
     setLoadingStates((prev) => ({ ...prev, share: true }));
     try {
       await toggleSharing();
-    } finally {
-      setLoadingStates((prev) => ({ ...prev, share: false }));
+      // Note: loading will be cleared by useEffect when state changes
+    } catch (error) {
+      console.error("Failed to toggle sharing:", error);
+      setLoadingStates((prev) => ({ ...prev, share: false })); // Clear on error
     }
   };
 
@@ -83,8 +127,10 @@ export default function SessionControls() {
     setLoadingStates((prev) => ({ ...prev, gallery: true }));
     try {
       await toggleGallery();
-    } finally {
-      setLoadingStates((prev) => ({ ...prev, gallery: false }));
+      // Note: loading will be cleared by useEffect when state changes
+    } catch (error) {
+      console.error("Failed to toggle gallery:", error);
+      setLoadingStates((prev) => ({ ...prev, gallery: false })); // Clear on error
     }
   };
 
