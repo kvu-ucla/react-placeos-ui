@@ -194,7 +194,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
       const subscription = state.subscribe(
         ([connNumber, connTime]) => {
           console.log('Connection state changed:', connNumber, connTime);
-          setWsConnection(connNumber > 0);
+          // setWsConnection(connNumber > 0);
         }
       );
 
