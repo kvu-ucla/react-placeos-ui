@@ -182,24 +182,24 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
     return () => clearSubs();
   }, [module]);
-  
-  //get websocket communication state
+
+  //get websocket communication
   useEffect(() => {
-    
-    // Subscribe to the connection state observable
-    const subscription = connectionState().subscribe(
-      ([connNumber, connTime]) => {
+    const state = connectionState();
+    console.log('connectionState returned:', state);
+    console.log('Type:', typeof state);
+    console.log('Has subscribe?', state && typeof state.subscribe === 'function');
 
-        console.log('Connection state changed:', connNumber, connTime);
-        const newState = connNumber > 0;
-        setWsConnection(newState);
-      }
-    );
+    if (state && typeof state.subscribe === 'function') {
+      const subscription = state.subscribe(
+        ([connNumber, connTime]) => {
+          console.log('Connection state changed:', connNumber, connTime);
+          setWsConnection(connNumber > 0);
+        }
+      );
 
-    // Cleanup subscription on unmount
-    return () => {
-      subscription.unsubscribe();
-    };
+      return () => subscription.unsubscribe();
+    }
   }, []);
 
   // useEffect(() => {
