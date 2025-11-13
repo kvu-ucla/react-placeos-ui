@@ -208,7 +208,7 @@ export default function SessionControls() {
         <div className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
           <input type="radio" name="my-accordion-1" />
           <div
-            className="collapse-title font-semibold inline-flex after:border-r-3 after: after:border-b-3 after:border-l-2 after:border-current
+            className="collapse-title font-semibold inline-flex after:border-r-3 after: after:border-b-3 after:border-current
            after:!w-6 after:!h-6 after:!top-10 after:!right-10"
           >
             <img
