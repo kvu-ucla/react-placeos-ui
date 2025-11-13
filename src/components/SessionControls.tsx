@@ -239,7 +239,7 @@ function ControlCard({
                 <Icon
                   aria-disabled={disabled}
                   icon={icon.On}
-                  className="aria-disabled:text-white text-avit-grey-80"
+                  className="aria-disabled:text-white text-white"
                   width={64}
                   height={64}
                 />
@@ -264,7 +264,7 @@ function ControlCard({
         </div>
         <div
           aria-disabled={disabled}
-          className={`aria-disabled:text-white text-xl font-medium ${buttonState ? 'text-white' : 'text-avit-grey-80'}`}
+          className={`aria-disabled:text-white text-xl font-medium ${buttonState ? 'text-avit-grey-80' : 'text-white'}`}
         >
           {label} {hasButtonState && (buttonState ? "Off" : "On")}
         </div>
