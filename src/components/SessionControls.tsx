@@ -1,7 +1,9 @@
 // src/components/SessionControls.tsx
 import { Icon } from "@iconify/react";
+import { useState } from "react";
 import { useModalContext } from "../hooks/ModalContext";
 import { useZoomContext } from "../hooks/ZoomContext";
+import { ControlCard } from "./ControlCard.tsx";
 
 export const IconType = {
   Mic: {
@@ -34,11 +36,57 @@ export default function SessionControls() {
     toggleVideoMuteAll,
   } = useZoomContext();
   const { showModal } = useModalContext();
+
+  // Loading states for each control
+  const [loadingStates, setLoadingStates] = useState({
+    mic: false,
+    camera: false,
+    share: false,
+    gallery: false,
+  });
+
   const isSharing =
     sharing?.isDirectPresentationConnected || sharing?.isSharingBlackMagic;
   const isVideoMuted = callStatus?.isCamMuted;
   const isMicAudioMuted = callStatus?.isMicMuted;
   const isJoined = callStatus?.status === "IN_MEETING";
+
+  // Wrapper functions that handle loading states
+  const handleToggleMic = async () => {
+    setLoadingStates((prev) => ({ ...prev, mic: true }));
+    try {
+      await toggleAudioMuteAll();
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, mic: false }));
+    }
+  };
+
+  const handleToggleCamera = async () => {
+    setLoadingStates((prev) => ({ ...prev, camera: true }));
+    try {
+      await toggleVideoMuteAll();
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, camera: false }));
+    }
+  };
+
+  const handleToggleSharing = async () => {
+    setLoadingStates((prev) => ({ ...prev, share: true }));
+    try {
+      await toggleSharing();
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, share: false }));
+    }
+  };
+
+  const handleToggleGallery = async () => {
+    setLoadingStates((prev) => ({ ...prev, gallery: true }));
+    try {
+      await toggleGallery();
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, gallery: false }));
+    }
+  };
 
   return (
     <div className="rounded-lg">
@@ -70,8 +118,9 @@ export default function SessionControls() {
           label="Microphone: "
           icon={IconType.Mic}
           disabled={recording}
-          buttonAction={() => toggleAudioMuteAll()}
+          buttonAction={handleToggleMic}
           buttonState={isMicAudioMuted}
+          isLoading={loadingStates.mic}
           // detailsButton={() => showModal("settings", { tab: "Volume" })}
         />
         <ControlCard
@@ -79,23 +128,26 @@ export default function SessionControls() {
           label="Camera: "
           icon={IconType.Camera}
           disabled={recording}
-          buttonAction={() => toggleVideoMuteAll()}
+          buttonAction={handleToggleCamera}
           buttonState={isVideoMuted}
+          isLoading={loadingStates.camera}
           // detailsButton={() => showModal("settings", { tab: "Camera" })}
         />
         <ControlCard
           id="screenshare"
           label="Screen Share: "
           icon={IconType.Share}
-          buttonAction={() => toggleSharing()}
+          buttonAction={handleToggleSharing}
           buttonState={!isSharing}
+          isLoading={loadingStates.share}
         />
         <ControlCard
           id="gallery"
           label="Gallery: "
           icon={IconType.Gallery}
-          buttonAction={() => toggleGallery()}
+          buttonAction={handleToggleGallery}
           buttonState={gallery}
+          isLoading={loadingStates.gallery}
         />
         <ControlCard
           id="meeting-ctrls"
@@ -172,108 +224,5 @@ export default function SessionControls() {
         </div>
       </div>
     </div>
-  );
-}
-
-function ControlCard({
-  id,
-  label,
-  icon,
-  disabled,
-  buttonAction,
-  buttonState,
-  detailsButton,
-}: {
-  id: string;
-  label: string;
-  icon?: any;
-  disabled?: boolean;
-  detailsButton?: () => void;
-  buttonAction?: () => void;
-  buttonState?: boolean;
-}) {
-  const hasButtonState = buttonState !== undefined && buttonState !== null;
-
-  return (
-    <button
-      disabled={disabled}
-      aria-disabled={disabled}
-      onClick={() => {
-        if (buttonAction) buttonAction();
-      }}
-      id={id}
-      className={`w-full h-full btn-primary p-0 border-none aria-disabled:!bg-avit-blue aria-disabled:active:!bg-avit-blue rounded-[10px] transition-colors text-white ${buttonState ? 'bg-white border-white active:bg-gray-100' : 'bg-avit-blue active:bg-[#011c50]'}`}
-    >
-      <div className="px-4 py-4 w-full h-full flex flex-col items-center justify-center relative">
-        {!disabled && detailsButton && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation(); // prevent parent button from triggering
-              e.preventDefault();
-              if (detailsButton) detailsButton();
-            }}
-            className="btn-ghost bg-transparent active:bg-avit-grey-button active:border-avit-grey absolute bottom-4 right-4 w-16 h-16 flex items-center justify-center text-avit-grey-80"
-          >
-            <Icon
-              icon="material-symbols:more-horiz"
-              className="text-avit-grey-80"
-              width={64}
-              height={64}
-            />
-          </button>
-        )}
-        <div className="relative text-xl mb-3.5">
-          <div
-            aria-disabled={disabled}
-            className={`ui-disabled rounded-2xl h-25 w-25 flex justify-center items-center aria-disabled:!bg-avit-blue aria-disabled:!border-[#507AE7] aria-disabled:!border-[3px]
-            ${buttonState
-                ? 'bg-avit-grey-button border-avit-grey border-[3px]'
-                : 'bg-[#3664DA] border-[#3664DA] border-[3px]'
-            }`}
-          >
-            {hasButtonState &&
-              (buttonState ? (
-                <Icon
-                  aria-disabled={disabled}
-                  icon={icon.Off}
-                  className="aria-disabled:text-white text-error"
-                  width={64}
-                  height={64}
-                />
-              ) : (
-                <Icon
-                  aria-disabled={disabled}
-                  icon={icon.On}
-                  className="aria-disabled:text-white text-white"
-                  width={64}
-                  height={64}
-                />
-              ))}
-            {icon == null && (
-              <img
-                src={import.meta.env.BASE_URL + "zoom_logo_white.svg"}
-                alt="Zoom logo"
-                className="h-16 w-16"
-              />
-            )}
-            {disabled && (
-              <Icon
-                aria-disabled={disabled}
-                icon="material-symbols:lock"
-                className="aria-disabled:text-white absolute bottom-2 right-2 text-avit-grey-80"
-                width={24}
-                height={24}
-              />
-            )}
-          </div>
-        </div>
-        <div
-          aria-disabled={disabled}
-          className={`aria-disabled:text-white text-xl font-medium ${buttonState ? 'text-avit-grey-80' : 'text-white'}`}
-        >
-          {label} {hasButtonState && (buttonState ? "Off" : "On")}
-        </div>
-      </div>
-    </button>
   );
 }
