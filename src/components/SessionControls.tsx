@@ -92,16 +92,17 @@ export default function SessionControls() {
   //accordion logic
   const [openAccordion, setOpenAccordion] = useState<'wireless' | 'local' | null>(null);
 
-  const handleAccordionClick = (accordionName: 'wireless' | 'local', element: Element | null) => {
+  const handleAccordionClick = (accordionName: 'wireless' | 'local', element: HTMLElement | null) => {
     if (openAccordion === accordionName) {
       setOpenAccordion(null);
     } else {
+      setOpenAccordion(accordionName);
       setTimeout(() => {
         element?.scrollIntoView({
           behavior: 'smooth',
-          block: 'start'
+          block: 'nearest'
         });
-      }, 300); 
+      }, 100);
     }
   };
 
