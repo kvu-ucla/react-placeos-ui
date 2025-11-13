@@ -239,7 +239,7 @@ export default function SessionControls() {
             />
             <div className="flex flex-col text-xl font-semibold text-[#3664DA] ml-4">
               Join wirelessly
-              <div className="text-xl font-normal mt-2">
+              <div className="text-xl text-avit-grey-80 font-normal mt-2">
                 Connect via Zoom to share your screen.
               </div>
             </div>
@@ -279,7 +279,7 @@ export default function SessionControls() {
             ></Icon>
             <div className="flex flex-col text-xl font-semibold text-[#3664DA] ml-4">
               Connect with USB-C
-              <div className="text-xl font-normal mt-2">
+              <div className="text-xl text-avit-grey-80 font-normal mt-2">
                 Use a physical USB-C cable for direct connection.
               </div>
             </div>
