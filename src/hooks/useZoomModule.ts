@@ -185,16 +185,28 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
   //get websocket communication
   useEffect(() => {
-    console.log('connectionState is:', connectionState);
-    console.log('Type of connectionState:', typeof connectionState);
+    console.log('About to call connectionState()...');
+    const state = connectionState();
+    console.log('Successfully called! Returned:', state);
 
     try {
-      console.log('About to call connectionState()...');
-      const state = connectionState();
-      console.log('Successfully called! Returned:', state);
-      console.log('Type:', typeof state);
+      console.log('About to subscribe...');
+      const subscription = state.subscribe(
+        (value) => {
+          console.log('Received value:', value);
+          console.log('Value type:', typeof value);
+          console.log('Is array?', Array.isArray(value));
+        }
+      );
+
+      console.log('Subscription successful!');
+
+      return () => {
+        console.log('Unsubscribing...');
+        subscription.unsubscribe();
+      };
     } catch (error) {
-      console.error('Error calling connectionState():', error);
+      console.error('Error during subscription:', error);
     }
   }, []);
 
