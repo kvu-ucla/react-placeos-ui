@@ -92,7 +92,7 @@ export default function SessionControls() {
   //accordion logic
   const [openAccordion, setOpenAccordion] = useState<'wireless' | 'local' | null>(null);
 
-  const handleAccordionClick = (accordionName: 'wireless' | 'local', element: HTMLElement | null) => {
+  const handleAccordionClick = (accordionName: 'wireless' | 'local', element: Element | null) => {
     if (openAccordion === accordionName) {
       setOpenAccordion(null);
     } else {
