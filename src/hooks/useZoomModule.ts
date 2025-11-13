@@ -185,21 +185,10 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
   //get websocket communication
   useEffect(() => {
-    const state = connectionState();
-    console.log('connectionState returned:', state);
-    console.log('Type:', typeof state);
-    console.log('Has subscribe?', state && typeof state.subscribe === 'function');
+    console.log('connectionState is:', connectionState);
+    console.log('Type of connectionState:', typeof connectionState);
 
-    if (state && typeof state.subscribe === 'function') {
-      const subscription = state.subscribe(
-        ([connNumber, connTime]) => {
-          console.log('Connection state changed:', connNumber, connTime);
-          // setWsConnection(connNumber > 0);
-        }
-      );
-
-      return () => subscription.unsubscribe();
-    }
+    // Don't call it yet, just check what it is
   }, []);
 
   // useEffect(() => {
