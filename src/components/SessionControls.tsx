@@ -94,9 +94,9 @@ export default function SessionControls() {
 
   const handleAccordionClick = (accordionName: 'wireless' | 'local', element: HTMLElement | null) => {
     if (openAccordion === accordionName) {
-      setOpenAccordion(null);
+      setOpenAccordion(null); // Close if already open
     } else {
-      setOpenAccordion(accordionName);
+      setOpenAccordion(accordionName); // Open and close others
       setTimeout(() => {
         element?.scrollIntoView({
           behavior: 'smooth',
