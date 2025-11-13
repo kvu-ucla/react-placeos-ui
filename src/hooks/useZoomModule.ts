@@ -188,7 +188,14 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     console.log('connectionState is:', connectionState);
     console.log('Type of connectionState:', typeof connectionState);
 
-    // Don't call it yet, just check what it is
+    try {
+      console.log('About to call connectionState()...');
+      const state = connectionState();
+      console.log('Successfully called! Returned:', state);
+      console.log('Type:', typeof state);
+    } catch (error) {
+      console.error('Error calling connectionState():', error);
+    }
   }, []);
 
   // useEffect(() => {
