@@ -137,7 +137,7 @@ export default function SessionControls() {
   return (
     <div className="rounded-lg">
       <div className="inline-flex justify-between items-center w-full mb-4">
-        <h2 className="font-semibold font-2xl">Session Controls</h2>
+        <h2 className="font-semibold text-2xl">Session Controls</h2>
         {isJoined && (
           <div className="inline-flex justify-evenly items-center bg-avit-blue rounded-lg px-4 py-2">
             <div className="relative mr-4">
@@ -208,7 +208,7 @@ export default function SessionControls() {
         <div className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
           <input type="radio" name="my-accordion-1" />
           <div
-            className="collapse-title font-semibold inline-flex after:border-r-2 after: border-t-2 after:border-b-2 after:border-l-2 after:border-current
+            className="collapse-title font-semibold inline-flex after:border-r-3 after: after:border-b-3 after:border-l-2 after:border-current
            after:!w-6 after:!h-6 after:!top-10 after:!right-10"
           >
             <img
@@ -242,8 +242,8 @@ export default function SessionControls() {
         <div className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
           <input type="radio" name="my-accordion-1" />
           <div
-            className="collapse-title font-semibold inline-flex after:border-r-4 after:border-b-4 after:border-current
-           after:!w-8 after:!h-8 after:!top-12 after:!right-12"
+            className="collapse-title font-semibold inline-flex after:border-r-3 after:border-b-3 after:border-current
+           after:!w-6 after:!h-6 after:!top-10 after:!right-10"
           >
             <Icon className="text-[#3664DA]"
               icon="material-symbols:cable-rounded"
