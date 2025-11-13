@@ -109,7 +109,7 @@ let subscriptions: (() => void)[] = [];
 
 export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   const [module, setModule] = useState<PlaceModuleBinding>();
-  const [wsConnection, setWsConnection] = useState<boolean>();
+  // const [wsConnection, setWsConnection] = useState<boolean>();
   const [currentMeeting, setCurrentMeeting] = useState<ZoomBooking>();
   const [nextMeeting, setNextMeeting] = useState<ZoomBooking>();
   const [sharing, setSharing] = useState<SharingStatus>();
@@ -611,7 +611,6 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   };
 
   return {
-    wsConnection,
     volume,
     volumeMute,
     setMasterMute,
