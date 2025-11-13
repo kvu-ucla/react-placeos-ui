@@ -109,7 +109,7 @@ let subscriptions: (() => void)[] = [];
 
 export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   const [module, setModule] = useState<PlaceModuleBinding>();
-  // const [wsConnection, setWsConnection] = useState<boolean>();
+  const [wsConnection, setWsConnection] = useState<any>();
   const [currentMeeting, setCurrentMeeting] = useState<ZoomBooking>();
   const [nextMeeting, setNextMeeting] = useState<ZoomBooking>();
   const [sharing, setSharing] = useState<SharingStatus>();
@@ -196,6 +196,10 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
           console.log('Received value:', value);
           console.log('Value type:', typeof value);
           console.log('Is array?', Array.isArray(value));
+          
+          setWsConnection(value);
+          
+          console.log("connection status:", wsConnection.toString());
         }
       );
 
