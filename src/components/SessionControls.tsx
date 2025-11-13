@@ -201,7 +201,7 @@ function ControlCard({
         if (buttonAction) buttonAction();
       }}
       id={id}
-      className={`w-full h-full btn-primary active:bg-gray-100 p-0 border-none rounded-[10px] text-white ${buttonState ? 'bg-white border-white' : 'bg-avit-blue'}`}
+      className={`w-full h-full btn-primary active:bg-gray-100 p-0 border-none rounded-[10px] transition-colors text-white ${buttonState ? 'bg-white border-white active:bg-gray-100' : 'bg-avit-blue active:bg-[#011c50]'}`}
     >
       <div className="px-4 py-4 w-full h-full flex flex-col items-center justify-center relative">
         {!disabled && detailsButton && (
