@@ -196,12 +196,12 @@ function ControlCard({
 
   return (
     <button
-      disabled={disabled}
+      aria-disabled={disabled}
       onClick={() => {
         if (buttonAction) buttonAction();
       }}
       id={id}
-      className={`w-full h-full btn-primary p-0 border-none rounded-[10px] transition-colors text-white ${buttonState && !disabled ? 'bg-white border-white active:bg-gray-100' : 'bg-avit-blue active:bg-[#011c50]'}`}
+      className={`w-full h-full btn-primary p-0 border-none rounded-[10px] transition-colors text-white ${buttonState ? 'bg-white border-white active:bg-gray-100' : 'bg-avit-blue active:bg-[#011c50]'}`}
     >
       <div className="px-4 py-4 w-full h-full flex flex-col items-center justify-center relative">
         {!disabled && detailsButton && (
