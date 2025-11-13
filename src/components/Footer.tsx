@@ -63,7 +63,7 @@ export default function Footer() {
       <div className="flex items-center space-x-2">
         <div className="flex items-center mr-8">
           <div className="flex flex-col items-center mr-4">
-            <div className="text-3xl font-semibold">Speaker Volume</div>
+            <div className="text-3xl font-semibold">Volume</div>
           </div>
             {/*<button onClick={toggleMasterMute} className="">*/}
             {/*  {volumeMute ? <Icon*/}

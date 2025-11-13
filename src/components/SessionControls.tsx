@@ -64,7 +64,7 @@ export default function SessionControls() {
         )}
       </div>
 
-      <div className="grid grid-cols-5 gap-6 items-stretch mb-4">
+      <div className="grid grid-cols-5 gap-2 items-stretch mb-4">
         <ControlCard
           id="microphone"
           label="Microphone: "
@@ -201,7 +201,7 @@ function ControlCard({
         if (buttonAction) buttonAction();
       }}
       id={id}
-      className="w-full h-full btn-primary bg-avit-blue active:bg-gray-100 p-0 border-none rounded-[10px] text-white"
+      className={`w-full h-full btn-primary active:bg-gray-100 p-0 border-none rounded-[10px] text-white ${buttonState ? 'bg-avit-grey-button border-avit-grey' : 'bg-avit-blue'}`}
     >
       <div className="px-4 py-4 w-full h-full flex flex-col items-center justify-center relative">
         {!disabled && detailsButton && (
@@ -224,7 +224,7 @@ function ControlCard({
         <div className="relative text-xl mb-3.5">
           <div
             aria-disabled={disabled}
-            className={`ui-disabled rounded-2xl h-25 w-25 flex justify-center items-center ${buttonState ? 'bg-[#3664DA] border-[#3664DA]' : 'bg-avit-grey-button border-avit-grey'}`}
+            className={`ui-disabled rounded-2xl h-25 w-25 flex justify-center items-center ${buttonState ? 'bg-avit-grey-button border-avit-grey' : 'bg-[#3664DA] border-[#3664DA]'}`}
           >
             {hasButtonState &&
               (buttonState ? (
