@@ -198,8 +198,6 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
           console.log('Is array?', Array.isArray(value));
 
           setWsConnection(value);
-
-          console.log("connection status:", wsConnection);
         }
       );
       
@@ -634,6 +632,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   };
 
   return {
+    wsConnection,
     volume,
     volumeMute,
     setMasterMute,

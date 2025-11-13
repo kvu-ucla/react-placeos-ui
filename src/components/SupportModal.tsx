@@ -1,6 +1,7 @@
 // src/components/SupportModal.tsx
 import { useState } from "react";
 import { Icon } from "@iconify/react";
+import { useZoomContext } from "../hooks/ZoomContext.tsx";
 
 interface ContactInfo {
   title: string;
@@ -34,6 +35,12 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
   const [activeTab, setActiveTab] = useState<"Contact" | "Troubleshoot">(
     "Contact",
   );
+
+  const {
+  wsConnection
+  } = useZoomContext();
+  
+  
 
   return (
     <div className="modal modal-open bg-black/40">
@@ -118,9 +125,9 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
 
                   <div className="mt-6 text-left">
                     <div className="inline-flex items-center gap-2 rounded bg-gray-100 px-3 py-1 text-sm">
-                      <div className="h-4 w-4 rounded-full bg-green-500 mr-1 animate-pulse" />
+                      <div className={`h-4 w-4 rounded-full ${wsConnection ? 'bg-green-500' : 'bg-gray-400' } mr-1 animate-pulse`}/>
                       <span className="text-gray-700 text-base font-medium">
-                        All systems online
+                        All systems {wsConnection ? 'online' : 'offline'}
                       </span>
                     </div>
                   </div>
