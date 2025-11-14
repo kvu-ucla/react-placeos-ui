@@ -81,14 +81,14 @@ export default function SplashScreen() {
           <footer className="p-6">
             <button
                 onClick={startAdHoc}
-                className="btn bg-avit-blue mt-5 mb-5 mr-5 min-w-32 min-h-12 text-white px-6 py-2 rounded-lg text-xl"
+                className="btn bg-avit-blue mt-5 mb-5 mr-5 min-w-32 min-h-[5rem] text-white px-6 py-2 rounded-lg text-xl"
             >
               Start Ad-Hoc Session
             </button>
             {!noMeeting && (
                 <button
                     onClick={startScheduled}
-                    className="btn bg-avit-blue mt-5 mb-5 min-w-32 min-h-12 text-white px-6 py-2 rounded-lg text-xl"
+                    className="btn bg-avit-blue mt-5 mb-5 min-w-32 min-h-[5rem] text-white px-6 py-2 rounded-lg text-xl"
                 >
                   Start Scheduled Class
                 </button>

@@ -107,7 +107,7 @@ export function ClassInfoCard() {
   }
 
   return (
-    <div className="card bg-white px-8 py-6 rounded shadow w-full max-w-4xl text-center h-[300px]">
+    <div className="card bg-white px-8 py-6 rounded shadow w-full max-w-sm text-center h-[300px]">
       {!noMeeting ? (
         <>
           <div className="text-2xl flex items-center justify-center gap-2">
