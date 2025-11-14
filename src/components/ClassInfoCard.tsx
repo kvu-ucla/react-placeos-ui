@@ -10,7 +10,7 @@ interface meetingDetails {
 }
 
 export function ClassInfoCard() {
-  const { nextMeeting, currentMeeting, sharing, recording } = useZoomContext();
+  const { nextMeeting, currentMeeting } = useZoomContext();
   const [meetingDetails, setMeetingDetails] = useState<meetingDetails>({
     classStart: "",
     classEnd: "",
