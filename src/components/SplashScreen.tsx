@@ -3,13 +3,12 @@ import { ClassInfoCard } from "./ClassInfoCard";
 import { useControlContext } from "../hooks/ControlStateContext";
 import { ModalProvider } from "../hooks/ModalContext";
 import { useZoomContext } from "../hooks/ZoomContext";
-import { useState, useEffect } from "react";
 
 export default function SplashScreen() {
   const { system, togglePower } = useControlContext();
   const { joinPmi, joinMeetingId, currentMeeting } = useZoomContext();
   const noMeeting = currentMeeting == null;
-  const screen = useScreenInfo();
+  // const screen = useScreenInfo();
 
   function startScheduled() {
     togglePower();
@@ -22,60 +21,16 @@ export default function SplashScreen() {
     joinPmi();
   }
 
-  function useScreenInfo() {
-    const [screenInfo, setScreenInfo] = useState({
-      // Viewport dimensions
-      width: window.innerWidth,
-      height: window.innerHeight,
-
-      // Screen dimensions
-      screenWidth: window.screen.width,
-      screenHeight: window.screen.height,
-
-      // Available screen space (excluding taskbars, etc.)
-      availWidth: window.screen.availWidth,
-      availHeight: window.screen.availHeight,
-
-      // Color/pixel depth
-      pixelDepth: window.screen.pixelDepth,
-      colorDepth: window.screen.colorDepth,
-
-      // Device pixel ratio (for retina displays)
-      devicePixelRatio: window.devicePixelRatio,
-    });
-
-    useEffect(() => {
-      function handleResize() {
-        setScreenInfo({
-          width: window.innerWidth,
-          height: window.innerHeight,
-          screenWidth: window.screen.width,
-          screenHeight: window.screen.height,
-          availWidth: window.screen.availWidth,
-          availHeight: window.screen.availHeight,
-          pixelDepth: window.screen.pixelDepth,
-          colorDepth: window.screen.colorDepth,
-          devicePixelRatio: window.devicePixelRatio,
-        });
-      }
-
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    return screenInfo;
-  }
-
   return (
     <ModalProvider>
       <div className="min-h-screen flex flex-col items-center text-center bg-gray-100">
         <Header />
 
         <div className="flex flex-col">
-          <h1 className="text-3xl font-semibold mt-6 m-6">
+          <h1 className="text-4xl font-semibold mt-6 m-6">
             Welcome to {system.name ?? "Unknown Room"}
           </h1>
-          <main className="flex-1 flex items-center justify-center px-4">
+          <main className="flex-1 flex items-center justify-center">
             <ClassInfoCard />
           </main>
           <footer className="p-6">
@@ -103,11 +58,11 @@ export default function SplashScreen() {
               to present. Instructions on next screen.
             </p>
 
-            <div>
-              <p>Pixel Depth: {screen.pixelDepth} bits</p>
-              <p>Color Depth: {screen.colorDepth} bits</p>
-              <p>Resolution: {screen.width} x {screen.height}</p>
-            </div>
+            {/*<div>*/}
+            {/*  <p>Pixel Depth: {screen.pixelDepth} bits</p>*/}
+            {/*  <p>Color Depth: {screen.colorDepth} bits</p>*/}
+            {/*  <p>Resolution: {screen.width} x {screen.height}</p>*/}
+            {/*</div>*/}
             
           </footer>
         </div>

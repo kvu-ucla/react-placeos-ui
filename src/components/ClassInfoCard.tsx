@@ -107,7 +107,7 @@ export function ClassInfoCard() {
   }
 
   return (
-    <div className="card bg-white px-8 py-6 rounded shadow w-full max-w-sm text-center h-[300px]">
+    <div className="card bg-white px-8 py-6 rounded shadow w-full max-[620px] text-center h-[300px]">
       {!noMeeting ? (
         <>
           <div className="text-2xl flex items-center justify-center gap-2">
@@ -121,10 +121,12 @@ export function ClassInfoCard() {
             <span className="text-xs mx-2">●</span>
             <div className="text-blue-600">{countdown}</div>
           </div>
-          <h1 className="mt-4 text-3xl font-bold">
-            {meetingDetails.classTitle}
-          </h1>
-          <p className="mt-4 text-xl">{meetingDetails.instructor}</p>
+          <div>
+            <h1 className="mt-4 text-3xl font-bold">
+              {meetingDetails.classTitle}
+            </h1>
+            <p className="text-xl">{meetingDetails.instructor}</p>
+          </div>
           <div className="mt-8 mb-8 text-xl flex items-center justify-center gap-2">
             <span>Ends at</span>
             <span>{meetingDetails.classEnd}</span>
@@ -168,7 +170,7 @@ export function ClassInfoCard() {
         </>
       ) : (
         <>
-          <div className="p-6 text-xl flex items-center justify-center gap-2 h-[300px]">
+          <div className="p-6 text-2xl flex items-center justify-center gap-2 h-[300px]">
             <span>
               No classes are currently scheduled. You can still start a session.
             </span>
