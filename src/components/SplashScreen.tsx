@@ -68,11 +68,11 @@ export default function SplashScreen() {
 
   return (
     <ModalProvider>
-      <div className="min-h-screen flex flex-col items-center text-center bg-gray-100 pb-32">
+      <div className="min-h-screen flex flex-col items-center text-center bg-gray-100">
         <Header />
 
         <div className="flex flex-col">
-          <h1 className="text-6xl font-semibold mt-12 mb-12">
+          <h1 className="text-3xl font-semibold mt-6 m-6">
             Welcome to {system.name ?? "Unknown Room"}
           </h1>
           <main className="flex-1 flex items-center justify-center px-4">
@@ -81,20 +81,20 @@ export default function SplashScreen() {
           <footer className="p-6">
             <button
                 onClick={startAdHoc}
-                className="btn bg-avit-blue mt-9 mb-9 mr-9 min-w-64 min-h-24 text-white px-6 py-2 rounded-lg text-3xl"
+                className="btn bg-avit-blue mt-5 mb-5 mr-5 min-w-32 min-h-12 text-white px-6 py-2 rounded-lg text-xl"
             >
               Start Ad-Hoc Session
             </button>
             {!noMeeting && (
                 <button
                     onClick={startScheduled}
-                    className="btn bg-avit-blue mt-9 mb-9 min-w-64 min-h-24 text-white px-6 py-2 rounded-lg text-3xl"
+                    className="btn bg-avit-blue mt-5 mb-5 min-w-32 min-h-12 text-white px-6 py-2 rounded-lg text-xl"
                 >
                   Start Scheduled Class
                 </button>
             )}
             
-            <p className="max-w-6xl text-3xl text-gray-500">
+            <p className="max-w-4xl text-xl text-gray-500">
               This will start the <b className="text-avit-blue">Zoom Room</b> for
               this session. Once started, you can{" "}
               <b className="text-avit-blue">
