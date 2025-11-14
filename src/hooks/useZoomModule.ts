@@ -185,26 +185,17 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
 
   //get websocket communication
   useEffect(() => {
-    console.log('About to call connectionState()...');
     const state = connectionState();
-    console.log('Successfully called! Returned:', state);
 
     try {
-      console.log('About to subscribe...');
       const subscription = state.subscribe(
         (value) => {
-          console.log('Received value:', value);
-          console.log('Value type:', typeof value);
-          console.log('Is array?', Array.isArray(value));
 
           setWsConnection(value);
         }
       );
-      
-      console.log('Subscription successful!');
 
       return () => {
-        console.log('Unsubscribing...');
         subscription.unsubscribe();
       };
     } catch (error) {

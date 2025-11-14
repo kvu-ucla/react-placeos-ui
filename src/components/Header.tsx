@@ -10,9 +10,12 @@ import { useModalContext } from "../hooks/ModalContext";
 import EndMeetingModal from "./EndMeetingModal";
 import SurveyModal from "./SurveyModal";
 import { useTour } from "@reactour/tour";
+import { useZoomContext } from "../hooks/ZoomContext.tsx";
+import OfflineModal from "./OfflineModal.tsx";
 
 export function Header() {
   const { active, system } = useControlContext();
+  const { wsConnection } = useZoomContext();
   const { modalType, initialTab, showModal, closeModal } = useModalContext();
   const { setIsOpen } = useTour();
 
@@ -121,6 +124,9 @@ export function Header() {
       )}
       {modalType == "survey" && (
           <SurveyModal onClose={() => closeModal()} />
+      )}
+      {wsConnection == false && (
+        <OfflineModal />
       )}
     </header>
   );
