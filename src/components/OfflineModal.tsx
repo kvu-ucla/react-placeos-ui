@@ -5,12 +5,12 @@ export default function OfflineModal() {
 
   return (
     <div className="modal modal-open bg-black/40">
-      <div className="modal-box rounded-lg bg-white p-8">
-        <h3 className="font-bold text-3xl mb-4">
-          System is offline
-        </h3>
-        <div className="flex flex-col">
+      <div className="bg-white p-8 rounded-lg">
+        {/* Header */}
+        <div className="flex justify-between items-center border-b border-avit-grey pb-8">
+          <h2 className="text-4xl font-semibold">System</h2>
         </div>
+        <p>System is offline</p>
       </div>
     </div>
   );
