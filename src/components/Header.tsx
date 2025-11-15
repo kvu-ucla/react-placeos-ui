@@ -33,7 +33,7 @@ export function Header() {
           className="h-16"
         />
       </div>
-      <div className="flex flex-col justify-center items-center">
+      <div className={`flex flex-col justify-center items-center ${active ? " " : "absolute left-1/2 transform -translate-x-1/2 flex flex-col"} `} >
         <Clock format="12h" />
         <div className="space-x-2 text-2xl font-bold text-gray-500">
           <span>{system.name}</span>

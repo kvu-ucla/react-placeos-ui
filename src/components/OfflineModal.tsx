@@ -7,7 +7,7 @@ export default function OfflineModal() {
   <div className="modal modal-open bg-black/40 backdrop-blur-sm">
     <div className="bg-white p-8 rounded-lg max-w-md">
       {/* Gradient top bar */}
-      <div className="h-1 bg-gradient-to-r from-error via-orange-500 to-error mb-8" />
+      <div className="h-1 bg-error mb-8" />
 
       {/* Icon */}
       <div className="flex justify-center mb-6">
