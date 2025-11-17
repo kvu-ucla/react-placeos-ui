@@ -12,4 +12,5 @@ export type ModalType =
   | "support"
   | "shutdown"
   | "end-meeting"
+  | "offline"
   | "survey";

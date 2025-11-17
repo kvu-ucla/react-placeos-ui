@@ -1,0 +1,21 @@
+/* lock the survey body to 768px and center it */
+#page,
+#survey-canvas,
+#contents,
+#content-2,
+#q {
+  max-width: 660px !important;
+  min-width: 660px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* keep question blocks inside the same width */
+[id^="question-"] {
+  max-width: 660px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* avoid horizontal scrollbars */
+html, body { overflow-x: hidden !important; }
