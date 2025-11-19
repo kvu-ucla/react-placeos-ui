@@ -4,19 +4,23 @@
 // import {ControlStateProvider} from "./hooks/ControlStateContext.tsx";
 import MainView from "./components/MainView";
 import { useAuth } from "./AuthContext";
-import { Route, Routes } from "react-router-dom";
+import {Navigate, Route, Routes, useParams} from "react-router-dom";
 import BootstrapPage from "./BootstrapPage";
 import {ToastContainer} from "react-toastify";
 import clarity from '@microsoft/clarity';
 import {useEffect, useRef} from "react";
 
-import {useControlContext} from "./hooks/ControlStateContext.tsx";
+import {ControlStateProvider, useControlContext} from "./hooks/ControlStateContext.tsx";
 
 
 function App() {
   const { isAuthenticated, loading } = useAuth()!;
   const { system } = useControlContext();
   const clarityInitialized = useRef(false);
+
+  const { system_id } = useParams();
+
+  if (!system_id) return <Navigate to="/404" replace />;
 
   useEffect(() => {
     //wait for name from ControlContext before initializing Clarity
@@ -41,27 +45,29 @@ function App() {
   return (
     <>
       <main>
-        <Routes>
-          <Route path="/" element={<BootstrapPage />} />
-          {/* Conditionally render routes based on auth state */}
-          {isAuthenticated && (
-            <>
-              <Route path="/" element={<BootstrapPage />} />
-              <Route path="/:system_id" element={<MainView />} />
-            </>
-          )}
-          {/* You could add a catch-all or a "not found" page here */}
-        </Routes>
-        <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            pauseOnHover
-            draggable
-            theme="light"
-        />  
+        <ControlStateProvider systemId={system_id}>
+          <Routes>
+            <Route path="/" element={<BootstrapPage />} />
+            {/* Conditionally render routes based on auth state */}
+            {isAuthenticated && (
+                <>
+                  <Route path="/" element={<BootstrapPage />} />
+                  <Route path="/:system_id" element={<MainView />} />
+                </>
+            )}
+            {/* You could add a catch-all or a "not found" page here */}
+          </Routes>
+          <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              pauseOnHover
+              draggable
+              theme="light"
+          />
+        </ControlStateProvider>
       </main>
     </>
   );

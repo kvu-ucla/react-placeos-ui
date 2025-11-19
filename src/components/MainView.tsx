@@ -1,5 +1,4 @@
 import {
-  ControlStateProvider,
   useControlContext,
 } from "../hooks/ControlStateContext";
 import SplashScreen from "./SplashScreen";
@@ -13,11 +12,9 @@ export default function MainView() {
   if (!system_id) return <Navigate to="/404" replace />;
 
   return (
-    <ControlStateProvider systemId={system_id}>
       <ZoomProvider systemId={system_id}>
         <MainViewInner />
       </ZoomProvider>
-    </ControlStateProvider>
   );
 }
 
