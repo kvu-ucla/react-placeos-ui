@@ -7,11 +7,30 @@ import { useAuth } from "./AuthContext";
 import { Route, Routes } from "react-router-dom";
 import BootstrapPage from "./BootstrapPage";
 import {ToastContainer} from "react-toastify";
+import clarity from '@microsoft/clarity';
+import {useEffect, useRef} from "react";
+
+import {useControlContext} from "./hooks/ControlStateContext.tsx";
+
 
 function App() {
   const { isAuthenticated, loading } = useAuth()!;
+  const { system } = useControlContext();
+  const clarityInitialized = useRef(false);
 
-  // While the library is initializing, you can show a global spinner
+  useEffect(() => {
+    //wait for name from ControlContext before initializing Clarity
+    if (!system.name || clarityInitialized.current) return;
+    
+    clarity.init('u8pdrnj0yn');
+    clarity.identify(system.name, undefined, undefined, system.name);
+    clarityInitialized.current = true;
+    
+    console.log("Clarity is initalized!");
+  }, [system]);
+
+
+  
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
