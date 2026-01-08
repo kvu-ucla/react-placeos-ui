@@ -19,6 +19,7 @@
 @layer base {
   body {
     @apply text-3xl text-avit-grey-80;
+    font-family: Helvetica, sans-serif;
   }
 }
 

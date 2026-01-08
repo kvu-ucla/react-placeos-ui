@@ -23,9 +23,10 @@ const ClarityInitializer = () => {
 
     useEffect(() => {
         if (!clarityReady || !system.name) return;
-
+        
+        clarity.identify(system.name, undefined, undefined, system.name);
         clarity.setTag("location", system.name);
-        console.log("✅ Clarity location set as:", system.name);
+        console.log("✅ Clarity identified as:", system.name);
     }, [clarityReady, system.name]);
 
     return null;
