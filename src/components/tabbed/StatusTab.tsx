@@ -4,6 +4,7 @@ import type {ZoomParticipant} from "../../hooks/useZoomModule.ts";
 export function StatusTab() {
     const {
         currentMeeting,
+        activeBooking,
         muteEveryone,
         toggleAudioMuteEveryone,
         participants,
@@ -87,7 +88,7 @@ export function StatusTab() {
                     {currentMeeting?.meetingName}
                 </div>
                 <div className="text-gray-600">
-                    Meeting Number: {currentMeeting?.meetingNumber ?? "No Meeting"}
+                    Meeting Number: {activeBooking?.meetingNumber ?? "No Meeting"}
                 </div>
             </div>
             {/* Tabs and Global Tools */}

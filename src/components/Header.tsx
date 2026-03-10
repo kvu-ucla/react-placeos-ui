@@ -43,7 +43,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => showModal("survey")}
-            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-20 h-20 ${modalType == "survey" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
+            className={`btn-primary btn-ghost bg-transparent flex flex-col justify-center items-center w-20 h-20 ${modalType == "survey" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
           >
             <Icon
               icon="material-symbols:quiz-rounded"
@@ -56,7 +56,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => showModal("none")}
-            className={`btn-primary flex flex-col justify-center items-center w-20 h-20 ${modalType == "none" ? "btn-active rounded-2xl bg-blue-600 text-white text-white" : ""}`}
+            className={`btn-primary bg-transparent flex flex-col justify-center items-center w-20 h-20 ${modalType == "none" ? "btn-active rounded-2xl bg-blue-600 text-white text-white" : ""}`}
           >
             <Icon
               icon="material-symbols:home-outline-rounded"
@@ -69,7 +69,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => setIsOpen(true)}
-            className={`btn-primary flex flex-col justify-center items-center w-20 h-20 ${modalType == "tour" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
+            className={`btn-primary bg-transparent flex flex-col justify-center items-center w-20 h-20 ${modalType == "tour" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
           >
             <Icon
               icon="material-symbols:explore-outline-rounded"
@@ -81,7 +81,7 @@ export function Header() {
         )}
         <button
           onClick={() => showModal("support")}
-          className={`btn-primary flex flex-col justify-center items-center w-20 h-20 ${modalType == "support" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
+          className={`btn-primary bg-transparent flex flex-col justify-center items-center w-20 h-20 ${modalType == "support" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
         >
           <Icon icon="material-symbols:support" width={48} height={48} />
           <span className="text-xl font-semibold">Support</span>
@@ -92,7 +92,7 @@ export function Header() {
             onClick={() => {
               showModal("settings", { tab: "Volume" });
             }}
-            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-20 h-20 ${modalType == "settings" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
+            className={`btn-primary btn-ghost bg-transparent flex flex-col justify-center items-center w-20 h-20 ${modalType == "settings" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
           >
             <Icon icon="material-symbols:tune-rounded" width={48} height={48} />
             <span className="text-xl font-semibold">Settings</span>
@@ -101,7 +101,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => showModal("shutdown")}
-            className={`btn-primary btn-ghost flex flex-col justify-center items-center w-20 h-20 ${modalType == "shutdown" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
+            className={`btn-primary btn-ghost bg-transparent flex flex-col justify-center items-center w-20 h-20 ${modalType == "shutdown" ? "btn-active rounded-2xl bg-blue-600 text-white" : ""}`}
           >
             <Icon
               icon="material-symbols:cancel-outline"

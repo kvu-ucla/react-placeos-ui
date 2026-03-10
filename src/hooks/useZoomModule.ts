@@ -1,6 +1,6 @@
 // src/hooks/useZoomModule.ts
 import { useEffect, useState } from "react";
-import { getModule, PlaceModuleBinding, connectionState } from "@placeos/ts-client";
+import {getModule, PlaceModuleBinding, connectionState, showSystem} from "@placeos/ts-client";
 import {useParams} from "react-router-dom";
 
 type CallState =
@@ -105,6 +105,20 @@ interface Input {
   icon: string;
 }
 
+export const SYSTEM_FEATURE = {
+  Recording: 'recording',
+  Booking: 'booking',
+  AV: 'av',
+  Lighting: 'lighting',
+  HVAC: 'hvac',
+  CameraControl: 'camera_control',
+  PTZ: 'ptz',
+  Signage: 'signage',
+  AccessControl: 'access_control',
+  Occupancy: 'occupancy',
+  BruinCast: 'bruincast',
+};
+
 let subscriptions: (() => void)[] = [];
 
 export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
@@ -128,6 +142,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   const [muteEveryone, setMuteEveryone] = useState<boolean>();
   const [participants, setParticipants] = useState<ZoomParticipant[]>([]);
   const [activeBooking, setActiveBooking] = useState<ZoomBooking>();
+  const [getFeatures, setActiveFeatures] = useState<string[]>();
 
   type CameraMap = Record<string, Camera>;
   type OutputMap = Record<string, Output>;
@@ -140,7 +155,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     const value = !!(data && data.length > 0);
     setRecording(value);
   };
-
+  
   // Helper: add missing cameras and prune removed ones
   const syncCameraSet = (ids: string[]) => {
     setCams((prev) => {
@@ -202,6 +217,15 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
       console.error('Error during subscription:', error);
     }
   }, []);
+  
+  //get system features
+  useEffect(() => {
+    const sub = showSystem(systemId).subscribe((sys) => {
+      const active = Object.values(SYSTEM_FEATURE).filter((f) => sys.features.includes(f));
+      setActiveFeatures(active);
+    });
+    return () => sub.unsubscribe();
+  }, [systemId]);
 
   // useEffect(() => {
   //   const [first, second] = bookings ?? [];
@@ -649,6 +673,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     activeBooking,
     participants,
     participantExpel,
+    getFeatures,
     gallery,
     leave,
     joinPmi,

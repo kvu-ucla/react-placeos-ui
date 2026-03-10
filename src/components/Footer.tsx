@@ -4,6 +4,7 @@ import { useModalContext } from "../hooks/ModalContext";
 import { useZoomContext } from "../hooks/ZoomContext";
 import { useEffect, useState } from "react";
 import * as Slider from '@radix-ui/react-slider';
+import {SYSTEM_FEATURE} from "../hooks/useZoomModule.ts";
 
 
 
@@ -14,6 +15,7 @@ export default function Footer() {
     adjustMasterVolume,
     setMasterMute,
     // toggleMasterMute,
+    getFeatures,  
     callStatus,
     recording,
   } = useZoomContext();
@@ -35,31 +37,32 @@ export default function Footer() {
 
   return (
     <footer className="min-h-32 bg-blue-900 text-white px-4 py-2  flex justify-between items-center">
-      {recording && (
-        <div className="flex flex-col items-start justify-start p-2">
-          <div className="inline-flex justify-evenly items-center bg-gray-400/15 rounded-[10px] px-4 py-2">
-            <div className="relative">
-              <div className="absolute inline-flex h-4 w-4 rounded-full bg-[#48E960] opacity-75 animate-ping"></div>
-              <div className="relative h-4 w-4 bg-[#48E960] rounded-full mr-4"></div>
+      {getFeatures?.includes(SYSTEM_FEATURE.BruinCast) && (
+        recording ? (
+          <div className="flex flex-col items-start justify-start p-2">
+            <div className="inline-flex justify-evenly items-center bg-gray-400/15 rounded-[10px] px-4 py-2">
+              <div className="relative">
+                <div className="absolute inline-flex h-4 w-4 rounded-full bg-[#48E960] opacity-75 animate-ping"></div>
+                <div className="relative h-4 w-4 bg-[#48E960] rounded-full mr-4"></div>
+              </div>
+              <div className="font-semibold text-xl text-white">BruinCasting</div>
             </div>
-            <div className="font-semibold text-xl text-white">BruinCasting</div>
+            <div className="text-lg text-gray-300">
+              Recording powered by BruinCast
+            </div>
           </div>
-          <div className="text-lg text-gray-300">
-            Recording powered by BruinCast
+        ) : (
+          <div className="flex flex-col items-start justify-start p-2">
+            <div className="inline-flex justify-evenly items-center bg-[#001A5C] rounded-[10px] px-4 py-2">
+              <div className="h-4 w-4 bg-[#CCCCCC] rounded-full mr-4"></div>
+              <div className="font-semibold text-xl text-white">Not Bruincasting</div>
+            </div>
+            <div className="text-lg text-gray-300">
+              Recording powered by BruinCast
+            </div>
           </div>
-        </div>
-      )}
-      {!recording && (
-        <div className="flex flex-col items-start justify-start ep-2">
-          <div className="inline-flex justify-evenly items-center bg-[#001A5C] rounded-[10px] px-4 py-2">
-            <div className="h-4 w-4 bg-[#CCCCCC] rounded-full mr-4"></div>
-            <div className="font-semibold text-xl text-white">Not Bruincasting</div>
-          </div>
-          <div className="text-lg text-gray-300">
-            Recording powered by BruinCast
-          </div>
-        </div>
-      )}
+        )
+      )}@
       <div className="flex items-center space-x-2">
         <div className="flex items-center mr-8">
           <div className="flex flex-col items-center mr-4">
