@@ -56,6 +56,7 @@ export interface ZoomBooking {
   meetingName: string;
   meetingNumber: string;
   isInstantMeeting: boolean;
+  meetingPassword: string;
 }
 
 interface Microphone {

@@ -51,7 +51,7 @@ export function CameraTab() {
 
             {/* Pan Zoom Tilt + Presets */}
             <div className="flex justify-between items-start gap-4">
-                <div className="bg-gray-400 w-full h-[600px] flex items-center justify-center text-white text-lg font-bold rounded">
+                <div className="bg-gray-400 w-full flex items-center justify-center text-white text-lg font-bold rounded">
                     <CameraController
                         id={system_id!}
                         activeCamera={{mod: selectedCamera!}}
