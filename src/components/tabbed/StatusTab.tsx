@@ -87,9 +87,9 @@ export function StatusTab() {
                 <div className="font-semibold text-black">
                     {currentMeeting?.meetingName}
                 </div>
-                <div className="text-gray-600">
-                    Meeting Number: {activeBooking?.meetingNumber ?? "No Meeting"}
-                    Passcode: {activeBooking?.meetingPassword || "None"}
+                <div className="text-gray-600 flex gap-4">
+                    <span>Meeting Number: {activeBooking?.meetingNumber ?? "No Meeting"}</span>
+                    <span>Passcode: {activeBooking?.meetingPassword || "None"}</span>
                 </div>
             </div>
             {/* Tabs and Global Tools */}
