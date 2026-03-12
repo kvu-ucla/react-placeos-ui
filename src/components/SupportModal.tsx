@@ -13,9 +13,9 @@ interface ContactInfo {
 const contacts: ContactInfo[] = [
   {
     title: "AV Technical Support",
-    description: "Immediate support line\nHours: 7am–7:30pm",
-    phone: "(310) 206-6597",
-    href: "tel:+13102066597",
+    description: "TBD",
+    phone: "TBD",
+    href: "tel:+",
   },
   {
     title: "Facilities Support",

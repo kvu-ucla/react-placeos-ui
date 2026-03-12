@@ -221,10 +221,10 @@ export default function SettingsModal({
                     </span>
                   </div>
                   <a
-                    href="tel:+13102066597"
+                    href="tel:+"
                     className="ml-2 font-bold hover:underline"
                   >
-                    (310) 206-6597
+                    TBD
                   </a>
                 </div>
               </div>
