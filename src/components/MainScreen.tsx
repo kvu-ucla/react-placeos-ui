@@ -1,5 +1,5 @@
 import { Header } from "./Header";
-import SessionDetails from "./SessionDetails";
+// import SessionDetails from "./SessionDetails";
 import Footer from "./Footer";
 import SessionControls from "./SessionControls";
 
