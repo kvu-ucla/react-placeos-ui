@@ -377,10 +377,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
       const binding = mod.binding(bindingName);
       if (!binding) return;
 
-      const bound = binding.bind();
-      subscriptions.push(bound);
-
-      const sub = binding.listen().subscribe((v) => {
+      const sub = binding.bindThenSubscribe((v) => {
         setter(v);
       });
 
