@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { useZoomContext } from "../hooks/ZoomContext.tsx";
+import { useControlContext } from "../hooks/ControlStateContext.tsx";
 
 interface ContactInfo {
   title: string;
@@ -10,35 +11,38 @@ interface ContactInfo {
   href: string;
 }
 
-const contacts: ContactInfo[] = [
-  {
-    title: "AV Technical Support",
-    description: "Please see staff in Dodd 300 for assistance.",
-    phone: "",
-    href: "tel:+",
-  },
-  {
-    title: "Facilities Support",
-    description: "Hours: 9am–5pm\nWeekdays Only",
-    phone: "(310) 825-9236",
-    href: "tel:+13108259236",
-  },
-  {
-    title: "Emergency Support",
-    description: "Crisis response hotline",
-    phone: "(800) 900-UCLA",
-    href: "tel:+18009008525",
-  },
-];
-
 export default function SupportModal({ onClose }: { onClose: () => void }) {
   const [activeTab, setActiveTab] = useState<"Contact" | "Troubleshoot">(
     "Contact",
   );
 
-  const {
-  wsConnection
-  } = useZoomContext();
+  const { wsConnection } = useZoomContext();
+  const { system } = useControlContext();
+
+  const avDescription = system.name?.includes("Dodd")
+    ? "Please see staff in Dodd 300 for assistance."
+    : "Please see the support staff for assistance.";
+
+  const contacts: ContactInfo[] = [
+    {
+      title: "AV Technical Support",
+      description: avDescription,
+      phone: "",
+      href: "tel:+",
+    },
+    {
+      title: "Facilities Support",
+      description: "Hours: 9am–5pm\nWeekdays Only",
+      phone: "(310) 825-9236",
+      href: "tel:+13108259236",
+    },
+    {
+      title: "Emergency Support",
+      description: "Crisis response hotline",
+      phone: "(800) 900-UCLA",
+      href: "tel:+18009008525",
+    },
+  ];
   
   
 
