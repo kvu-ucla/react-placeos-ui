@@ -13,8 +13,8 @@ interface ContactInfo {
 const contacts: ContactInfo[] = [
   {
     title: "AV Technical Support",
-    description: "TBD",
-    phone: "TBD",
+    description: "Please see staff in Dodd 300 for assistance.",
+    phone: "",
     href: "tel:+",
   },
   {
