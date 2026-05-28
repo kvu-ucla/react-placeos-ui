@@ -144,6 +144,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
   const [participants, setParticipants] = useState<ZoomParticipant[]>([]);
   const [activeBooking, setActiveBooking] = useState<ZoomBooking>();
   const [getFeatures, setActiveFeatures] = useState<string[]>();
+  const [needsPassword, setNeedsPassword] = useState(false);
 
   type CameraMap = Record<string, Camera>;
   type OutputMap = Record<string, Output>;
@@ -255,6 +256,18 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     if (!module) return;
 
     await module.execute("dial_join", [meetingId]);
+  };
+
+  const submitPassword = async (password: string) => {
+    if (!module) return;
+
+    await module.execute("input_password", [password]);
+  };
+
+  const cancelPassword = async () => {
+    if (!module) return;
+
+    await module.execute("cancel_password");
   };
 
   //toggle in-call microphone
@@ -576,6 +589,7 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     bindAndListen("current_booking", module, setCurrentMeeting);
     bindAndListen("next_booking", module, setNextMeeting);
     bindAndListen("Participants", module, setParticipants);
+    bindAndListen("prompt_passcode", module, setNeedsPassword);
     
     
     //bind to Recording (Epiphan) module in placeOS
@@ -676,6 +690,9 @@ export function useZoomModule(systemId: string, mod = "ZoomCSAPI") {
     participantExpel,
     getFeatures,
     gallery,
+    needsPassword,
+    submitPassword,
+    cancelPassword,
     leave,
     joinPmi,
     joinMeetingId,

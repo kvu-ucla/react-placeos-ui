@@ -10,7 +10,7 @@ interface meetingDetails {
 }
 
 export function ClassInfoCard() {
-  const { nextMeeting, currentMeeting } = useZoomContext();
+  const { nextMeeting, currentMeeting, sharing } = useZoomContext();
   const [meetingDetails, setMeetingDetails] = useState<meetingDetails>({
     classStart: "",
     classEnd: "",
@@ -127,55 +127,28 @@ export function ClassInfoCard() {
             </h1>
             <p className="text-xl">{meetingDetails.instructor}</p>
           </div>
-          <div className="mt-8 mb-8 text-xl flex items-center justify-center gap-2">
+          <div className="mt-8 mb-4 text-xl flex items-center justify-center gap-2">
             <span>Ends at</span>
             <span>{meetingDetails.classEnd}</span>
             <span className="text-xs mx-2">●</span>
             <div>{upcoming}</div>
           </div>
-
-          {/*<div className="flex items-center justify-center gap-2">*/}
-          {/*  /!*Sharing Key*!/*/}
-          {/*  <div className="font-semibold">*/}
-          {/*    Sharing Key: {sharing?.directPresentationSharingKey}*/}
-          {/*  </div>*/}
-          {/*  /!*BruinCasting State*!/*/}
-          {/*  {recording && (*/}
-          {/*      <div className="flex flex-col items-center p-2">*/}
-          {/*        <div className="inline-flex justify-evenly items-center bg-gray-400/15 rounded-[10px] px-4 py-2">*/}
-          {/*          <div className="relative">*/}
-          {/*            <div className="absolute inline-flex h-4 w-4 rounded-full bg-[#48E960] opacity-75 animate-ping"></div>*/}
-          {/*            <div className="relative h-4 w-4 bg-[#48E960] rounded-full mr-4"></div>*/}
-          {/*          </div>*/}
-          {/*          <div className="font-semibold text-xl">BruinCasting</div>*/}
-          {/*        </div>*/}
-          {/*        <div className="text-lg text-gray-300">*/}
-          {/*          Recording powered by BruinCast*/}
-          {/*        </div>*/}
-          {/*      </div>*/}
-          {/*  )}*/}
-          {/*  {!recording && (*/}
-          {/*      <div className="flex flex-col items-center p-2">*/}
-          {/*        <div className="inline-flex justify-evenly items-center bg-[#001A5C] rounded-[10px] px-4 py-2">*/}
-          {/*          <div className="h-4 w-4 bg-[#CCCCCC] rounded-full mr-4"></div>*/}
-          {/*          <div className="font-semibold text-xl">Not Bruincasting</div>*/}
-          {/*        </div>*/}
-          {/*        <div className="text-lg text-gray-300">*/}
-          {/*          Recording powered by BruinCast*/}
-          {/*        </div>*/}
-          {/*      </div>*/}
-          {/*  )}*/}
-          {/*</div>*/}
-
         </>
       ) : (
         <>
-          <div className="p-6 text-2xl flex items-center justify-center gap-2 h-[300px]">
+          <div className="flex-1 p-6 text-2xl flex items-center justify-center gap-2">
             <span>
               No classes are currently scheduled. You can still start a session.
             </span>
           </div>
         </>
+      )}
+      {sharing?.directPresentationSharingKey && (
+        <div className="text-lg flex items-center justify-center gap-2 mb-2">
+          <Icon icon="material-symbols:screen-share-outline-rounded" width={24} height={24} />
+          <span>Sharing Key:</span>
+          <span className="font-semibold tracking-widest">{sharing.directPresentationSharingKey}</span>
+        </div>
       )}
     </div>
   );

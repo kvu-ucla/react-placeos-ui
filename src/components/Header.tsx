@@ -1,4 +1,5 @@
 // src/components/Header.tsx
+import { useEffect } from "react";
 import Clock from "./Clock";
 import { useControlContext } from "../hooks/ControlStateContext";
 
@@ -12,12 +13,17 @@ import SurveyModal from "./SurveyModal";
 import { useTour } from "@reactour/tour";
 import { useZoomContext } from "../hooks/ZoomContext.tsx";
 import OfflineModal from "./OfflineModal.tsx";
+import NumpadModal from "./NumpadModal.tsx";
 
 export function Header() {
   const { active, system } = useControlContext();
-  const { wsConnection } = useZoomContext();
+  const { wsConnection, needsPassword, submitPassword, cancelPassword, leave } = useZoomContext();
   const { modalType, initialTab, showModal, closeModal } = useModalContext();
   const { setIsOpen } = useTour();
+
+  useEffect(() => {
+    if (needsPassword) showModal("numpad");
+  }, [needsPassword]);
 
   return (
     <header
@@ -124,6 +130,13 @@ export function Header() {
       )}
       {modalType == "survey" && (
           <SurveyModal onClose={() => closeModal()} />
+      )}
+      {modalType === "numpad" && (
+        <NumpadModal
+          title="Enter Meeting Password"
+          onClose={() => { cancelPassword(); closeModal(); }}
+          onConfirm={(value) => { submitPassword(value); closeModal(); }}
+        />
       )}
       {wsConnection == false && (
         <OfflineModal />

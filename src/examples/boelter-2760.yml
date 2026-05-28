@@ -1,3 +1,4 @@
+calendar_id: boelter-02760
 local_outputs:
   - Display_1
   - Display_2
@@ -108,12 +109,12 @@ inputs:
     name: Production Input HDMI
     icon: connected_tv
   Camera_1:
-    name: Audience Camera
+    name: Presenter Camera
     icon: videocam
     type: cam
     mod: Camera_1
   Camera_2:
-    name: Presenter Camera
+    name: Audience Camera
     icon: videocam
     type: cam
     mod: Camera_2
@@ -146,15 +147,6 @@ participant_routes:
   Display_10: Zoom_Output_1
 local_microphones:
   - name: Catchbox
-    level_id: '5'
-    mute_id: '5'
-    # optional keys
-    module_id: 'Mixer_1'
-    default_muted: true
-    default_level: 1100
-    min_level: 1000
-    max_level: 1200
-  - name: Clip
     level_id: '6'
     mute_id: '6'
     # optional keys
@@ -163,3 +155,42 @@ local_microphones:
     default_level: 1100
     min_level: 1000
     max_level: 1200
+  - name: Clip
+    level_id: '5'
+    mute_id: '5'
+    # optional keys
+    module_id: 'Mixer_1'
+    default_muted: true
+    default_level: 1100
+    min_level: 1000
+    max_level: 1200
+persistent_log_level: debug
+ignore_fls_signal: true
+startup_exec:
+  - module: Camera_1
+    function_name: autoframe
+    arguments:
+      - true
+  - module: Camera_2
+    function_name: cam_preset_recall
+    arguments:
+      - 1
+  - module: Camera_3
+    function_name: cam_preset_recall
+    arguments:
+      - 1
+  - module: Mixer_1
+    function_name: set_preset
+    arguments:
+      - 1
+shutdown_exec:
+  - module: ZoomCSAPI_1
+    function_name: call_disconnect
+  - module: Camera_1
+    function_name: autoframe
+    arguments:
+      - false
+  - module: Mixer_1
+    function_name: set_preset
+    arguments:
+      - 2

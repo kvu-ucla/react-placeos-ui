@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 import type { PlaceAuthOptions } from "@placeos/ts-client";
-import { logout, PlaceUser, setup, showUser } from "@placeos/ts-client";
+import { logout, PlaceUser, setAPI_Key, setup, showUser } from "@placeos/ts-client";
 import { lastValueFrom } from "rxjs";
 
 interface AuthData {
@@ -31,6 +31,24 @@ export interface PlaceSettings {
   mock: boolean;
 
   storage?: "session" | "local";
+}
+
+async function setupDev(): Promise<void> {
+  const apiKey = import.meta.env.VITE_PLACEOS_API_KEY as string | undefined;
+  if (!apiKey) throw new Error("VITE_PLACEOS_API_KEY is not set in .env.development");
+
+  const config: PlaceAuthOptions = {
+    auth_type: "auth_code",
+    host: location.host,
+    auth_uri: `${location.origin}/auth/oauth/authorize`,
+    token_uri: `${location.origin}/auth/oauth/token`,
+    redirect_uri: `${location.origin}/oauth-resp.html`,
+    scope: "public",
+    handle_login: false,
+    mock: false,
+  };
+  await setup(config);
+  setAPI_Key(apiKey, true);
 }
 
 /**
@@ -80,13 +98,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     window.debug = true;
     const checkAuth = async () => {
       try {
-        // This is the single function call on load
-        await setupPlace({
-          route: "/control",
-          use_domain: false,
-          local_login: false,
-          mock: false,
-        });
+        if (import.meta.env.DEV) {
+          await setupDev();
+        } else {
+          await setupPlace({
+            route: "/control",
+            use_domain: false,
+            local_login: false,
+            mock: false,
+          });
+        }
         const user = await lastValueFrom(showUser("current"));
         setUser(user);
         setIsAuthenticated(true);
