@@ -3,12 +3,12 @@
 name: BUILD
 permissions:
   contents: write
- 
+
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
   push:
-    branches: [main, development, trunk, develop, release/**, rc/**, release]
+    branches: [main, development, dev, trunk, develop, release/**, rc/**, release, feat/**]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -60,8 +60,12 @@ jobs:
           then
               echo "configuration=staging" >> $GITHUB_OUTPUT
               echo "deploy_branch=uat" >> $GITHUB_OUTPUT
+          elif [[ ${{ steps.branch_name.outputs.name }} == "feat_"* ]]
+          then
+              echo "configuration=development" >> $GITHUB_OUTPUT
+              echo "deploy_branch=${{ steps.branch_name.outputs.name }}" >> $GITHUB_OUTPUT
           else
-              echo "configuration=staging" >> $GITHUB_OUTPUT
+              echo "configuration=development" >> $GITHUB_OUTPUT
               echo "deploy_branch=dev" >> $GITHUB_OUTPUT
           fi
     
@@ -91,11 +95,13 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-
-    #run using prod mode to use .env.prod to embed api key for dev purposes and avoid SSO
+      
+      #run using prod mode to use .env.prod to embed api key for dev purposes and avoid SSO
       - name: Build affected applications
         run: |
-          npm run build
+          npm run build -- --mode ${{ env.configuration }}
+        env:
+          VITE_SHOW_MOCKS: ${{ env.configuration == 'development' && 'true' || 'false' }}
 
       - name: Deploy the application(${{ matrix.package }})
         uses: MrYuion/git-publish-subdir-action@develop
