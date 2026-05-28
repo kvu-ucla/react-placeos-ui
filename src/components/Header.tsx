@@ -17,7 +17,7 @@ import NumpadModal from "./NumpadModal.tsx";
 
 export function Header() {
   const { active, system } = useControlContext();
-  const { wsConnection, needsPassword, submitPassword, cancelPassword, leave } = useZoomContext();
+  const { wsConnection, needsPassword, submitPassword, cancelPassword } = useZoomContext();
   const { modalType, initialTab, showModal, closeModal } = useModalContext();
   const { setIsOpen } = useTour();
 
