@@ -36,13 +36,11 @@ export function ClassInfoCard() {
 
   useEffect(() => {
     const start = currentMeeting
-      ? getLocaleTime(Number(currentMeeting.startTime))
+      ? getLocaleTime(currentMeeting.event_start)
       : "";
-    const end = currentMeeting
-      ? getLocaleTime(Number(currentMeeting.endTime))
-      : "";
-    const title = currentMeeting ? currentMeeting.meetingName : "";
-    const instructor = currentMeeting ? currentMeeting.creatorName : "";
+    const end = currentMeeting ? getLocaleTime(currentMeeting.event_end) : "";
+    const title = currentMeeting ? currentMeeting.title : "";
+    const instructor = currentMeeting?.creator ?? "";
 
     const data = {
       classStart: start,
@@ -56,7 +54,7 @@ export function ClassInfoCard() {
 
   useEffect(() => {
     const start = nextMeeting
-      ? "Upcoming " + getLocaleTime(Number(nextMeeting.startTime))
+      ? "Upcoming " + getLocaleTime(nextMeeting.event_start)
       : "No upcoming classes";
 
     setUpcoming(start);
@@ -125,7 +123,9 @@ export function ClassInfoCard() {
             <h1 className="mt-4 text-3xl font-bold">
               {meetingDetails.classTitle}
             </h1>
-            <p className="text-xl">{meetingDetails.instructor}</p>
+            {meetingDetails.instructor ? (
+              <p className="text-xl">{meetingDetails.instructor}</p>
+            ) : null}
           </div>
           <div className="mt-8 mb-8 text-xl flex items-center justify-center gap-2">
             <span>Ends at</span>

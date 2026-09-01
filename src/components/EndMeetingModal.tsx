@@ -3,11 +3,11 @@ import { useZoomContext } from "../hooks/ZoomContext";
 import { useEscapeKey } from "../hooks/useEscapeKey";
 
 export default function EndMeetingModal({ onClose }: { onClose: () => void }) {
-  const { leave } = useZoomContext();
+  const { exitMeeting } = useZoomContext();
   useEscapeKey(onClose);
 
   const endMeeting = () => {
-    leave();
+    exitMeeting();
     onClose();
   };
   return (

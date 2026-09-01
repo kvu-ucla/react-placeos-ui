@@ -11,12 +11,10 @@ export default function SessionControls() {
   const {
     callStatus,
     recording,
-    sharing,
     gallery,
     toggleGallery,
-    toggleSharing,
-    toggleAudioMuteAll,
-    toggleVideoMuteAll,
+    toggleMicMute,
+    toggleCameraMute,
   } = useZoomContext();
   const { showModal } = useModalContext();
 
@@ -24,7 +22,6 @@ export default function SessionControls() {
   const [loadingStates, setLoadingStates] = useState({
     mic: false,
     camera: false,
-    share: false,
     gallery: false,
   });
 
@@ -32,7 +29,7 @@ export default function SessionControls() {
   const LOADING_TIMEOUT_MS = 10000;
   const loadingTimeouts = useRef<
     Record<keyof typeof loadingStates, ReturnType<typeof setTimeout> | null>
-  >({ mic: null, camera: null, share: null, gallery: null });
+  >({ mic: null, camera: null, gallery: null });
 
   const clearLoadingTimeout = useCallback(
     (key: keyof typeof loadingStates) => {
@@ -77,13 +74,9 @@ export default function SessionControls() {
   const prevStates = useRef({
     isMicMuted: callStatus?.isMicMuted,
     isCamMuted: callStatus?.isCamMuted,
-    isSharing:
-      sharing?.isDirectPresentationConnected || sharing?.isSharingBlackMagic,
     gallery: gallery,
   });
 
-  const isSharing =
-    sharing?.isDirectPresentationConnected || sharing?.isSharingBlackMagic;
   const isVideoMuted = callStatus?.isCamMuted;
   const isMicAudioMuted = callStatus?.isMicMuted;
   const isJoined = callStatus?.status === "IN_MEETING";
@@ -102,13 +95,6 @@ export default function SessionControls() {
       prevStates.current.isCamMuted = isVideoMuted;
     }
   }, [isVideoMuted, stopLoading]);
-
-  useEffect(() => {
-    if (prevStates.current.isSharing !== isSharing) {
-      stopLoading("share");
-      prevStates.current.isSharing = isSharing;
-    }
-  }, [isSharing, stopLoading]);
 
   useEffect(() => {
     if (prevStates.current.gallery !== gallery) {
@@ -138,7 +124,7 @@ export default function SessionControls() {
   const handleToggleMic = async () => {
     startLoading("mic");
     try {
-      await toggleAudioMuteAll();
+      await toggleMicMute();
       // Note: loading will be cleared by useEffect when state changes
     } catch (error) {
       console.error("Failed to toggle mic:", error);
@@ -149,22 +135,11 @@ export default function SessionControls() {
   const handleToggleCamera = async () => {
     startLoading("camera");
     try {
-      await toggleVideoMuteAll();
+      await toggleCameraMute();
       // Note: loading will be cleared by useEffect when state changes
     } catch (error) {
       console.error("Failed to toggle camera:", error);
       stopLoading("camera"); // Clear on error
-    }
-  };
-
-  const handleToggleSharing = async () => {
-    startLoading("share");
-    try {
-      await toggleSharing();
-      // Note: loading will be cleared by useEffect when state changes
-    } catch (error) {
-      console.error("Failed to toggle sharing:", error);
-      stopLoading("share"); // Clear on error
     }
   };
 
@@ -203,7 +178,7 @@ export default function SessionControls() {
         )}
       </div>
 
-      <div className="grid grid-cols-5 gap-2 items-stretch mb-4">
+      <div className="grid grid-cols-4 gap-2 items-stretch mb-4">
         <ControlCard
           id="microphone"
           label="Microphone: "
@@ -223,14 +198,6 @@ export default function SessionControls() {
           buttonState={isVideoMuted}
           isLoading={loadingStates.camera}
           // detailsButton={() => showModal("settings", { tab: "Camera" })}
-        />
-        <ControlCard
-          id="screenshare"
-          label="Screen Share: "
-          icon={IconType.Share}
-          buttonAction={handleToggleSharing}
-          buttonState={!isSharing}
-          isLoading={loadingStates.share}
         />
         <ControlCard
           id="gallery"
@@ -279,10 +246,8 @@ export default function SessionControls() {
                 present.
               </li>
               <li>
-                Tap "Share Screen" and input Sharing key:{" "}
-                <span className="font-semibold">
-            {sharing?.directPresentationSharingKey}
-          </span>
+                Tap "Share Screen" and input the{" "}
+                <span className="font-semibold">sharing key shown on the room display</span>.
               </li>
             </ol>
           </div>

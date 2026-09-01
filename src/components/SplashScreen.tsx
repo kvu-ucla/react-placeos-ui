@@ -5,18 +5,18 @@ import { useZoomContext } from "../hooks/ZoomContext";
 
 export default function SplashScreen() {
   const { system, togglePower } = useControlContext();
-  const { joinPmi, joinMeetingId, currentMeeting } = useZoomContext();
+  const { startInstantMeeting, joinMeeting, currentMeeting } = useZoomContext();
   const noMeeting = currentMeeting == null;
 
   function startScheduled() {
     togglePower();
     if (currentMeeting) {
-      joinMeetingId(currentMeeting.meetingNumber);
+      joinMeeting(currentMeeting.id);
     }
   }
   function startAdHoc() {
     togglePower();
-    joinPmi();
+    startInstantMeeting();
   }
 
   return (

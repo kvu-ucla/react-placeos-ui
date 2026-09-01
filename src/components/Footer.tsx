@@ -4,7 +4,7 @@ import { useModalContext } from "../hooks/ModalContext";
 import { useZoomContext } from "../hooks/ZoomContext";
 import { useEffect, useState } from "react";
 import VolumeSlider from "./VolumeSlider";
-import {SYSTEM_FEATURE} from "../hooks/useZoomModule.ts";
+import {SYSTEM_FEATURE} from "../hooks/useAvControls.ts";
 
 
 

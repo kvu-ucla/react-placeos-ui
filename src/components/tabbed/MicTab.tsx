@@ -2,7 +2,7 @@ import {useZoomContext} from "../../hooks/ZoomContext";
 import {Icon} from "@iconify/react";
 import {useEffect, useState} from "react";
 import VolumeSlider from "../VolumeSlider";
-import type { DspMicrophone } from "../../hooks/useZoomModule.ts";
+import type { DspMicrophone } from "../../hooks/useAvControls.ts";
 
 export function MicTab() {
     const {

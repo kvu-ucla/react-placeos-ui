@@ -1,32 +1,27 @@
 import { useZoomContext } from "../../hooks/ZoomContext";
-import type {ZoomParticipant} from "../../hooks/useZoomModule.ts";
+import type { ZrcParticipant } from "../../hooks/useZoomRoom";
 
 export function StatusTab() {
     const {
         currentMeeting,
         activeBooking,
-        muteEveryone,
-        toggleAudioMuteEveryone,
-        participants,
-        participantMediaMute
+        participants
     } = useZoomContext();
 
-    const isAudioMuted = (audioState: any) => {
-        return audioState === 'AUDIO_MUTED';
-    };
-    
+    const displayName = (participant: ZrcParticipant) =>
+        participant.user_name ?? participant.name ?? "Unknown";
 
     // Separate participants by status
     const activeParticipants = participants?.filter(p => !p.is_in_waiting_room) || [];
     const waitingParticipants = participants?.filter(p => p.is_in_waiting_room) || [];
 
-    const ParticipantRow = ({ participant }: { participant: ZoomParticipant }) => (
+    const ParticipantRow = ({ participant }: { participant: ZrcParticipant }) => (
         <div className="flex items-center justify-between py-4 px-0">
             {/* User info section */}
             <div className="flex items-center space-x-3">
                 <div className="relative">
                     <div className="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
-                        {participant.user_name.charAt(0).toUpperCase()}
+                        {displayName(participant).charAt(0).toUpperCase()}
                     </div>
                     {/* Raised hand indicator */}
                     {participant.hand_status?.is_raise_hand && (
@@ -37,7 +32,7 @@ export function StatusTab() {
                 </div>
 
                 <div className="flex items-center space-x-2">
-                    <span className="text-gray-900 font-medium text-base">{participant.user_name}</span>
+                    <span className="text-gray-900 font-medium text-base">{displayName(participant)}</span>
                     {participant.is_host && (
                         <span className="text-xs text-gray-500">(Host)</span>
                     )}
@@ -45,33 +40,6 @@ export function StatusTab() {
                         <span className="text-xs text-gray-500">(Co-host)</span>
                     )}
                 </div>
-            </div>
-
-            {/* Audio/Video controls */}
-            <div className="flex items-center space-x-3">
-                {/* Audio Control */}
-                <button
-                    onClick={() => participantMediaMute('audio', participant.user_id)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                        isAudioMuted(participant.audio_state)
-                            ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                            : 'bg-gray-600 text-white hover:bg-gray-700'
-                    }`}
-                >
-                    {isAudioMuted(participant.audio_state) ? 'Unmute' : 'Mute'}
-                </button>
-
-                {/* Video Control */}
-                <button
-                    onClick={() => participantMediaMute('video', participant.user_id)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                        !participant.video_is_sending
-                            ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                            : 'bg-gray-600 text-white hover:bg-gray-700'
-                    }`}
-                >
-                    {!participant.video_is_sending ? 'Enable video' : 'Disable video'}
-                </button>
             </div>
         </div>
     );
@@ -85,31 +53,11 @@ export function StatusTab() {
             {/* Room Info */}
             <div className="border rounded-md p-4 bg-white">
                 <div className="font-semibold text-black">
-                    {currentMeeting?.meetingName}
+                    {currentMeeting?.title}
                 </div>
                 <div className="text-gray-600 flex gap-4">
-                    <span>Meeting Number: {activeBooking?.meetingNumber ?? "No Meeting"}</span>
-                    <span>Passcode: {activeBooking?.meetingPassword || "None"}</span>
+                    <span>Meeting Number: {activeBooking?.id ?? "No Meeting"}</span>
                 </div>
-            </div>
-            {/* Tabs and Global Tools */}
-            {/* Global actions */}
-            <div className="flex gap-4">
-                {muteEveryone ? (
-                    <button
-                        onClick={toggleAudioMuteEveryone}
-                        className="bg-black text-white px-4 py-2 rounded text-2xl font-semibold"
-                    >
-                        Unmute all participants
-                    </button>
-                ) : (
-                    <button
-                        onClick={toggleAudioMuteEveryone}
-                        className="bg-gray-300 px-4 py-2 rounded text-2xl font-semibold"
-                    >
-                        Mute all participants
-                    </button>
-                )}
             </div>
 
             {/* Participants List */}
@@ -145,17 +93,9 @@ export function StatusTab() {
                                     <div className="flex items-center justify-between py-4 px-0">
                                         <div className="flex items-center space-x-3">
                                             <div className="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center text-white font-medium text-sm">
-                                                {participant.user_name.charAt(0).toUpperCase()}
+                                                {displayName(participant).charAt(0).toUpperCase()}
                                             </div>
-                                            <span className="text-gray-700 font-medium text-base">{participant.user_name}</span>
-                                        </div>
-                                        <div className="flex space-x-3">
-                                            <button className="px-4 py-2 bg-green-600 text-white rounded-full text-sm font-medium hover:bg-green-700 transition-colors">
-                                                Admit
-                                            </button>
-                                            <button className="px-4 py-2 bg-red-600 text-white rounded-full text-sm font-medium hover:bg-red-700 transition-colors">
-                                                Deny
-                                            </button>
+                                            <span className="text-gray-700 font-medium text-base">{displayName(participant)}</span>
                                         </div>
                                     </div>
                                     {index < waitingParticipants.length - 1 && (
