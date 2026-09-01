@@ -7,6 +7,7 @@ import MainScreen from "./MainScreen";
 import { Navigate, useParams } from "react-router-dom";
 import { ZoomProvider } from "../hooks/ZoomContext";
 import ClarityInitializer from "./ClarityInitializer.tsx";
+import ZoomPromptHost from "./prompts/ZoomPromptHost";
 
 export default function MainView() {
   const { system_id } = useParams();
@@ -18,6 +19,8 @@ export default function MainView() {
         <ClarityInitializer/>
       <ZoomProvider systemId={system_id}>
         <MainViewInner />
+        {/* Prompts (e.g. waiting_for_host) can fire on either screen */}
+        <ZoomPromptHost />
       </ZoomProvider>
     </ControlStateProvider>
   );

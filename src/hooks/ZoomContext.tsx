@@ -17,6 +17,8 @@ import { useModuleExecute } from "./placeos";
 
 export interface ZoomContextValue {
   system_id: string;
+  /** Module alias of the ZoomZRC driver instance */
+  zoomMod: string;
 
   // Zoom Room (ZoomZRC + Bookings)
   wsConnection?: boolean;
@@ -84,6 +86,7 @@ export function ZoomProvider({
   const value = useMemo<ZoomContextValue>(
     () => ({
       system_id: systemId,
+      zoomMod: mod,
       wsConnection: zoom.wsConnection,
       zoomOnline: zoom.zoomOnline,
       callStatus: zoom.callStatus,
@@ -120,7 +123,7 @@ export function ZoomProvider({
       toggleDspMute: av.toggleDspMute,
       execute,
     }),
-    [systemId, zoom, av, execute],
+    [systemId, mod, zoom, av, execute],
   );
 
   return <ZoomContext.Provider value={value}>{children}</ZoomContext.Provider>;
