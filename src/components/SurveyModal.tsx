@@ -2,6 +2,7 @@
 import {Icon} from "@iconify/react";
 import { useControlContext } from "../hooks/ControlStateContext.tsx";
 import { useEffect, useState } from "react";
+import { useEscapeKey } from "../hooks/useEscapeKey";
 
 
 export default function SupportModal({ onClose }: { onClose: () => void }) {
@@ -9,6 +10,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
   const [refreshKey, setRefreshKey] = useState(Date.now());
   
   const room = system?.name?.replace(/\s/g, '') ?? '';
+  useEscapeKey(onClose);
 
   //refresh when opening modal
   useEffect(() => {
@@ -19,11 +21,20 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
   
   return (
     <div className="modal modal-open bg-black/40">
-      <div className="bg-white p-8 rounded-lg">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Survey"
+        className="bg-white p-8 rounded-lg"
+      >
         {/* Header */}
         <div className="flex justify-between items-center border-b border-avit-grey pb-8">
           <h2 className="text-4xl font-semibold">Survey</h2>
-          <button onClick={onClose} className="btn-ghost text-2xl font-bold ">
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="btn-ghost text-2xl font-bold "
+          >
             <Icon
                 icon="material-symbols:close-small-outline-rounded"
                 width={48}

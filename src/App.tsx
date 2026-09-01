@@ -1,5 +1,6 @@
 // src/App.tsx
 import MainView from "./components/MainView";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { useAuth } from "./AuthContext";
 import { Route, Routes } from "react-router-dom";
 import BootstrapPage from "./BootstrapPage";
@@ -24,7 +25,14 @@ function App() {
           {isAuthenticated && (
             <>
               <Route path="/" element={<BootstrapPage />} />
-              <Route path="/:system_id" element={<MainView />} />
+              <Route
+                path="/:system_id"
+                element={
+                  <ErrorBoundary>
+                    <MainView />
+                  </ErrorBoundary>
+                }
+              />
             </>
           )}
         </Routes>

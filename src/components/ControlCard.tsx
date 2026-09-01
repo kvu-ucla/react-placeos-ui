@@ -1,22 +1,5 @@
 import { Icon } from "@iconify/react";
-export const IconType = {
-  Mic: {
-    On: "material-symbols:mic-outline-rounded",
-    Off: "material-symbols:mic-off-outline-rounded",
-  },
-  Camera: {
-    On: "material-symbols:videocam-outline-rounded",
-    Off: "material-symbols:videocam-off-outline-rounded",
-  },
-  Share: {
-    On: "material-symbols:present-to-all-outline-rounded",
-    Off: "material-symbols:cancel-presentation-outline-rounded",
-  },
-  Gallery: {
-    On: "material-symbols:person-outline-rounded",
-    Off: "material-symbols:person-off-outline-rounded",
-  },
-};
+import type { IconType } from "./icons";
 export function ControlCard({
   id,
   label,
@@ -29,7 +12,7 @@ export function ControlCard({
 }: {
   id: string;
   label: string;
-  icon?: any;
+  icon?: (typeof IconType)[keyof typeof IconType];
   disabled?: boolean;
   detailsButton?: () => void;
   buttonAction?: () => void;
@@ -87,6 +70,7 @@ export function ControlCard({
             ) : (
               <>
                 {hasButtonState &&
+                  icon &&
                   (buttonState ? (
                     <Icon
                       aria-disabled={disabled}

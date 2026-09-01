@@ -36,12 +36,15 @@ export function CameraTab() {
                         className="dropdown-content menu bg-base-100 rounded-box z-1 w-full text-3xl p-2 shadow-sm"
                     >
                         {Object.values(cams).map((cam) => (
-                            <li
-                                onClick={ () =>
-                                    cameraSelection(cam.camera_id)
-                                }
-                            >
-                                <a>{cam.camera_name}</a>
+                            <li key={cam.camera_id}>
+                                <button
+                                    type="button"
+                                    onClick={ () =>
+                                        cameraSelection(cam.camera_id)
+                                    }
+                                >
+                                    {cam.camera_name}
+                                </button>
                             </li>
                         ))}
                     </ul>

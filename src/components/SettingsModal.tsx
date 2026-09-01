@@ -6,6 +6,7 @@ import { MicTab } from "./tabbed/MicTab.tsx";
 import { DisplayTab } from "./tabbed/DisplayTab.tsx";
 import { StatusTab } from "./tabbed/StatusTab.tsx";
 import { SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY } from "../config";
+import { useEscapeKey } from "../hooks/useEscapeKey";
 
 export default function SettingsModal({
   onClose,
@@ -15,6 +16,7 @@ export default function SettingsModal({
   initialTab?: TabSection;
 }) {
   const [activeTab, setActiveTab] = useState<TabSection>(initialTab);
+  useEscapeKey(onClose);
   const audioTabs: TabSection[] = ["Volume"];
   const videoTabs: TabSection[] = ["Display"];
   const meetingTabs: TabSection[] = ["Status", "Camera"];
@@ -23,13 +25,20 @@ export default function SettingsModal({
     <div className="modal modal-open bg-black/40">
       <div
         id="settings"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Settings"
         className="modal-box bg-white p-8 max-w-full rounded-lg"
       >
         <div className="">
           {/* Header */}
           <div className="flex justify-between items-center border-b border-avit-grey pb-8">
             <h2 className="text-4xl font-semibold">Settings</h2>
-            <button onClick={onClose} className="btn-ghost text-2xl font-bold ">
+            <button
+              onClick={onClose}
+              aria-label="Close"
+              className="btn-ghost text-2xl font-bold "
+            >
               <Icon
                 icon="material-symbols:close-small-outline-rounded"
                 width={48}

@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react";
 import { useModalContext } from "../hooks/ModalContext";
 import { useZoomContext } from "../hooks/ZoomContext";
 import { useEffect, useState } from "react";
-import * as Slider from '@radix-ui/react-slider';
+import VolumeSlider from "./VolumeSlider";
 import {SYSTEM_FEATURE} from "../hooks/useZoomModule.ts";
 
 
@@ -22,11 +22,11 @@ export default function Footer() {
   const { showModal } = useModalContext();
   const isJoined = callStatus?.status === "IN_MEETING";
   const [value, setValue] = useState(volume);
-  const handleRelease = () => {
-    if (!value) return;
+  const handleRelease = (val: number) => {
+    if (!val) return;
 
-    value === 800 ? setMasterMute(true) : setMasterMute(false);
-    adjustMasterVolume(value);
+    setMasterMute(val === 800);
+    adjustMasterVolume(val);
   };
 
   useEffect(() => {
@@ -80,23 +80,12 @@ export default function Footer() {
                     height={72}
                 />}
           <div className="ml-4 w-[360px] min-h-[48px] overflow-visible">
-            <Slider.Root
-                className="relative flex items-center select-none touch-none w-full h-16"
-                min={800}
-                max={1200}
-                step={10}
-                value={[value!]}
-                onValueChange={([val]) => setValue(val)}
-                onValueCommit={() => handleRelease()}
-            >
-              <Slider.Track className="relative grow rounded-full h-6 bg-gray-300">
-                <Slider.Range className="absolute h-full bg-blue-500 rounded-full" />
-              </Slider.Track>
-              <Slider.Thumb
-                  className="block w-12 h-12 bg-white border-2 border-blue-500 rounded-full shadow-md hover:scale-110 transition-transform focus:outline-none focus:ring-6 focus:ring-blue-500"
-                  aria-label="Volume"
-              />
-            </Slider.Root>
+            <VolumeSlider
+                value={value!}
+                onChange={setValue}
+                onCommit={handleRelease}
+                ariaLabel="Master volume"
+            />
           </div>
         </div>
         

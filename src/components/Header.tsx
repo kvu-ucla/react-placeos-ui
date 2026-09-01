@@ -40,7 +40,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => showModal("survey")}
-            className={`cursor-pointer select-none border-0 outline-none font-semibold transition-colors flex flex-col justify-center items-center w-20 h-20 ${modalType == "survey" ? "rounded-2xl bg-blue-600! text-white" : "bg-transparent"}`}
+            className={`cursor-pointer select-none border-0 outline-none focus-visible:ring-2 focus-visible:ring-avit-blue font-semibold transition-colors flex flex-col justify-center items-center w-20 h-20 ${modalType == "survey" ? "rounded-2xl bg-blue-600! text-white" : "bg-transparent"}`}
           >
             <Icon
               icon="material-symbols:quiz-rounded"
@@ -53,7 +53,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => showModal("none")}
-            className={`cursor-pointer select-none border-0 outline-none font-semibold transition-colors flex flex-col justify-center items-center w-20 h-20 ${modalType == "none" ? "rounded-2xl bg-blue-600! text-white" : "bg-transparent"}`}
+            className={`cursor-pointer select-none border-0 outline-none focus-visible:ring-2 focus-visible:ring-avit-blue font-semibold transition-colors flex flex-col justify-center items-center w-20 h-20 ${modalType == "none" ? "rounded-2xl bg-blue-600! text-white" : "bg-transparent"}`}
           >
             <Icon
               icon="material-symbols:home-outline-rounded"
@@ -66,7 +66,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => setIsOpen(true)}
-            className={`cursor-pointer select-none border-0 outline-none font-semibold transition-colors flex flex-col justify-center items-center w-20 h-20 ${modalType == "tour" ? "rounded-2xl bg-blue-600! text-white" : "bg-transparent"}`}
+            className={`cursor-pointer select-none border-0 outline-none focus-visible:ring-2 focus-visible:ring-avit-blue font-semibold transition-colors flex flex-col justify-center items-center w-20 h-20 ${modalType == "tour" ? "rounded-2xl bg-blue-600! text-white" : "bg-transparent"}`}
           >
             <Icon
               icon="material-symbols:explore-outline-rounded"
@@ -78,7 +78,7 @@ export function Header() {
         )}
         <button
           onClick={() => showModal("support")}
-          className={`cursor-pointer select-none border-0 outline-none font-semibold transition-colors flex flex-col justify-center items-center w-20 h-20 ${modalType == "support" ? "rounded-2xl bg-blue-600! text-white" : "bg-transparent"}`}
+          className={`cursor-pointer select-none border-0 outline-none focus-visible:ring-2 focus-visible:ring-avit-blue font-semibold transition-colors flex flex-col justify-center items-center w-20 h-20 ${modalType == "support" ? "rounded-2xl bg-blue-600! text-white" : "bg-transparent"}`}
         >
           <Icon icon="material-symbols:support" width={48} height={48} />
           <span className="text-xl font-semibold">Support</span>
@@ -89,7 +89,7 @@ export function Header() {
             onClick={() => {
               showModal("settings", { tab: "Volume" });
             }}
-            className={`cursor-pointer select-none border-0 outline-none font-semibold transition-colors flex flex-col justify-center items-center w-20 h-20 ${modalType == "settings" ? "rounded-2xl bg-blue-600! text-white" : "bg-transparent"}`}
+            className={`cursor-pointer select-none border-0 outline-none focus-visible:ring-2 focus-visible:ring-avit-blue font-semibold transition-colors flex flex-col justify-center items-center w-20 h-20 ${modalType == "settings" ? "rounded-2xl bg-blue-600! text-white" : "bg-transparent"}`}
           >
             <Icon icon="material-symbols:tune-rounded" width={48} height={48} />
             <span className="text-xl font-semibold">Settings</span>
@@ -98,7 +98,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => showModal("shutdown")}
-            className={`cursor-pointer select-none border-0 outline-none font-semibold transition-colors flex flex-col justify-center items-center w-20 h-20 ${modalType == "shutdown" ? "rounded-2xl bg-blue-600! text-white" : "bg-transparent"}`}
+            className={`cursor-pointer select-none border-0 outline-none focus-visible:ring-2 focus-visible:ring-avit-blue font-semibold transition-colors flex flex-col justify-center items-center w-20 h-20 ${modalType == "shutdown" ? "rounded-2xl bg-blue-600! text-white" : "bg-transparent"}`}
           >
             <Icon
               icon="material-symbols:cancel-outline"

@@ -1,9 +1,11 @@
 // src/components/ShutdownModal.tsx
 
 import { useControlContext } from "../hooks/ControlStateContext";
+import { useEscapeKey } from "../hooks/useEscapeKey";
 
 export default function ShutdownModal({ onClose }: { onClose: () => void }) {
   const { togglePower } = useControlContext();
+  useEscapeKey(onClose);
 
   const systemOff = () => {
     togglePower();
@@ -12,7 +14,12 @@ export default function ShutdownModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="modal modal-open bg-black/40">
-      <div className="modal-box rounded-lg bg-white p-8">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Shut down system"
+        className="modal-box rounded-lg bg-white p-8"
+      >
         <h3 className="font-bold text-3xl mb-4">
           Are you sure you want to shut the system down?
         </h3>

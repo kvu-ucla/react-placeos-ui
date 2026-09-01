@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react";
 import { useZoomContext } from "../hooks/ZoomContext.tsx";
 import { useControlContext } from "../hooks/ControlStateContext.tsx";
 import { SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY } from "../config";
+import { useEscapeKey } from "../hooks/useEscapeKey";
 
 interface ContactInfo {
   title: string;
@@ -21,6 +22,8 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
   const avDescription = system.name?.includes("Dodd")
     ? "Please see staff in Dodd 300 for assistance."
     : "Please see the support staff for assistance.";
+
+  useEscapeKey(onClose);
 
   const contacts: ContactInfo[] = [
     {
@@ -45,11 +48,20 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="modal modal-open bg-black/40">
-      <div className="modal-box bg-white p-8 max-w-full rounded-lg">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Support"
+        className="modal-box bg-white p-8 max-w-full rounded-lg"
+      >
         {/* Header */}
         <div className="flex justify-between items-center border-b border-avit-grey pb-8">
           <h2 className="text-4xl font-semibold">Support</h2>
-          <button onClick={onClose} className="btn-ghost text-2xl font-bold ">
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="btn-ghost text-2xl font-bold "
+          >
             <Icon
               icon="material-symbols:close-small-outline-rounded"
               width={48}

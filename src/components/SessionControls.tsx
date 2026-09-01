@@ -1,28 +1,11 @@
 // src/components/SessionControls.tsx
 import { Icon } from "@iconify/react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { toast } from "react-toastify";
 import { useModalContext } from "../hooks/ModalContext";
 import { useZoomContext } from "../hooks/ZoomContext";
 import {ControlCard } from "./ControlCard.tsx";
-
-export const IconType = {
-  Mic: {
-    On: "material-symbols:mic-outline-rounded",
-    Off: "material-symbols:mic-off-outline-rounded",
-  },
-  Camera: {
-    On: "material-symbols:videocam-outline-rounded",
-    Off: "material-symbols:videocam-off-outline-rounded",
-  },
-  Share: {
-    On: "material-symbols:present-to-all-outline-rounded",
-    Off: "material-symbols:cancel-presentation-outline-rounded",
-  },
-  Gallery: {
-    On: "material-symbols:person-outline-rounded",
-    Off: "material-symbols:person-off-outline-rounded",
-  },
-};
+import { IconType } from "./icons";
 
 export default function SessionControls() {
   const {
@@ -45,6 +28,51 @@ export default function SessionControls() {
     gallery: false,
   });
 
+  // If backend state never flips, clear the spinner after this long
+  const LOADING_TIMEOUT_MS = 10000;
+  const loadingTimeouts = useRef<
+    Record<keyof typeof loadingStates, ReturnType<typeof setTimeout> | null>
+  >({ mic: null, camera: null, share: null, gallery: null });
+
+  const clearLoadingTimeout = useCallback(
+    (key: keyof typeof loadingStates) => {
+      const timeout = loadingTimeouts.current[key];
+      if (timeout) {
+        clearTimeout(timeout);
+        loadingTimeouts.current[key] = null;
+      }
+    },
+    [],
+  );
+
+  const startLoading = (key: keyof typeof loadingStates) => {
+    setLoadingStates((prev) => ({ ...prev, [key]: true }));
+    clearLoadingTimeout(key);
+    loadingTimeouts.current[key] = setTimeout(() => {
+      loadingTimeouts.current[key] = null;
+      setLoadingStates((prev) => ({ ...prev, [key]: false }));
+      toast.error("No response from room controls");
+    }, LOADING_TIMEOUT_MS);
+  };
+
+  const stopLoading = useCallback(
+    (key: keyof typeof loadingStates) => {
+      clearLoadingTimeout(key);
+      setLoadingStates((prev) => ({ ...prev, [key]: false }));
+    },
+    [clearLoadingTimeout],
+  );
+
+  // Clear any pending timeouts on unmount
+  useEffect(() => {
+    const timeouts = loadingTimeouts.current;
+    return () => {
+      Object.values(timeouts).forEach((timeout) => {
+        if (timeout) clearTimeout(timeout);
+      });
+    };
+  }, []);
+
   // Track previous states to detect changes
   const prevStates = useRef({
     isMicMuted: callStatus?.isMicMuted,
@@ -63,31 +91,31 @@ export default function SessionControls() {
   // Watch for state changes and clear loading when detected
   useEffect(() => {
     if (prevStates.current.isMicMuted !== isMicAudioMuted) {
-      setLoadingStates((prev) => ({ ...prev, mic: false }));
+      stopLoading("mic");
       prevStates.current.isMicMuted = isMicAudioMuted;
     }
-  }, [isMicAudioMuted]);
+  }, [isMicAudioMuted, stopLoading]);
 
   useEffect(() => {
     if (prevStates.current.isCamMuted !== isVideoMuted) {
-      setLoadingStates((prev) => ({ ...prev, camera: false }));
+      stopLoading("camera");
       prevStates.current.isCamMuted = isVideoMuted;
     }
-  }, [isVideoMuted]);
+  }, [isVideoMuted, stopLoading]);
 
   useEffect(() => {
     if (prevStates.current.isSharing !== isSharing) {
-      setLoadingStates((prev) => ({ ...prev, share: false }));
+      stopLoading("share");
       prevStates.current.isSharing = isSharing;
     }
-  }, [isSharing]);
+  }, [isSharing, stopLoading]);
 
   useEffect(() => {
     if (prevStates.current.gallery !== gallery) {
-      setLoadingStates((prev) => ({ ...prev, gallery: false }));
+      stopLoading("gallery");
       prevStates.current.gallery = gallery;
     }
-  }, [gallery]);
+  }, [gallery, stopLoading]);
   
   //accordion logic
   const [openAccordion, setOpenAccordion] = useState<'wireless' | 'local' | null>(null);
@@ -108,46 +136,46 @@ export default function SessionControls() {
 
   // Wrapper functions that handle loading states
   const handleToggleMic = async () => {
-    setLoadingStates((prev) => ({ ...prev, mic: true }));
+    startLoading("mic");
     try {
       await toggleAudioMuteAll();
       // Note: loading will be cleared by useEffect when state changes
     } catch (error) {
       console.error("Failed to toggle mic:", error);
-      setLoadingStates((prev) => ({ ...prev, mic: false })); // Clear on error
+      stopLoading("mic"); // Clear on error
     }
   };
 
   const handleToggleCamera = async () => {
-    setLoadingStates((prev) => ({ ...prev, camera: true }));
+    startLoading("camera");
     try {
       await toggleVideoMuteAll();
       // Note: loading will be cleared by useEffect when state changes
     } catch (error) {
       console.error("Failed to toggle camera:", error);
-      setLoadingStates((prev) => ({ ...prev, camera: false })); // Clear on error
+      stopLoading("camera"); // Clear on error
     }
   };
 
   const handleToggleSharing = async () => {
-    setLoadingStates((prev) => ({ ...prev, share: true }));
+    startLoading("share");
     try {
       await toggleSharing();
       // Note: loading will be cleared by useEffect when state changes
     } catch (error) {
       console.error("Failed to toggle sharing:", error);
-      setLoadingStates((prev) => ({ ...prev, share: false })); // Clear on error
+      stopLoading("share"); // Clear on error
     }
   };
 
   const handleToggleGallery = async () => {
-    setLoadingStates((prev) => ({ ...prev, gallery: true }));
+    startLoading("gallery");
     try {
       await toggleGallery();
       // Note: loading will be cleared by useEffect when state changes
     } catch (error) {
       console.error("Failed to toggle gallery:", error);
-      setLoadingStates((prev) => ({ ...prev, gallery: false })); // Clear on error
+      stopLoading("gallery"); // Clear on error
     }
   };
 

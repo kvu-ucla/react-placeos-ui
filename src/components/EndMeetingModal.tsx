@@ -1,8 +1,10 @@
 // src/components/EndMeetingModal.tsx
 import { useZoomContext } from "../hooks/ZoomContext";
+import { useEscapeKey } from "../hooks/useEscapeKey";
 
 export default function EndMeetingModal({ onClose }: { onClose: () => void }) {
   const { leave } = useZoomContext();
+  useEscapeKey(onClose);
 
   const endMeeting = () => {
     leave();
@@ -10,7 +12,12 @@ export default function EndMeetingModal({ onClose }: { onClose: () => void }) {
   };
   return (
     <div className="modal modal-open bg-black/40">
-      <div className="modal-box max-h-none overflow-visible max-w-none w-[min(90vw,48rem)] rounded-lg bg-white p-8">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="End class session"
+        className="modal-box max-h-none overflow-visible max-w-none w-[min(90vw,48rem)] rounded-lg bg-white p-8"
+      >
         <h3 className="font-bold text-3xl mb-4">End class session?</h3>
         <p className="py-4">
           This will end any in-progress Zoom meetings. Continue?

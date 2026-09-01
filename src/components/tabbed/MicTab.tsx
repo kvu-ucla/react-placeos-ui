@@ -1,7 +1,7 @@
 import {useZoomContext} from "../../hooks/ZoomContext";
 import {Icon} from "@iconify/react";
 import {useEffect, useState} from "react";
-import * as Slider from "@radix-ui/react-slider";
+import VolumeSlider from "../VolumeSlider";
 import type { DspMicrophone } from "../../hooks/useZoomModule.ts";
 
 export function MicTab() {
@@ -26,12 +26,12 @@ export function MicTab() {
     }, [value, volume]);
 
     //handle speaker volume
-    const handleRelease = () => {
-        if (!value) return;
+    const handleRelease = (val: number) => {
+        if (!val) return;
 
-        value === 800 ? setMasterMute(true) : setMasterMute(false);
+        setMasterMute(val === 800);
 
-        adjustMasterVolume(value);
+        adjustMasterVolume(val);
     };
 
     //handle mics volume
@@ -70,25 +70,14 @@ export function MicTab() {
                         width={48}
                         height={48}
                     ></Icon>
-                    <Slider.Root
-                        className="relative flex items-center select-none touch-none w-full h-16"
+                    <VolumeSlider
                         min={min}
                         max={max}
-                        step={10}
-                        value={[localMicValue]}
-                        onValueChange={([val]) => {
-                            setLocalMicValue(val);
-                        }}
-                        onValueCommit={() => handleMicRelease(micId, localMicValue)}
-                    >
-                        <Slider.Track className="relative grow rounded-full h-6 bg-gray-300">
-                            <Slider.Range className="absolute h-full bg-blue-500 rounded-full" />
-                        </Slider.Track>
-                        <Slider.Thumb
-                            className="block w-12 h-12 bg-white border-2 border-blue-500 rounded-full shadow-md hover:scale-110 transition-transform focus:outline-none focus:ring-6 focus:ring-blue-500"
-                            aria-label="Volume"
-                        />
-                    </Slider.Root>
+                        value={localMicValue}
+                        onChange={setLocalMicValue}
+                        onCommit={(val) => handleMicRelease(micId, val)}
+                        ariaLabel={`${mic.name} volume`}
+                    />
                     <Icon
                         icon="material-symbols:volume-up-outline-rounded"
                         width={48}
@@ -132,23 +121,12 @@ export function MicTab() {
                             width={64}
                             height={64}
                         ></Icon>
-                        <Slider.Root
-                            className="relative flex items-center select-none touch-none w-full h-16"
-                            min={800}
-                            max={1200}
-                            step={10}
-                            value={[value!]}
-                            onValueChange={([val]) => setValue(val)}
-                            onValueCommit={() => handleRelease()}
-                        >
-                            <Slider.Track className="relative grow rounded-full h-6 bg-gray-300">
-                                <Slider.Range className="absolute h-full bg-blue-500 rounded-full" />
-                            </Slider.Track>
-                            <Slider.Thumb
-                                className="block w-12 h-12 bg-white border-2 border-blue-500 rounded-full shadow-md hover:scale-110 transition-transform focus:outline-none focus:ring-6 focus:ring-blue-500"
-                                aria-label="Volume"
-                            />
-                        </Slider.Root>
+                        <VolumeSlider
+                            value={value!}
+                            onChange={setValue}
+                            onCommit={handleRelease}
+                            ariaLabel="Speaker volume"
+                        />
                         <Icon
                             icon="material-symbols:volume-up-outline-rounded"
                             width={64}
