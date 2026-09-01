@@ -106,11 +106,8 @@ export function DisplayTab() {
                 <div className="space-y-2">
                   {nonCameraInputs.map((inputId) => {
                     const inputData = inputs[inputId];
-                    //TODO sync info
-                    // const inputModule = getModule(system_id, inputId);
                     const isSelectedSource =
                       inputData?.source === display.source;
-                    const isSyncDetected = true;
 
                     // Get name from the module itself
                     const friendlyName = inputData?.name;
@@ -136,13 +133,7 @@ export function DisplayTab() {
                           )}
                         </span>
 
-                        {/* Sync Detection */}
-                          {isSyncDetected && (
-                              <div className="absolute top-1/2 right-6 transform -translate-y-1/2 w-4 h-4">
-                                  <div className="absolute top-0 left-0 w-full h-full rounded-full bg-green-400 opacity-75 animate-ping"></div>
-                                  <div className="absolute top-0 left-0 w-full h-full rounded-full bg-green-400"></div>
-                              </div>
-                          )}
+                        {/* TODO(chunk 5): sync-detected indicator — needs real signal state from the input module */}
                       </button>
                     );
                   })}

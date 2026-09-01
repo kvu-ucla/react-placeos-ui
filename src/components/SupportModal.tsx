@@ -3,18 +3,17 @@ import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { useZoomContext } from "../hooks/ZoomContext.tsx";
 import { useControlContext } from "../hooks/ControlStateContext.tsx";
+import { SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY } from "../config";
 
 interface ContactInfo {
   title: string;
   description: string;
-  phone: string;
-  href: string;
+  phone: string | null;
+  href: string | null;
 }
 
 export default function SupportModal({ onClose }: { onClose: () => void }) {
-  const [activeTab, setActiveTab] = useState<"Contact" | "Troubleshoot">(
-    "Contact",
-  );
+  const [activeTab, setActiveTab] = useState<"Contact">("Contact");
 
   const { wsConnection } = useZoomContext();
   const { system } = useControlContext();
@@ -27,8 +26,8 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
     {
       title: "AV Technical Support",
       description: avDescription,
-      phone: "",
-      href: "tel:+",
+      phone: SUPPORT_PHONE_DISPLAY,
+      href: SUPPORT_PHONE ? `tel:${SUPPORT_PHONE}` : null,
     },
     {
       title: "Facilities Support",
@@ -43,8 +42,6 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
       href: "tel:+18009008525",
     },
   ];
-  
-  
 
   return (
     <div className="modal modal-open bg-black/40">
@@ -69,9 +66,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
               {["Contact"].map((tab) => (
                 <button
                   key={tab}
-                  onClick={() =>
-                    setActiveTab(tab as "Contact" | "Troubleshoot")
-                  }
+                  onClick={() => setActiveTab(tab as "Contact")}
                   className={`text-left px-6 py-4 rounded font-medium ${
                     activeTab === tab
                       ? "bg-blue-600 text-white"
@@ -115,14 +110,16 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
                           </p>
                         </div>
 
-                        <div className="flex items-center justify-center text-2xl">
-                          <a
-                            href={href}
-                            className="whitespace-nowrap text-blue-600 font-semibold text-right hover:underline"
-                          >
-                            {phone}
-                          </a>
-                        </div>
+                        {phone && href && (
+                          <div className="flex items-center justify-center text-2xl">
+                            <a
+                              href={href}
+                              className="whitespace-nowrap text-blue-600 font-semibold text-right hover:underline"
+                            >
+                              {phone}
+                            </a>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -138,21 +135,8 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
                 </div>
               </>
             )}
-            {activeTab === "Troubleshoot" && (
-              <div className="text-gray-500 pt-4">
-                Troubleshooting content goes here…
-              </div>
-            )}
           </div>
         </div>
-
-        {/* Footer */}
-        {/*<div className="mt-6 px-2">*/}
-        {/*    <div className="inline-flex items-center bg-gray-100 text-sm px-3 py-1 rounded">*/}
-        {/*        <div className="w-3 h-3 rounded-full bg-green-500 mr-2 animate-pulse"></div>*/}
-        {/*        <span className="text-gray-700 font-medium">All systems online</span>*/}
-        {/*    </div>*/}
-        {/*</div>*/}
       </div>
 
       {/* Optional: backdrop click closes modal */}

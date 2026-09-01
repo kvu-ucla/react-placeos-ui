@@ -68,19 +68,6 @@ export default function Footer() {
           <div className="flex flex-col items-center mr-4">
             <div className="text-3xl font-semibold">Volume</div>
           </div>
-            {/*<button onClick={toggleMasterMute} className="">*/}
-            {/*  {volumeMute ? <Icon*/}
-            {/*          icon="material-symbols:volume-off-outline-rounded"*/}
-            {/*          width={96}*/}
-            {/*          height={96}*/}
-            {/*      />*/}
-            {/*      :*/}
-            {/*      <Icon*/}
-            {/*          icon="material-symbols:volume-up-outline-rounded"*/}
-            {/*          width={96}*/}
-            {/*          height={96}*/}
-            {/*      />}*/}
-            {/*</button>*/}
                 {volumeMute ? <Icon
                     icon="material-symbols:volume-off-outline-rounded"
                     width={72}

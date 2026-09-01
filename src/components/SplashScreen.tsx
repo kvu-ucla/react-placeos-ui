@@ -1,14 +1,12 @@
 import { Header } from "./Header";
 import { ClassInfoCard } from "./ClassInfoCard";
 import { useControlContext } from "../hooks/ControlStateContext";
-import { ModalProvider } from "../hooks/ModalContext";
 import { useZoomContext } from "../hooks/ZoomContext";
 
 export default function SplashScreen() {
   const { system, togglePower } = useControlContext();
   const { joinPmi, joinMeetingId, currentMeeting } = useZoomContext();
   const noMeeting = currentMeeting == null;
-  // const screen = useScreenInfo();
 
   function startScheduled() {
     togglePower();
@@ -22,8 +20,7 @@ export default function SplashScreen() {
   }
 
   return (
-    <ModalProvider>
-      <div className="min-h-screen flex flex-col items-center text-center bg-gray-100">
+    <div className="min-h-screen flex flex-col items-center text-center bg-gray-100">
         <Header />
 
         <div className="flex flex-col">
@@ -57,17 +54,8 @@ export default function SplashScreen() {
               </b>{" "}
               to present. Instructions on next screen.
             </p>
-
-            {/*<div>*/}
-            {/*  <p>Pixel Depth: {screen.pixelDepth} bits</p>*/}
-            {/*  <p>Color Depth: {screen.colorDepth} bits</p>*/}
-            {/*  <p>Resolution: {screen.width} x {screen.height}</p>*/}
-            {/*</div>*/}
-            
           </footer>
         </div>
-      </div>
-
-    </ModalProvider>
+    </div>
   );
 }

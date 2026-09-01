@@ -23,9 +23,6 @@ export function Header() {
     <header
       className={`first-step relative min-h-32 w-full flex justify-between items-center px-6 py-3 ${active ? "bg-transparent shadow-lg" : ""}`}
     >
-      <div className="pointer-events-none absolute inset-2 overflow-hidden rounded bg-base-200 opacity-0">
-        <div className="h-full w-full"></div>
-      </div>
       <div className="flex items-center space-x-6">
         <img
           src={import.meta.env.BASE_URL + "logo_dts.svg"}
@@ -56,7 +53,7 @@ export function Header() {
         {active && (
           <button
             onClick={() => showModal("none")}
-            className={`cursor-pointer select-none border-0 outline-none font-semibold transition-colors flex flex-col justify-center items-center w-20 h-20 ${modalType == "none" ? "rounded-2xl bg-blue-600! text-white text-white" : "bg-transparent"}`}
+            className={`cursor-pointer select-none border-0 outline-none font-semibold transition-colors flex flex-col justify-center items-center w-20 h-20 ${modalType == "none" ? "rounded-2xl bg-blue-600! text-white" : "bg-transparent"}`}
           >
             <Icon
               icon="material-symbols:home-outline-rounded"
