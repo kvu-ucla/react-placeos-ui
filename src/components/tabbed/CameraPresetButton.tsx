@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
-import { getModule } from "@placeos/ts-client";
+import { useModuleExecute } from "../../hooks/placeos";
 
 interface CameraPresetButtonProps {
     preset: string;
@@ -19,6 +19,7 @@ export function CameraPresetButton({
                                    }: CameraPresetButtonProps) {
     const holdTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
     const isHeld = useRef(false);
+    const execute = useModuleExecute(system_id);
 
     const camera = cams?.[selectedCamera];
 
@@ -38,18 +39,13 @@ export function CameraPresetButton({
     const handleSave = () => {
         if (!camera) return;
         toast(`${camera.camera_name} ${preset} saved!`);
-        const mod = getModule(system_id, camera.camera_id);
-        mod.execute("cam_preset_save", [extractNumber(preset)]);
-        
-        console.log("cam handle save mod is ", mod.id)
+        execute(camera.camera_id, "cam_preset_save", [extractNumber(preset)]);
     };
 
     const handleRecall = () => {
         if (!camera) return;
         toast(`${camera.camera_name} ${preset} recalled!`);
-        const mod = getModule(system_id, camera.camera_id);
-        mod.execute("cam_preset_recall", [extractNumber(preset)]);
-        
+        execute(camera.camera_id, "cam_preset_recall", [extractNumber(preset)]);
     };
 
     const onPointerDown: React.PointerEventHandler<HTMLButtonElement> = (e) => {

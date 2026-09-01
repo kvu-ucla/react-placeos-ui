@@ -1,7 +1,6 @@
 // src/hooks/useControlState.ts
-import { useEffect, useRef, useState } from "react";
-import { Subscription } from "rxjs";
-import { getModule, querySystems, showSystem } from "@placeos/ts-client";
+import { useRef, useState } from "react";
+import { useBinder, useModuleExecute } from "./placeos";
 
 export interface EnvironmentSource {
   name: string;
@@ -108,92 +107,71 @@ export function useControlState(
   const volumeRef = useRef(0);
   const mutedRef = useRef(false);
   const connectedRef = useRef(false);
-  const subs = useRef<Subscription[]>([]);
 
-  useEffect(() => {
-    querySystems({ limit: 10 })
-      .toPromise()
-      .then((res) => {
-        console.log(res!.data);
+  const execute = useModuleExecute(systemId);
+
+  useBinder(
+    systemId,
+    (binder) => {
+      const bind = (name: keyof SystemState, onChange: (val: any) => void) => {
+        binder.listen(moduleAlias, name, (val) => {
+          setSystem((prev) => ({ ...prev, [name]: val }));
+          onChange(val);
+        });
+      };
+
+      bind("power", (val) => {
+        if (typeof val === "boolean") {
+          powerRef.current = val;
+          setPower(val);
+        }
       });
 
-    showSystem(systemId).subscribe((sys) => {
-      console.log("System object: ", sys);
-    });
-
-    const mod = getModule(systemId, moduleAlias);
-
-    const bind = (name: keyof SystemState, onChange: (val: any) => void) => {
-      const binding = mod.binding(name);
-      const sub = binding.listen().subscribe((val) => {
-        setSystem((prev) => ({ ...prev, [name]: val }));
-        onChange(val);
+      bind("active", (val) => {
+        if (typeof val === "boolean") {
+          activeRef.current = val;
+          setActive(val);
+        }
       });
-      subs.current.push(sub);
 
-      // Call bind but don't push to subs, since unbind is not a Subscription
-      const unbind = binding.bind();
-      subs.current.push(new Subscription(unbind));
-    };
+      bind("connected", (val) => {
+        if (typeof val === "boolean") {
+          connectedRef.current = val;
+          setConnected(val);
+        }
+      });
 
-    bind("power", (val) => {
-      if (typeof val === "boolean") {
-        powerRef.current = val;
-        setPower(val);
-      }
-    });
+      bind("volume", (val) => {
+        if (typeof val === "number") {
+          volumeRef.current = val;
+          setVolumeState(val);
+        }
+      });
 
-    bind("active", (val) => {
-      if (typeof val === "boolean") {
-        activeRef.current = val;
-        setActive(val);
-      }
-    });
+      bind("mute", (val) => {
+        if (typeof val === "boolean") {
+          mutedRef.current = val;
+          setMuted(val);
+        }
+      });
 
-    bind("connected", (val) => {
-      if (typeof val === "boolean") {
-        connectedRef.current = val;
-        setConnected(val);
-      }
-    });
-
-    bind("volume", (val) => {
-      if (typeof val === "number") {
-        volumeRef.current = val;
-        setVolumeState(val);
-      }
-    });
-
-    bind("mute", (val) => {
-      if (typeof val === "boolean") {
-        mutedRef.current = val;
-        setMuted(val);
-      }
-    });
-
-    bind("name", () => {});
-    bind("selected_input", () => {});
-    bind("selected_tab", () => {});
-
-    return () => {
-      subs.current.forEach((s) => s.unsubscribe());
-      subs.current = [];
-    };
-  }, [systemId, moduleAlias]);
+      bind("name", () => {});
+      bind("selected_input", () => {});
+      bind("selected_tab", () => {});
+    },
+    [moduleAlias],
+  );
 
   const togglePower = async () => {
-    const system = getModule(systemId, moduleAlias);
-    await system.execute("power", [!activeRef.current]);
+    await execute(moduleAlias, "power", [!activeRef.current]);
   };
 
   const setVolume = async (val: number) => {
-    const mod = getModule(systemId, moduleAlias);
-    await mod.execute("volume", [val]);
+    await execute(moduleAlias, "volume", [val]);
   };
 
   const toggleMute = async () => {
-    const mod = getModule(systemId, moduleAlias);
-    await mod.execute("mute", [!mutedRef.current]);
+    await execute(moduleAlias, "mute", [!mutedRef.current]);
   };
 
   return {

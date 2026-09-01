@@ -1,5 +1,5 @@
 import CameraController from "../CameraController";
-import {getModule} from "@placeos/ts-client";
+import {useModuleExecute} from "../../hooks/placeos";
 import {useZoomContext} from "../../hooks/ZoomContext";
 import {useParams} from "react-router-dom";
 import {CameraPresetButton} from "./CameraPresetButton";
@@ -11,11 +11,10 @@ export function CameraTab() {
         recording
     } = useZoomContext();
     const { system_id } = useParams();
+    const execute = useModuleExecute(system_id!);
     const cameraSelection = (camera_id: string) => {
         (document.activeElement as HTMLElement)?.blur()
-        const mod = getModule(system_id!, 'System');
-        if (!mod) return;
-        mod.execute('selected_camera', [camera_id]);
+        execute('System', 'selected_camera', [camera_id]);
     }
     
     return (

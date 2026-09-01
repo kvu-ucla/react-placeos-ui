@@ -1,5 +1,5 @@
 import { useZoomContext } from "../../hooks/ZoomContext";
-import { getModule } from "@placeos/ts-client";
+import { useModuleExecute } from "../../hooks/placeos";
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 
@@ -8,6 +8,8 @@ export function DisplayTab() {
 
   const [displays, setDisplays] = useState(true);
 
+  const execute = useModuleExecute(system_id);
+
   const toggleDisplays = () => {
     if (!outputs) return;
 
@@ -15,10 +17,7 @@ export function DisplayTab() {
     setDisplays(newDisplayState);
 
     for (const output of Object.keys(outputs)) {
-      const mod = getModule(system_id, output);
-      if (!mod) continue;
-
-      mod.execute("power", [newDisplayState]);
+      execute(output, "power", [newDisplayState]);
     }
   };
 
@@ -88,13 +87,11 @@ export function DisplayTab() {
                       e.preventDefault();
 
                       const dispMuteState = outputs[dispId].mute;
-                      const displayMod = getModule(system_id, dispId);
-                      if (!displayMod) return;
                       const newMuteState = !dispMuteState;
 
                       newMuteState
-                        ? displayMod.execute("mute")
-                        : displayMod.execute("unmute");
+                        ? execute(dispId, "mute")
+                        : execute(dispId, "unmute");
                     }}
                     className={`btn w-[300px] h-[64px] ml-4 px-9 py-6 rounded-lg text-xl font-medium ${
                       outputs[dispId].mute
@@ -122,9 +119,7 @@ export function DisplayTab() {
                       <button
                         key={inputId}
                         onClick={() => {
-                          const routingMod = getModule(system_id, "System");
-                          if (!routingMod) return;
-                          routingMod.execute("route", [inputId, dispId]);
+                          execute("System", "route", [inputId, dispId]);
                         }}
                         className={`relative w-full p-4 rounded-lg flex items-center justify-between transition-colors hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                           isSelectedSource

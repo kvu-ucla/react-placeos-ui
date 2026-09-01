@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import Joystick, { JoystickDirection } from "./Joystick";
 import ZoomController from "./ZoomController";
-import { getModule } from "@placeos/ts-client";
+import { useModuleExecute } from "../hooks/placeos";
 
 interface ActiveCamera {
   mod: string;
@@ -29,6 +29,8 @@ function CameraController({
   const activeCamera = useRef<ActiveCamera>(initialCamera);
   const moveTimeout = useRef<NodeJS.Timeout | null>(null);
 
+  const execute = useModuleExecute(id);
+
   useEffect(() => {
     activeCamera.current = initialCamera;
   }, [initialCamera]);
@@ -38,19 +40,16 @@ function CameraController({
     if (!activeCamera.current) return;
 
     const { mod, index } = activeCamera.current;
-    const module = getModule(id, mod);
-
-    if (!module) return;
 
     try {
       if (command === "stop") {
-        await module.execute("stop", index !== undefined ? [index] : []);
+        await execute(mod, "stop", index !== undefined ? [index] : []);
       } else if (command === "stop_zoom"){
-        await module.execute("stop_zoom", index !== undefined ? [index] : []);
+        await execute(mod, "stop_zoom", index !== undefined ? [index] : []);
       } else if (command === "tele" || command === "wide") {
-        await module.execute("move_all", index !== undefined ? [command, index] : [command]);
+        await execute(mod, "move_all", index !== undefined ? [command, index] : [command]);
       } else if (isJoystickDirection(command)) {
-        await module.execute("move_all", index !== undefined ? [command, index] : [command]);
+        await execute(mod, "move_all", index !== undefined ? [command, index] : [command]);
       }
     } catch (error) {
       console.error("[executeCommand] Error executing command:", error);
