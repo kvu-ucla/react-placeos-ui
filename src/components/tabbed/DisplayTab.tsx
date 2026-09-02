@@ -133,7 +133,7 @@ export function DisplayTab() {
                           )}
                         </span>
 
-                        {/* TODO(chunk 5): sync-detected indicator — needs real signal state from the input module */}
+                        {/* TODO: sync-detected indicator needs a real signal from the input module */}
                       </button>
                     );
                   })}

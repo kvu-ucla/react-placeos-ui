@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import Joystick, { JoystickDirection } from "./Joystick";
 import ZoomController from "./ZoomController";
 import { useModuleExecute } from "../hooks/placeos";
@@ -21,8 +21,6 @@ function CameraController({
   id: string;
   activeCamera: ActiveCamera;
 }) {
-  const [direction, setDirection] = useState<JoystickDirection>(JoystickDirection.Stop);
-
   // Track current commands to prevent duplicate calls
   const currentDirectionRef = useRef<JoystickDirection>(JoystickDirection.Stop);
   const currentZoomRef = useRef<"tele" | "wide" | null>(null);
@@ -56,10 +54,6 @@ function CameraController({
     }
   };
 
-  useEffect(() => {
-    console.log("direction", direction);
-  }, []);
-
   const scheduleCommand = (command: CameraCommand) => {
     // Clear any pending command
     if (moveTimeout.current) {
@@ -72,9 +66,6 @@ function CameraController({
   };
 
   const handleDirectionChange = (newDir: JoystickDirection) => {
-
-    setDirection(newDir);
-
     // Only send command if it's actually different
     if (newDir !== currentDirectionRef.current) {
       currentDirectionRef.current = newDir;
@@ -89,7 +80,6 @@ function CameraController({
     if (dir !== currentZoomRef.current) {
       currentZoomRef.current = dir;
       currentDirectionRef.current = JoystickDirection.Stop; // Cancel direction tracking
-      // DON'T call setDirection here - let joystick maintain its visual state
       scheduleCommand(dir);
     }
   };
@@ -121,16 +111,7 @@ function CameraController({
 
         {/* Main Control Area */}
         <div className="flex flex-col items-center gap-6">
-          {/*<div className="text-base text-gray-600 font-mono">*/}
-          {/*  Camera: {activeCamera.current.mod}*/}
-          {/*  {activeCamera.current.index !== undefined && ` [${activeCamera.current.index}]`}*/}
-          {/*</div>*/}
-
           <Joystick onDirectionChange={handleDirectionChange} />
-
-          {/*<div className="text-sm text-gray-500 font-mono">*/}
-          {/*  Direction: {direction} | Zoom: {currentZoomRef.current || "none"}*/}
-          {/*</div>*/}
         </div>
       </div>
   );

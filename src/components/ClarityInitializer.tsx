@@ -17,7 +17,6 @@ const ClarityInitializer = () => {
         // Wait for Clarity to be ready
         setTimeout(() => {
             setClarityReady(true);
-            console.log("✅ Clarity ready!");
         }, 1000);
     }, []);
 
@@ -26,7 +25,6 @@ const ClarityInitializer = () => {
         
         clarity.identify(system.name, undefined, undefined, system.name);
         clarity.setTag("location", system.name);
-        console.log("✅ Clarity identified as:", system.name);
     }, [clarityReady, system.name]);
 
     return null;
