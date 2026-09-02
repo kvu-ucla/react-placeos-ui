@@ -3,8 +3,9 @@
 // power-up takes many seconds and the page sitting there unchanged reads as
 // unresponsiveness. Deliberately non-dismissable (no Esc, no backdrop close,
 // no buttons): it auto-clears when the room is ready or the transition is
-// abandoned. The page stays mounted behind the scrim and may crossfade
-// splash ↔ main underneath while this is up — that's intended.
+// abandoned. Unlike the other modals, the backdrop is the OPAQUE app
+// background — the page must be fully hidden during a transition. It stays
+// mounted underneath and may crossfade splash ↔ main while this is up.
 export default function PowerTransitionModal({
   direction,
 }: {
@@ -13,7 +14,7 @@ export default function PowerTransitionModal({
   const label =
     direction === "on" ? "Starting up the room…" : "Shutting down…";
   return (
-    <div className="modal modal-open modal-fade bg-black/40">
+    <div className="modal modal-open modal-fade bg-avit-bg">
       <div
         role="dialog"
         aria-modal="true"
