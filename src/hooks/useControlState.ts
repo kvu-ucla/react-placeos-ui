@@ -3,12 +3,15 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useBinder, useModuleExecute } from "./placeos";
 
-// Direction of an in-flight power transition. The System module exposes no
-// transitional status var (only power/active/connected), so this is driven
-// locally: armed in togglePower — the ONLY code path that changes System
-// power — and cleared when `active` reaches the target or a generous
-// timeout gives up.
-export type PendingPower = "on" | "off" | null;
+// In-flight power transition. The System module exposes no transitional
+// status var (only power/active/connected), so this is driven locally:
+// armed in togglePower — the ONLY code path that changes System power —
+// and cleared when `active` reaches the target or a generous timeout gives
+// up. `seq` makes every arm a distinct object so a repeat toggle toward the
+// SAME target still re-runs the lifecycle effects (a bare "on" → "on" would
+// be a same-value set that React bails out of), and lets async paths
+// (execute rejection, timeout) clear only their own attempt.
+export type PendingPower = { target: "on" | "off"; seq: number } | null;
 
 // Real hardware power-up can take many seconds; past this we assume the
 // transition failed and fall back to the real state rather than strand the
@@ -117,6 +120,7 @@ export function useControlState(
   const [system, setSystem] = useState<SystemState>({});
   const [connected, setConnected] = useState<boolean>(false);
   const [pendingPower, setPendingPower] = useState<PendingPower>(null);
+  const pendingSeqRef = useRef(0);
 
   const powerRef = useRef(false);
   const activeRef = useRef(false);
@@ -183,27 +187,34 @@ export function useControlState(
   // or give up after the timeout so the user is never stranded.
   useEffect(() => {
     if (!pendingPower) return;
-    if (active === (pendingPower === "on")) {
+    if (active === (pendingPower.target === "on")) {
       setPendingPower(null);
       return;
     }
+    // The timeout belongs to this arm: cleanup clears it whenever a newer
+    // arm replaces the object, so it can only fire for the latest attempt;
+    // the seq guard is a backstop.
+    const { seq } = pendingPower;
     const timer = setTimeout(() => {
       toast.error(
         "The room is taking longer than expected — showing current status.",
       );
-      setPendingPower(null);
+      setPendingPower((cur) => (cur?.seq === seq ? null : cur));
     }, POWER_TRANSITION_TIMEOUT_MS);
     return () => clearTimeout(timer);
   }, [pendingPower, active]);
 
   const togglePower = async () => {
     const target = !activeRef.current;
-    setPendingPower(target ? "on" : "off");
+    const seq = ++pendingSeqRef.current;
+    setPendingPower({ target: target ? "on" : "off", seq });
     try {
       await execute(moduleAlias, "power", [target]);
     } catch (err) {
-      // Command never reached the backend — no transition is coming
-      setPendingPower(null);
+      // Command never reached the backend — no transition is coming from
+      // THIS attempt. Clear only our own arm: a stale rejection must not
+      // kill a newer retry that is still in flight.
+      setPendingPower((cur) => (cur?.seq === seq ? null : cur));
       throw err;
     }
   };

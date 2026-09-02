@@ -35,6 +35,8 @@ function MainViewInner() {
   // Anti-flash: only surface the transition screen if the power command is
   // still pending 300ms after it was armed — an instant `active` flip clears
   // pendingPower before this fires, so fast transitions never render it.
+  // pendingPower is a fresh object per arm (seq), so a repeat toggle re-runs
+  // this effect too; if the screen is already up, re-arming leaves it up.
   const [showTransition, setShowTransition] = useState(false);
   useEffect(() => {
     if (!pendingPower) {
@@ -45,7 +47,7 @@ function MainViewInner() {
     return () => clearTimeout(timer);
   }, [pendingPower]);
 
-  const transition = showTransition ? pendingPower : null;
+  const transition = showTransition && pendingPower ? pendingPower.target : null;
   return (
     <div className="first-step relative isolate flex h-screen w-full flex-col overflow-hidden bg-avit-bg">
       {/* One Header for both screens so it never remounts on the swap */}
