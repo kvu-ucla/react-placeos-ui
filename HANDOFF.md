@@ -1,36 +1,44 @@
-# Session handoff / resume pointer — 2026-09-01
+# Session handoff / resume pointer — 2026-09-01 (rev 2)
 
-Supersedes: none (first handoff in this repo). Start a fresh session by reading THIS file first. Role and conventions live in memory/project instructions — not restated. Plan-of-record: https://claude.ai/code/artifact/abc596ff-85e1-43e7-be3a-83b4c95b206e (approved plan, updated with landed status).
+Supersedes the 2026-09-01 rev-1 handoff (migration-only; previous content of this file, see git history of HANDOFF.md). Start a fresh session by reading THIS file first. Role and conventions live in memory/project instructions — not restated. Plan-of-record: https://claude.ai/code/artifact/abc596ff-85e1-43e7-be3a-83b4c95b206e (updated same pass).
 
 ## Landing (all verified unless marked pending)
 
-All commits on `feat/zoom-zrc-migration` (off `development` @ `fc4f96e`). Every chunk was implemented by a Claude agent and independently reviewed by a Codex (GPT) agent, read-only at the reviewed commit; verdicts archived in `review-verdicts/` (gitignored, plus copies in the session scratchpad).
+Two stacked branches, both pushed; every chunk implemented by a Claude agent and independently reviewed (Codex/GPT for the migration; Kiro `gpt-5.6-terra` for the polish push after Codex hit its spend cap). Verdicts archived in `review-verdicts/` (gitignored).
 
-- `bcfd826` — chunk 1: standard PlaceOS binding/execute hooks (`src/hooks/placeos.ts`: createBinder/useBinder/useBinding/useModuleExecute), useControlState refactor, raw executes routed. Build ✓, lint = 25 baseline. Review: PASS, no findings. Verified.
-- `a8d2d7b` + `1545514` — chunk 2: dead code/placeholders removed (SessionDetails.tsx deleted, TBD/blank phone → `src/config.ts` SUPPORT_PHONE=null hides links), IconType/VolumeSlider de-dup, a11y basics (dialog roles/Esc/focus rings/keys), ErrorBoundary, SessionControls 10s spinner timeout. Build ✓, lint 25→20. Review: PASS, no findings. Verified.
-- `8928c2e` — chunk 3: Zoom integration migrated ZoomCSAPI → **ZoomZRC** + **Bookings** modules. `useZoomModule.ts` deleted; new `useZoomRoom.ts` + `useAvControls.ts`; explicit `ZoomContextValue`; sharing/mute-all/per-participant controls removed; timeJoined derived client-side. Build ✓, lint 20→15, greps clean, headless render check = pre-migration baseline. Review: PASS against Crystal driver sources, no findings. Verified.
-- `6cd5642` — chunk 4: prompt-handling UI (`src/components/prompts/`: ZoomPromptHost, promptConfig, MeetingPasswordModal) for all 15 driver prompt keys; `zoomMod` added to context. Build ✓, lint = 15. Review: PASS, one recorded NIT (privacy_alert missing-fields fallback raises driver-side; only reachable on payloads the driver never publishes as actionable). Verified.
-- `33bcd9f` — chunk 5: README "Backend requirements (ZoomZRC migration)" section, console-log sweep, `.gitignore` review-verdicts/, final regression (build ✓, lint = 14, all greps clean, render check ✓). Review: PASS, no findings. Verified.
-- Live smoke test against a real system carrying `ZoomZRC` + `Bookings` modules (join/mute/prompts/bookings end-to-end). **PENDING** — not possible this session; see owner decisions 1–2.
-- Branch pushed to `origin/feat/zoom-zrc-migration`; CI publishes `build/feat_zoom-zrc-migration` on push. **PENDING**: no PR yet; nonprod `control-av-dev` app must be repointed at the build branch (it currently serves raw source — see owner decisions).
+**`feat/zoom-zrc-migration`** (off `development` @ `fc4f96e`) — ZR-CSAPI → ZoomZRC+Bookings migration, subscription layer, prompt UI, cleanup: `bcfd826`, `a8d2d7b`, `1545514`, `8928c2e`, `6cd5642`, `33bcd9f`, handoff `fc1750e`, CI fixes `ffa11a4`+`29ca490`, live-smoke participants fix `5b7e393`. All review-PASSed. CI publishes `build/feat_zoom-zrc-migration`. Verified.
+
+**`feat/ui-polish`** (off the migration branch) — polish push, approved look preserved:
+- `907439a` + `c737260` — chunk A: render churn (MicControl/ParticipantRow hoisted+memo, 13 context actions stable, hook returns memoized, slider drag-guards; fix round closed a stuck-guard blocker). PASS r2. Verified.
+- `851722a` + `4328475` + `841497a` — chunk B: interaction correctness (cards disabled outside meetings, honest DisplayTab toggle with abandonment + seq-guarded reconciliation after two review-caught races, ref-based accordion scroll, scoped dropdown blur). PASS r3. Verified.
+- `1fdd99e` — chunk C: motion/touch/hydration (tabular-nums, unified shell + single Header + screen crossfade, active: states, 150-200ms modal/tab entrances w/ prefers-reduced-motion, loading-vs-empty gates, modal overflow caps). PASS r1. Verified.
+- `a21e072` — chunk D: shared `src/components/Button.tsx` (primary/outline/ghost, visually identical, proof tables in review-verdicts/polish-d-impl.md), 2 sanctioned radius normalizations, `!important` cleanup (Header ones dropped with built-CSS proof; daisyui-forced ones kept+commented), dead CSS removed, OfflineModal stacking verified. PASS r1. Verified.
+- CI publishes `build/feat_ui-polish` on push. Latest build at `a21e072`: PENDING (push just made; check Actions).
+- On-glass verification at kiosk resolution (fader drag with mic rows visible, splash↔main crossfade, modal entrances, pressed states): PENDING — needs the nonprod panel.
+
+**ZoomZRC driver fixes** (repo `~/Documents/drivers`, branch `ucla-dev`) — participant-refresh coalescing + event-owned mic/camera state, spec-verified (81 examples). **UNCOMMITTED in the working tree, awaiting owner review/commit/redeploy.** PENDING.
 
 ## Owner decisions / open items (each with what it unblocks)
 
-1. **Backend: repoint booking_converter** from `ZoomCSAPI_1:BookingsListResult` to `ZoomZRC_1:meetings` (or keep CSAPI running for bookings only) — unblocks bookings/current/next meeting display end-to-end and the chunk-3 live smoke test. Documented in README.
-2. **Provision a system with the ZoomZRC module and run the live smoke test** (join passworded meeting, waiting-for-host, ask-to-unmute, inbound mute reflection, participants payload field names for `ZrcParticipant`) — unblocks marking chunks 3–4 functionally verified and finalizing the tolerant participant type.
-3. **Provide the real AV support phone number** for `src/config.ts` `SUPPORT_PHONE` — unblocks visible support phone links in SupportModal/SettingsModal (currently hidden).
-4. **Repoint the nonprod `control-av-dev` static app at `build/feat_zoom-zrc-migration`** (host/backoffice config) — it currently serves the branch's raw source tree, which 404s on `/src/main.tsx`; then open a PR to `development` when smoke-tested.
-5. Backend converter's `creator` field is always null — unblocks restoring the instructor name on ClassInfoCard (UI hides the line meanwhile).
+1. **Point nonprod `control-av-dev` at `build/feat_ui-polish`** (host/backoffice config) — unblocks on-glass verification of both pushes at once (polish branch contains the migration).
+2. **Review/commit/redeploy the driver working-tree changes** in `~/Documents/drivers` — unblocks single participants-fetch-per-change and honest mute loading states on the panel.
+3. **Backend: repoint booking_converter** from `ZoomCSAPI_1:BookingsListResult` to `ZoomZRC_1:meetings` — unblocks bookings end-to-end (documented in README).
+4. **Real AV support phone** for `src/config.ts` — unblocks visible support links.
+5. **Merge strategy** — `feat/ui-polish` ⊃ `feat/zoom-zrc-migration`; PR the polish branch to `development` (one PR) or stage the two separately — unblocks deployment. Remember `development` needs the CI workflow commits (`ffa11a4`, `29ca490`).
+6. Deferred from the polish plan: context splitting/external store (only if profiling still shows churn after chunk A — none expected).
 
 ## Where things live
 
 | Thing | Location |
 | --- | --- |
-| Feature branch (7 commits) | `feat/zoom-zrc-migration` (pushed to origin) |
-| Approved plan / plan-of-record | https://claude.ai/code/artifact/abc596ff-85e1-43e7-be3a-83b4c95b206e |
-| Plan file (local) | `~/.claude/plans/we-will-need-review-jazzy-treehouse.md` |
-| Review verdicts + impl reports (chunks 1–5) | `review-verdicts/` (gitignored) |
-| Subscription layer | `src/hooks/placeos.ts`, `src/hooks/useZoomRoom.ts`, `src/hooks/useAvControls.ts`, `src/hooks/ZoomContext.tsx` |
+| Migration branch | `origin/feat/zoom-zrc-migration` |
+| Polish branch (current work, contains migration) | `origin/feat/ui-polish` |
+| Build branches (CI-published) | `origin/build/feat_zoom-zrc-migration`, `origin/build/feat_ui-polish`, `build/dev` (restored to development's build) |
+| Plan-of-record | https://claude.ai/code/artifact/abc596ff-85e1-43e7-be3a-83b4c95b206e |
+| Review verdicts + impl reports (all chunks, both pushes) | `review-verdicts/` (gitignored) |
+| Shared UI primitives | `src/components/Button.tsx`, `src/components/VolumeSlider.tsx`, `src/components/icons.ts`, `src/components/ErrorBoundary.tsx` |
+| Subscription layer | `src/hooks/placeos.ts`, `useZoomRoom.ts`, `useAvControls.ts`, `ZoomContext.tsx` |
 | Prompt UI | `src/components/prompts/` |
+| Motion utilities | `src/index.css` (`ui-fade-in`, `ui-modal-in`, `.screen-fade`, `.tab-fade`, `.modal-fade`, `.modal-pop` + reduced-motion block) |
+| Driver fixes (uncommitted) | `~/Documents/drivers` `drivers/zoom/zoom_zrc.cr` + spec, on `ucla-dev` |
 | Backend contract doc | `README.md` → "Backend requirements (ZoomZRC migration)" |
-| New Zoom driver (reference) | `~/Documents/drivers/drivers/zoom/zoom_zrc.cr` (+ `zoom_zrc_models.cr`, `booking_converter.cr`) |
