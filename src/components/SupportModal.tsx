@@ -146,6 +146,11 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
                       </span>
                     </div>
                   </div>
+
+                  {/* Diagnostics — helps support identify the panel webview */}
+                  <div className="mt-2 text-left text-sm text-gray-500 break-all">
+                    Browser: {navigator.userAgent}
+                  </div>
                 </div>
               </>
             )}
