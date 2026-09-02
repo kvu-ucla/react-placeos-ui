@@ -5,6 +5,15 @@ import {useParams} from "react-router-dom";
 import {useRef} from "react";
 import {CameraPresetButton} from "./CameraPresetButton";
 
+// CameraController's natural rendered size (zoom column + joystick + its own
+// padding/gaps) and the factor that shrinks it so the Camera tab fits the
+// settings modal without scrolling. A transform scale inside a fixed-size box
+// keeps the pointer math exact — getBoundingClientRect reflects transforms —
+// so joystick/zoom behavior is untouched.
+const CONTROLLER_NATURAL_W = 528;
+const CONTROLLER_NATURAL_H = 448;
+const CONTROLLER_SCALE = 0.5;
+
 export function CameraTab() {
     const {
         cams,
@@ -23,24 +32,25 @@ export function CameraTab() {
         }
         execute('System', 'selected_camera', [camera_id]);
     }
-    
-    return (
-        !recording ? (<div className="border rounded-lg p-6 space-y-6">
-            {/* Section Title */}
-            <h2 className="text-xl font-semibold">Camera Management</h2>
 
-            {/* Active Camera Dropdown */}
-            <div>
-                <label className="block text-gray-800 font-medium mb-2">
-                    Active Camera
-                </label>
-                <div ref={dropdownRef} className="dropdown dropdown-bottom dropdown-center w-full">
-                    <div tabIndex={0} role="button" className="w-full text-3xl h-15 btn m-1">
+    if (recording) return <div>Cameras are automated when BruinCasting!</div>;
+
+    const selectedCam = selectedCamera ? cams[selectedCamera] : null;
+
+    return (
+        <>
+            <h3 className="font-semibold mb-2">Camera</h3>
+
+            {/* Active camera selector */}
+            <div className="border border-[#999] text-avit-grey-80 rounded-lg p-4 flex items-center justify-between gap-4 mb-4">
+                <h3 className="text-xl font-semibold">Active camera</h3>
+                <div ref={dropdownRef} className="dropdown dropdown-bottom dropdown-end w-[420px]">
+                    <div tabIndex={0} role="button" className="w-full text-xl h-12 btn">
                         {cams?.[selectedCamera ?? -1]?.camera_name ?? 'Select a camera to control'}
                     </div>
                     <ul
                         tabIndex={0}
-                        className="dropdown-content menu bg-base-100 rounded-box z-1 w-full text-3xl p-2 shadow-sm"
+                        className="dropdown-content menu bg-base-100 rounded-box z-1 w-full text-xl p-2 shadow-sm"
                     >
                         {Object.values(cams).map((cam) => (
                             <li key={cam.camera_id}>
@@ -58,41 +68,52 @@ export function CameraTab() {
                 </div>
             </div>
 
-            {/* Pan Zoom Tilt + Presets */}
-            <div className="flex justify-between items-start gap-4">
-                <div className="bg-gray-400 w-full flex items-center justify-center text-white text-lg font-bold rounded">
-                    <CameraController
-                        id={system_id!}
-                        activeCamera={{mod: selectedCamera!}}
-                    ></CameraController>
+            {/* Pan/tilt/zoom + presets side by side */}
+            <div className="border border-[#999] rounded-lg p-4 flex items-start justify-between gap-6">
+                <div>
+                    <h4 className="font-semibold mb-2">Pan, tilt &amp; zoom</h4>
+                    <div
+                        style={{
+                            width: CONTROLLER_NATURAL_W * CONTROLLER_SCALE,
+                            height: CONTROLLER_NATURAL_H * CONTROLLER_SCALE,
+                        }}
+                    >
+                        <div
+                            className="origin-top-left"
+                            style={{
+                                transform: `scale(${CONTROLLER_SCALE})`,
+                                width: CONTROLLER_NATURAL_W,
+                                height: CONTROLLER_NATURAL_H,
+                            }}
+                        >
+                            <CameraController
+                                id={system_id!}
+                                activeCamera={{mod: selectedCamera!}}
+                            ></CameraController>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Camera Presets */}
-                <div className="flex flex-col justify-center items-center w-[300px] space-y-3">
-                    <h4 className="font-semibold text-right text-gray-800 mb-2">
-                        Camera Presets
-                    </h4>
-                    {(() => {
-                        const selectedCam = selectedCamera ? cams[selectedCamera] : null;
-                        if (!selectedCam?.presets) return null;
-
-                        return selectedCam.presets.map((preset) => (
-                            <CameraPresetButton
-                                key={preset}
-                                preset={preset}
-                                system_id={system_id!}
-                                selectedCamera={selectedCamera!}
-                                cams={cams}
-                            />
-                        ));
-                    })()}
+                <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold mb-2">Camera presets</h4>
+                    {selectedCam?.presets ? (
+                        /* 3-up so even a long preset list stays shorter than
+                           the joystick column and can't grow the card */
+                        <div className="grid grid-cols-3 gap-2">
+                            {selectedCam.presets.map((preset) => (
+                                <CameraPresetButton
+                                    key={preset}
+                                    preset={preset}
+                                    system_id={system_id!}
+                                    selectedCamera={selectedCamera!}
+                                    cams={cams}
+                                />
+                            ))}
+                        </div>
+                    ) : null}
                 </div>
             </div>
-        </div>)
-        : 
-            (
-            <div>Cameras are automated when BruinCasting!</div>
-            )
+        </>
     );
 }
-

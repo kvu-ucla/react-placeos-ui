@@ -59,13 +59,11 @@ export function StatusTab() {
     );
 
     return (
-        <div className="border rounded-lg p-6 space-y-6">
-            {/* Zoom Meeting Status Header */}
-            <div>
-                <h2 className="text-xl font-semibold mb-1">Zoom Meeting Status</h2>
-            </div>
+        <>
+            <h3 className="font-semibold mb-2">Zoom meeting status</h3>
+
             {/* Room Info */}
-            <div className="border rounded-md p-4 bg-white">
+            <div className="border border-[#999] rounded-lg p-4 mb-4">
                 <div className="font-semibold text-black">
                     {currentMeeting?.title}
                 </div>
@@ -80,8 +78,10 @@ export function StatusTab() {
                 </div>
             </div>
 
+            <h3 className="font-semibold mb-2">Participants</h3>
+
             {/* Participants List */}
-            <div className="max-w-4xl mx-auto bg-white">
+            <div className="border border-[#999] rounded-lg p-4">
                 {/* Loading — driver hasn't reported participants yet.
                     Skeleton rows in ParticipantRow geometry (avatar + name);
                     this surface appears post-load, so it keeps its own
@@ -153,6 +153,6 @@ export function StatusTab() {
                     </div>
                 )}
             </div>
-        </div>
+        </>
     );
 }
