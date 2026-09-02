@@ -1,7 +1,18 @@
+import { execSync } from 'node:child_process';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig, type ProxyOptions } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+
+// Build stamp for the SupportModal on-glass diagnostics — the staleness
+// check when debugging the physical panel, where devtools can't attach.
+let gitSha = 'unknown';
+try {
+    gitSha = execSync('git rev-parse --short HEAD').toString().trim();
+} catch {
+    /* not a git checkout (e.g. tarball CI) — keep 'unknown' */
+}
+const BUILD_INFO = `${gitSha} @ ${new Date().toISOString()}`;
 
 //////////////////////////////////////////////////////////////
 ///////////////////   Proxy Configuration   //////////////////
@@ -61,6 +72,9 @@ export default defineConfig({
         }),
     ],
     base: './',
+    define: {
+        __BUILD_INFO__: JSON.stringify(BUILD_INFO),
+    },
     server: {
         proxy: PROXY_MAP,
     },

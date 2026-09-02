@@ -1,5 +1,5 @@
 // src/components/SupportModal.tsx
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import { useZoomContext } from "../hooks/ZoomContext.tsx";
 import { useControlContext } from "../hooks/ControlStateContext.tsx";
@@ -13,8 +13,65 @@ interface ContactInfo {
   href: string | null;
 }
 
+// On-glass rendering diagnostics — the physical panel's webview shows defects
+// desktop Chrome doesn't and devtools can't attach, so the ground truth
+// (computed styles + engine feature support + which build is on glass) has to
+// be readable on the panel itself. Every probe is individually guarded: a
+// hostile webview must never crash the support modal.
+function collectDiagnostics(xBtn: HTMLButtonElement | null): [string, string][] {
+  const rows: [string, string][] = [];
+  const safe = (name: string, fn: () => string) => {
+    try {
+      rows.push([name, fn()]);
+    } catch (err) {
+      rows.push([name, `err: ${String(err)}`]);
+    }
+  };
+  const styleOf = (el: Element | null) => (el ? getComputedStyle(el) : null);
+  const appearanceOf = (s: CSSStyleDeclaration) =>
+    s.appearance ||
+    (s as unknown as Record<string, string>).webkitAppearance ||
+    "?";
+
+  safe("build", () => __BUILD_INFO__);
+  safe("nav-btn", () => {
+    // Prefer an unselected nav button (the defective state); while this
+    // modal is open the Support button itself is selected, so on the splash
+    // screen only a selected sample may exist — labeled accordingly.
+    const unsel = document.querySelector(
+      "header .nav-btn:not(.nav-btn-selected)",
+    );
+    const el = unsel ?? document.querySelector("header .nav-btn");
+    const s = styleOf(el);
+    if (!s) return "n/a";
+    const tag = unsel ? "" : " (selected sample)";
+    return `appearance=${appearanceOf(s)}; bg=${s.backgroundColor}; border=${s.border || `${s.borderWidth} ${s.borderStyle}`}${tag}`;
+  });
+  safe("header shadow", () => {
+    const s = styleOf(document.querySelector("header"));
+    return s ? s.boxShadow.slice(0, 60) : "n/a";
+  });
+  safe("x-btn", () => {
+    const s = styleOf(xBtn);
+    return s ? `appearance=${appearanceOf(s)}; bg=${s.backgroundColor}` : "n/a";
+  });
+  safe("@property", () => String("CSSPropertyRule" in window));
+  safe("@layer", () => String("CSSLayerBlockRule" in window));
+  safe(":has", () => String(CSS.supports("selector(:has(a))")));
+  safe("relative-color", () => String(CSS.supports("color", "oklch(from red l c h)")));
+  safe("color-mix", () => String(CSS.supports("color", "color-mix(in oklab,red,blue)")));
+  safe("mask-image", () => String(CSS.supports("mask-image", "none")));
+  return rows;
+}
+
 export default function SupportModal({ onClose }: { onClose: () => void }) {
   const [activeTab, setActiveTab] = useState<"Contact">("Contact");
+  const xBtnRef = useRef<HTMLButtonElement>(null);
+  const [diagnostics, setDiagnostics] = useState<[string, string][]>([]);
+  // Read at modal-open time, from the live DOM
+  useEffect(() => {
+    setDiagnostics(collectDiagnostics(xBtnRef.current));
+  }, []);
 
   const { connection } = useZoomContext();
   const { system } = useControlContext();
@@ -58,6 +115,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
         <div className="flex justify-between items-center border-b border-avit-grey pb-8">
           <h2 className="text-4xl font-semibold">Support</h2>
           <button
+            ref={xBtnRef}
             onClick={onClose}
             aria-label="Close"
             className="nav-btn btn-ghost text-2xl font-bold "
@@ -150,6 +208,13 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
                   {/* Diagnostics — helps support identify the panel webview */}
                   <div className="mt-2 text-left text-sm text-gray-500 break-all">
                     Browser: {navigator.userAgent}
+                  </div>
+                  <div className="mt-1 text-left text-xs text-gray-500 break-all">
+                    {diagnostics.map(([name, value]) => (
+                      <div key={name}>
+                        {name}: {value}
+                      </div>
+                    ))}
                   </div>
                 </div>
               </>
