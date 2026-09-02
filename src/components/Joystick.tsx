@@ -20,6 +20,12 @@ interface JoystickProps {
   onDirectionChange?: (dir: JoystickDirection) => void;
 }
 
+// Dead zone as a fraction of the joystick's rendered width. The pad was tuned
+// at 384px with a 30px threshold; 30/384 preserves that exact feel at any
+// rendered scale (e.g. the settings modal renders it inside a scale(0.5)
+// transform, where an absolute 30px would double the effective dead zone).
+const DEADZONE_RATIO = 30 / 384;
+
 export default function Joystick({ onDirectionChange }: JoystickProps) {
   const joystickRef = useRef<HTMLDivElement>(null);
   const [direction, setDirection] = useState<JoystickDirection>(JoystickDirection.Stop);
@@ -36,7 +42,9 @@ export default function Joystick({ onDirectionChange }: JoystickProps) {
 
     const dx = clientX - centerX;
     const dy = clientY - centerY;
-    const threshold = 30; // Threshold for 1.5x larger joystick
+    // Ratio-based so the dead zone tracks the rendered size (box.width is
+    // transform-aware); numerically identical to the old 30px at full 384px
+    const threshold = box.width * DEADZONE_RATIO;
 
     const absDx = Math.abs(dx);
     const absDy = Math.abs(dy);
