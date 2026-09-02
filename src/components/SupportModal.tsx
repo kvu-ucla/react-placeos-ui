@@ -1,135 +1,13 @@
 // src/components/SupportModal.tsx
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { useZoomContext } from "../hooks/ZoomContext.tsx";
 import { useControlContext } from "../hooks/ControlStateContext.tsx";
 import { useEscapeKey } from "../hooks/useEscapeKey";
 import type { SupportCard } from "../hooks/useControlState";
 
-// On-glass rendering diagnostics — the physical panel's webview shows defects
-// desktop Chrome doesn't and devtools can't attach, so the ground truth
-// (computed styles + engine feature support + which build is on glass) has to
-// be readable on the panel itself. Every probe is individually guarded: a
-// hostile webview must never crash the support modal.
-function collectDiagnostics(xBtn: HTMLElement | null): [string, string][] {
-  const rows: [string, string][] = [];
-  const safe = (name: string, fn: () => string) => {
-    try {
-      rows.push([name, fn()]);
-    } catch (err) {
-      rows.push([name, `err: ${String(err)}`]);
-    }
-  };
-  const styleOf = (el: Element | null) => (el ? getComputedStyle(el) : null);
-  const appearanceOf = (s: CSSStyleDeclaration) =>
-    s.appearance ||
-    (s as unknown as Record<string, string>).webkitAppearance ||
-    "?";
-
-  safe("build", () => __BUILD_INFO__);
-  safe("nav-btn", () => {
-    // Prefer an unselected nav button (the defective state); while this
-    // modal is open the Support button itself is selected, so on the splash
-    // screen only a selected sample may exist — labeled accordingly.
-    const unsel = document.querySelector(
-      "header .nav-btn:not(.nav-btn-selected)",
-    );
-    const el = unsel ?? document.querySelector("header .nav-btn");
-    const s = styleOf(el);
-    if (!s) return "n/a";
-    const tag = unsel ? "" : " (selected sample)";
-    return `appearance=${appearanceOf(s)}; bg=${s.backgroundColor}; border=${s.border || `${s.borderWidth} ${s.borderStyle}`}${tag}`;
-  });
-  safe("header shadow", () => {
-    // shadow-lg lives on the <header> element but ONLY while the system is
-    // active — say which case we measured so 'none' is interpretable
-    const el = document.querySelector("header");
-    if (!el) return "n/a";
-    const has = el.classList.contains("shadow-lg");
-    return `class=${has ? "yes" : "no (shadow-lg is active-only)"}; computed=${getComputedStyle(el).boxShadow.slice(0, 60)}`;
-  });
-  safe("x-btn", () => {
-    const s = styleOf(xBtn);
-    return s ? `appearance=${appearanceOf(s)}; bg=${s.backgroundColor}` : "n/a";
-  });
-  safe("x-btn --btn-bg", () => {
-    const s = styleOf(xBtn);
-    return s ? s.getPropertyValue("--btn-bg").trim() || "(unset)" : "n/a";
-  });
-  safe("inline-shadow test", () => {
-    // Same idea as inline-bg: does the highest-precedence author shadow
-    // (inline style) survive on this engine?
-    const el = document.querySelector("header") as HTMLElement | null;
-    if (!el) return "n/a";
-    const prev = el.style.boxShadow;
-    el.style.boxShadow = "0 10px 15px -3px rgba(0,0,0,0.1)";
-    const read = getComputedStyle(el).boxShadow;
-    el.style.boxShadow = prev;
-    return read;
-  });
-  safe("inline-bg test", () => {
-    // Does an INLINE background take effect? Distinguishes "our stylesheet
-    // rule loses somewhere" from "the engine overrides author backgrounds
-    // on this element wholesale" — inline style is the highest author
-    // precedence CSS offers.
-    const el = (document.querySelector(
-      "header .nav-btn:not(.nav-btn-selected)",
-    ) ?? document.querySelector("header .nav-btn")) as HTMLElement | null;
-    if (!el) return "n/a";
-    const prev = el.style.backgroundColor;
-    el.style.backgroundColor = "transparent";
-    const read = getComputedStyle(el).backgroundColor;
-    el.style.backgroundColor = prev;
-    return read;
-  });
-  safe("cssom", () => {
-    // Prove our nav-btn rules exist in the parsed CSSOM on this engine
-    let count = 0;
-    let first = "";
-    const walk = (rules: CSSRuleList) => {
-      for (const rule of Array.from(rules)) {
-        const r = rule as CSSStyleRule & { cssRules?: CSSRuleList };
-        if (r.selectorText?.includes("nav-btn")) {
-          count++;
-          if (!first) first = r.cssText.slice(0, 60);
-        }
-        if (r.cssRules) walk(r.cssRules);
-      }
-    };
-    for (const sheet of Array.from(document.styleSheets)) {
-      try {
-        walk(sheet.cssRules);
-      } catch {
-        /* cross-origin sheet — skip */
-      }
-    }
-    return `count=${count}; first=${first || "none"}`;
-  });
-  safe("forced-colors", () =>
-    [
-      `active=${matchMedia("(forced-colors: active)").matches}`,
-      `contrast-more=${matchMedia("(prefers-contrast: more)").matches}`,
-      `inverted=${matchMedia("(inverted-colors: inverted)").matches}`,
-    ].join("; "),
-  );
-  safe("@property", () => String("CSSPropertyRule" in window));
-  safe("@layer", () => String("CSSLayerBlockRule" in window));
-  safe(":has", () => String(CSS.supports("selector(:has(a))")));
-  safe("relative-color", () => String(CSS.supports("color", "oklch(from red l c h)")));
-  safe("color-mix", () => String(CSS.supports("color", "color-mix(in oklab,red,blue)")));
-  safe("mask-image", () => String(CSS.supports("mask-image", "none")));
-  return rows;
-}
-
 export default function SupportModal({ onClose }: { onClose: () => void }) {
   const [activeTab, setActiveTab] = useState<"Contact">("Contact");
-  const xBtnRef = useRef<HTMLDivElement>(null);
-  const [diagnostics, setDiagnostics] = useState<[string, string][]>([]);
-  // Read at modal-open time, from the live DOM
-  useEffect(() => {
-    setDiagnostics(collectDiagnostics(xBtnRef.current));
-  }, []);
-
   const { connection } = useZoomContext();
   const { system, supportPhone, supportPhoneDisplay, supportCards } =
     useControlContext();
@@ -176,7 +54,6 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
         <div className="flex justify-between items-center border-b border-avit-grey pb-8">
           <h2 className="text-4xl font-semibold">Support</h2>
           <div
-            ref={xBtnRef}
             role="button"
             tabIndex={0}
             onClick={onClose}
@@ -272,18 +149,6 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
                           : `All systems ${connection}`}
                       </span>
                     </div>
-                  </div>
-
-                  {/* Diagnostics — helps support identify the panel webview */}
-                  <div className="mt-2 text-left text-sm text-gray-500 break-all">
-                    Browser: {navigator.userAgent}
-                  </div>
-                  <div className="mt-1 text-left text-xs text-gray-500 break-all">
-                    {diagnostics.map(([name, value]) => (
-                      <div key={name}>
-                        {name}: {value}
-                      </div>
-                    ))}
                   </div>
                 </div>
               </>

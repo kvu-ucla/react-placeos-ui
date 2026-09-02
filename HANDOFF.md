@@ -16,7 +16,7 @@ Supersedes the 2026-09-01 rev-2 handoff (see git history of this file). Start a 
 1. **Skins native `<button>` widgets below the author cascade**: computed background stays ButtonFace `rgb(239,239,239)` against plain un-layered `!important` transparent; forced-colors media reports false. FIX: render as `div[role=button]` (Button ghost variant + modal X buttons do this now).
 2. **Drops `box-shadow` at engine level** (computed `none` for a matching plain rule). FIX: runtime-detected gradient underlay on the header (desktop keeps true shadow, pixel-identical).
 3. No relative-color syntax (`oklch(from …)`, expected at 118), no unprefixed `mask-image` (expected, 120+). `@property`/`@layer`/`:has`/`color-mix` all present.
-4. The SupportModal diagnostics block is the debugging channel for this hardware — keep it.
+4. The SupportModal diagnostics block was the debugging channel for this hardware — removed at owner request 2026-09-02 once all defects were confirmed fixed; revive from `cc20602` if panel rendering issues recur.
 
 ## Owner decisions / open items (each with what it unblocks)
 
@@ -42,7 +42,7 @@ Supersedes the 2026-09-01 rev-2 handoff (see git history of this file). Start a 
 | Current branch (contains everything) | `origin/feat/ui-polish` @ `c3391d8` |
 | CI build for the panel | `origin/build/feat_ui-polish` (nonprod `control-av-dev` serves it) |
 | Review verdicts + impl reports (both pushes, all rounds) | `review-verdicts/` (gitignored) |
-| On-glass diagnostics | SupportModal bottom block (build SHA, probes) |
+| On-glass diagnostics | removed (revive from `cc20602` if needed) |
 | Loading-state machinery | `src/components/RoomStatusModal.tsx`, `src/hooks/useControlState.ts` (pendingPower), `MainView.tsx` (readiness/pacing) |
 | Prompt UI + payload routing | `src/components/prompts/` |
 | Non-native button pattern | `src/components/Button.tsx` (ghost = div[role=button]) |
