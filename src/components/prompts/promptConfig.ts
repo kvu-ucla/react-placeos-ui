@@ -135,21 +135,36 @@ const actionLabel = (
     : raw;
 };
 
-// Reminder shape detection: any payload carrying a reminderContent or
-// customizedContent object is an OnMeetingReminderNotification /
-// OnCustomizedReminderNotification-shaped event, regardless of which status
-// key the driver surfaced it on. ZoomPromptHost routes such payloads through
-// reminderEntry so Zoom-supplied text always wins over a key's generic entry.
+// Reminder shape detection, used by ZoomPromptHost to route
+// OnMeetingReminderNotification / OnCustomizedReminderNotification-shaped
+// payloads through reminderEntry regardless of which status key the driver
+// surfaced them on. STRICT on purpose: the mere presence of a nested
+// reminderContent/customizedContent object is NOT enough (a non-reminder
+// payload could coincidentally nest one and would lose its specialized
+// config). Requires either the event-name discriminator, or two independent
+// reminder signals: the content object carrying a string title/message AND a
+// reminder sibling field (string reminderType / boolean isShowing).
 export type ReminderContentKey = "reminderContent" | "customizedContent";
 
 export const reminderContentKey = (
   payload: unknown,
 ): ReminderContentKey | null => {
-  if (payload && typeof payload === "object") {
-    for (const key of ["reminderContent", "customizedContent"] as const) {
-      const value = (payload as Record<string, unknown>)[key];
-      if (value && typeof value === "object") return key;
-    }
+  if (!payload || typeof payload !== "object") return null;
+  const obj = payload as Record<string, unknown>;
+  for (const key of ["reminderContent", "customizedContent"] as const) {
+    const content = obj[key];
+    if (!content || typeof content !== "object") continue;
+    const eventMatch =
+      obj.event === "OnMeetingReminderNotification" ||
+      obj.event === "OnCustomizedReminderNotification";
+    const c = content as Record<string, unknown>;
+    const hasText =
+      (typeof c.title === "string" && c.title.trim() !== "") ||
+      (typeof c.message === "string" && c.message.trim() !== "");
+    const reminderSibling =
+      typeof obj.reminderType === "string" ||
+      typeof obj.isShowing === "boolean";
+    if (eventMatch || (hasText && reminderSibling)) return key;
   }
   return null;
 };
@@ -231,6 +246,22 @@ const agreeDismiss = (key: ZoomPromptKey): PromptAction[] => [
     run: ({ answerPrompt }) => answerPrompt(key, false),
   },
 ];
+
+// Keys that must NEVER be shape-routed to the generic reminder presentation,
+// even if their payload passes the reminder discriminators: their entries (or
+// dedicated modal) do more than answerPrompt(key, bool) — replacing them with
+// generic agree/dismiss would drop real behavior (e.g. privacy_alert's
+// handle_privacy_alert execute path, the password modal, waiting_for_host's
+// spinner/single-action semantics). INVARIANT (checked when editing this
+// file): any key added to PROMPT_CONFIG below whose actions are not plain
+// answerPrompt(key, true/false) MUST also be added to this set.
+export const SHAPE_ROUTE_EXCLUDED: ReadonlySet<ZoomPromptKey> = new Set([
+  "privacy_alert",
+  "inactive_detection",
+  "ai_companion_request",
+  "meeting_password_required",
+  "waiting_for_host",
+]);
 
 export const PROMPT_CONFIG: Partial<Record<ZoomPromptKey, PromptConfigEntry>> =
   {

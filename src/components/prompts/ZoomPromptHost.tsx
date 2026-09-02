@@ -13,6 +13,7 @@ import { Button } from "../Button";
 import {
   MODAL_PROMPT_PRIORITY,
   PROMPT_CONFIG,
+  SHAPE_ROUTE_EXCLUDED,
   TOAST_PROMPTS,
   reminderContentKey,
   reminderEntry,
@@ -26,11 +27,12 @@ export default function ZoomPromptHost() {
 
   const activeKey = MODAL_PROMPT_PRIORITY.find((key) => prompts[key] != null);
   const activePayload = activeKey ? prompts[activeKey] : undefined;
-  // Shape-based routing: a reminder-shaped payload gets the payload-driven
-  // reminder presentation WHATEVER key it arrived on (answerPrompt still
-  // targets the actual key)
+  // Shape-based routing: a payload passing the strict reminder
+  // discriminators gets the payload-driven reminder presentation WHATEVER
+  // key it arrived on (answerPrompt still targets the actual key) — except
+  // keys with specialized actions, which keep their own config regardless.
   const activeReminderShape =
-    activeKey && activeKey !== "meeting_password_required"
+    activeKey && !SHAPE_ROUTE_EXCLUDED.has(activeKey)
       ? reminderContentKey(activePayload)
       : null;
   const reminderActive =
