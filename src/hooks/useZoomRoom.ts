@@ -28,23 +28,35 @@ export interface Booking {
   creator?: string | null; // currently always null from converter
 }
 
-// The ZoomZRC driver stores the raw GET /participants response, so keep this
-// tolerant: only an id is assumed; names overlapping the old CSAPI shape are
-// kept for the UI. The wrapper has been seen using `name` for display names.
+// Field names confirmed against the live ZRC microservice payload
+// (2026-09-01, lab-test room); everything but the id stays optional since the
+// driver stores the raw response. Booleans can arrive as null.
 export interface ZrcParticipant {
   user_id: number | string;
-  name?: string;
   user_name?: string;
-  audio_state?: string;
-  video_is_sending?: boolean;
-  is_host?: boolean;
-  isCohost?: boolean;
-  is_in_waiting_room?: boolean;
-  hand_status?: {
-    is_raise_hand?: boolean;
-    is_valid?: string;
-    time_stamp?: string;
+  is_host?: boolean | null;
+  is_cohost?: boolean | null;
+  is_myself?: boolean | null;
+  is_in_waiting_room?: boolean | null;
+  is_raising_hand?: boolean | null;
+  is_talking?: boolean | null;
+  is_on_hold?: boolean | null;
+  audio_status?: { audio_type?: string; is_muted?: boolean | null };
+  video_status?: {
+    has_source?: boolean | null;
+    receiving?: boolean | null;
+    sending?: boolean | null;
+    can_control?: boolean | null;
   };
+  avatar_path?: string;
+  parent_user_id?: number;
+  [key: string]: unknown;
+}
+
+// The driver publishes the whole GET /participants response, an object
+// wrapping the array: { room_id, session, result, success, participants: [...], count }.
+interface ZrcParticipantsPayload {
+  participants?: ZrcParticipant[] | null;
   [key: string]: unknown;
 }
 
@@ -128,8 +140,13 @@ export function useZoomRoom(systemId: string, mod = "ZoomZRC") {
       );
       binder.listen<boolean>(mod, "mic_mute", setIsMicMuted);
       binder.listen<boolean>(mod, "camera_mute", setIsCamMuted);
-      binder.listen<ZrcParticipant[] | null>(mod, "participants", (val) =>
-        setParticipants(Array.isArray(val) ? val : []),
+      binder.listen<ZrcParticipant[] | ZrcParticipantsPayload | null>(
+        mod,
+        "participants",
+        (val) => {
+          const list = Array.isArray(val) ? val : val?.participants;
+          setParticipants(Array.isArray(list) ? list : []);
+        },
       );
       binder.listen<boolean>(mod, "online", (val) => setOnline(!!val));
       binder.listen<string | null>(

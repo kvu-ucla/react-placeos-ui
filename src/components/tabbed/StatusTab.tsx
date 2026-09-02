@@ -9,7 +9,7 @@ export function StatusTab() {
     } = useZoomContext();
 
     const displayName = (participant: ZrcParticipant) =>
-        participant.user_name ?? participant.name ?? "Unknown";
+        participant.user_name ?? "Unknown";
 
     // Separate participants by status
     const activeParticipants = participants?.filter(p => !p.is_in_waiting_room) || [];
@@ -24,7 +24,7 @@ export function StatusTab() {
                         {displayName(participant).charAt(0).toUpperCase()}
                     </div>
                     {/* Raised hand indicator */}
-                    {participant.hand_status?.is_raise_hand && (
+                    {participant.is_raising_hand && (
                         <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
                             <span className="text-xs">✋</span>
                         </div>
@@ -36,7 +36,7 @@ export function StatusTab() {
                     {participant.is_host && (
                         <span className="text-xs text-gray-500">(Host)</span>
                     )}
-                    {participant.isCohost && (
+                    {participant.is_cohost && (
                         <span className="text-xs text-gray-500">(Co-host)</span>
                     )}
                 </div>
