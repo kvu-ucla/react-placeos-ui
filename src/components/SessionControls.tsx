@@ -105,46 +105,6 @@ export default function SessionControls() {
     }
   }, [gallery, stopLoading]);
   
-  //accordion logic
-  const [openAccordion, setOpenAccordion] = useState<'wireless' | 'local' | null>(null);
-  const wirelessRef = useRef<HTMLDivElement>(null);
-  const localRef = useRef<HTMLDivElement>(null);
-  // Cancels a scroll-after-transition wait still pending from a previous open
-  const cancelAccordionScroll = useRef<(() => void) | null>(null);
-
-  useEffect(() => () => cancelAccordionScroll.current?.(), []);
-
-  const handleAccordionClick = (accordionName: 'wireless' | 'local') => {
-    cancelAccordionScroll.current?.();
-    if (openAccordion === accordionName) {
-      setOpenAccordion(null); // Close if already open
-      return;
-    }
-    setOpenAccordion(accordionName); // Open and close others
-
-    // Scroll once the daisyUI collapse transition finishes instead of after a
-    // fixed delay; safety timeout in case no transition event ever fires.
-    const element =
-      accordionName === 'wireless' ? wirelessRef.current : localRef.current;
-    if (!element) return;
-    const scroll = () => {
-      cancelAccordionScroll.current?.();
-      element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    };
-    const onTransitionEnd = (ev: TransitionEvent) => {
-      // only the expand transition matters, not e.g. the arrow rotation
-      if (!/height|grid-template-rows/.test(ev.propertyName)) return;
-      scroll();
-    };
-    const fallback = setTimeout(scroll, 350);
-    element.addEventListener('transitionend', onTransitionEnd);
-    cancelAccordionScroll.current = () => {
-      element.removeEventListener('transitionend', onTransitionEnd);
-      clearTimeout(fallback);
-      cancelAccordionScroll.current = null;
-    };
-  };
-
   // Wrapper functions that handle loading states
   const handleToggleMic = async () => {
     startLoading("mic");
@@ -243,12 +203,11 @@ export default function SessionControls() {
       <h2 className="font-semibold text-2xl mb-4">Join from your device</h2>
       <div id="zoom-join" className="grid grid-cols-2 gap-4">
         {/*Share Wirelessly*/}
-        <div ref={wirelessRef} className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
-          <input
-            type="checkbox"
-            checked={openAccordion === 'wireless'}
-            onChange={() => handleAccordionClick('wireless')}
-          />
+        {/* Radio-collapse pair (shared name): opening one closes the other,
+            so only one panel's height is ever added and the section can't
+            outgrow its flex space */}
+        <div className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
+          <input type="radio" name="zoom-join-accordion" />
           {/* after:! overrides required: daisyUI's .collapse-arrow>.collapse-title:after
               sets width/height/top/inset-inline-end at higher specificity */}
           <div
@@ -267,8 +226,9 @@ export default function SessionControls() {
               </div>
             </div>
           </div>
-          <div className="collapse-content text-xl font-normal">
-            <ol className="list-decimal list-inside">
+          {/* Compact body so an open panel fits the section's flex space */}
+          <div className="collapse-content text-base font-normal leading-snug !pb-2">
+            <ol className="list-decimal list-inside space-y-1">
               <li>
                 Open the Zoom client application on the device you wish to
                 present.
@@ -282,12 +242,8 @@ export default function SessionControls() {
         </div>
 
         {/*Share Local*/}
-        <div ref={localRef} className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
-          <input
-            type="checkbox"
-            checked={openAccordion === 'local'}
-            onChange={() => handleAccordionClick('local')}
-          />
+        <div className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
+          <input type="radio" name="zoom-join-accordion" />
           {/* after:! overrides required: daisyUI's .collapse-arrow>.collapse-title:after
               sets width/height/top/inset-inline-end at higher specificity */}
           <div
@@ -307,8 +263,9 @@ export default function SessionControls() {
               </div>
             </div>
           </div>
-          <div className="collapse-content text-xl font-normal">
-            <ol className="list-decimal list-inside ">
+          {/* Compact body so an open panel fits the section's flex space */}
+          <div className="collapse-content text-base font-normal leading-snug !pb-2">
+            <ol className="list-decimal list-inside space-y-1">
               <li>
                 Connect one end of the USB-C or HDMI cable into your laptop.
               </li>
