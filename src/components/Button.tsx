@@ -12,12 +12,15 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary: "btn rounded-lg text-white bg-avit-blue active:bg-[#011c50]",
   // its cancel/secondary counterpart
   outline: "btn rounded-lg btn-outline active:bg-gray-100",
-  // Header-style transparent icon button; pair with `selected`
+  // Header-style transparent icon button; pair with `selected`.
+  // nav-btn / nav-btn-selected are plain un-layered CSS hooks in index.css —
+  // an engine-proof fallback for the panel webview where @layer'd utilities
+  // can silently drop (see the comment there).
   ghost:
-    "cursor-pointer select-none border-0 outline-none focus-visible:ring-2 focus-visible:ring-avit-blue font-semibold transition-colors flex flex-col justify-center items-center w-20 h-20",
+    "nav-btn cursor-pointer select-none border-0 outline-none focus-visible:ring-2 focus-visible:ring-avit-blue font-semibold transition-colors flex flex-col justify-center items-center w-20 h-20",
 };
 
-const GHOST_SELECTED = "rounded-2xl bg-blue-600 text-white";
+const GHOST_SELECTED = "nav-btn-selected rounded-2xl bg-blue-600 text-white";
 const GHOST_UNSELECTED = "bg-transparent";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

@@ -29,6 +29,30 @@ body,
   @apply m-0 p-0 h-full bg-gray-100;
 }
 
+/* Engine-proof fallback for the header nav buttons — deliberately OUTSIDE any
+   @layer. The physical panel's webview predates full @layer/oklch support
+   (Tailwind v4 floor is Chromium 111), so layered utilities like
+   bg-transparent can silently drop and the native UA button face shows
+   through. Plain un-layered rules still apply on ancient engines; on modern
+   engines un-layered author rules beat layered utilities at equal
+   specificity, so the selected state's background MUST also live here (hex,
+   not oklch — same reason) or the transparent rule would override
+   bg-blue-600. .nav-btn-selected is declared after .nav-btn: equal
+   specificity, later wins. */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-btn {
+  background-color: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-btn-selected {
+  background-color: #155dfc; /* tailwind v4 blue-600 (matches bg-blue-600) */
+}
+
 @layer utilities {
   :root,
   [data-theme] {
