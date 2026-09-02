@@ -1,6 +1,19 @@
 // src/hooks/useControlState.ts
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import { useBinder, useModuleExecute } from "./placeos";
+
+// Direction of an in-flight power transition. The System module exposes no
+// transitional status var (only power/active/connected), so this is driven
+// locally: armed in togglePower — the ONLY code path that changes System
+// power — and cleared when `active` reaches the target or a generous
+// timeout gives up.
+export type PendingPower = "on" | "off" | null;
+
+// Real hardware power-up can take many seconds; past this we assume the
+// transition failed and fall back to the real state rather than strand the
+// user on the loading screen.
+const POWER_TRANSITION_TIMEOUT_MS = 60_000;
 
 export interface EnvironmentSource {
   name: string;
@@ -86,6 +99,8 @@ export interface ControlState {
   connected?: boolean;
   mute?: boolean;
   volume?: number;
+  /** Direction of an in-flight power transition, null when settled */
+  pendingPower: PendingPower;
   togglePower: () => void;
   setVolume: (val: number) => void;
   toggleMute: () => void;
@@ -101,6 +116,7 @@ export function useControlState(
   const [mute, setMuted] = useState(false);
   const [system, setSystem] = useState<SystemState>({});
   const [connected, setConnected] = useState<boolean>(false);
+  const [pendingPower, setPendingPower] = useState<PendingPower>(null);
 
   const powerRef = useRef(false);
   const activeRef = useRef(false);
@@ -162,8 +178,34 @@ export function useControlState(
     [moduleAlias],
   );
 
+  // Clear the pending transition when `active` reaches the target (instant
+  // flips clear before the screen's 300ms anti-flash delay ever shows it),
+  // or give up after the timeout so the user is never stranded.
+  useEffect(() => {
+    if (!pendingPower) return;
+    if (active === (pendingPower === "on")) {
+      setPendingPower(null);
+      return;
+    }
+    const timer = setTimeout(() => {
+      toast.error(
+        "The room is taking longer than expected — showing current status.",
+      );
+      setPendingPower(null);
+    }, POWER_TRANSITION_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [pendingPower, active]);
+
   const togglePower = async () => {
-    await execute(moduleAlias, "power", [!activeRef.current]);
+    const target = !activeRef.current;
+    setPendingPower(target ? "on" : "off");
+    try {
+      await execute(moduleAlias, "power", [target]);
+    } catch (err) {
+      // Command never reached the backend — no transition is coming
+      setPendingPower(null);
+      throw err;
+    }
   };
 
   const setVolume = async (val: number) => {
@@ -181,6 +223,7 @@ export function useControlState(
     volume,
     system,
     connected,
+    pendingPower,
     toggleMute,
     setVolume,
     togglePower,

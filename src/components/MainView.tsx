@@ -1,9 +1,11 @@
+import { useEffect, useState } from "react";
 import {
   ControlStateProvider,
   useControlContext,
 } from "../hooks/ControlStateContext";
 import SplashScreen from "./SplashScreen";
 import MainScreen from "./MainScreen";
+import PowerTransitionScreen from "./PowerTransitionScreen";
 import { Header } from "./Header";
 import { Navigate, useParams } from "react-router-dom";
 import { ZoomProvider } from "../hooks/ZoomContext";
@@ -28,7 +30,22 @@ export default function MainView() {
 }
 
 function MainViewInner() {
-  const { active } = useControlContext();
+  const { active, pendingPower } = useControlContext();
+
+  // Anti-flash: only surface the transition screen if the power command is
+  // still pending 300ms after it was armed — an instant `active` flip clears
+  // pendingPower before this fires, so fast transitions never render it.
+  const [showTransition, setShowTransition] = useState(false);
+  useEffect(() => {
+    if (!pendingPower) {
+      setShowTransition(false);
+      return;
+    }
+    const timer = setTimeout(() => setShowTransition(true), 300);
+    return () => clearTimeout(timer);
+  }, [pendingPower]);
+
+  const transition = showTransition ? pendingPower : null;
   return (
     <div className="first-step relative isolate flex h-screen w-full flex-col overflow-hidden bg-avit-bg">
       {/* One Header for both screens so it never remounts on the swap */}
@@ -36,12 +53,19 @@ function MainViewInner() {
         <Header />
       </div>
       {/* Key-based remount + entrance fade; the outgoing screen unmounts
-          instantly, so an invisible screen can never be left behind */}
+          instantly, so an invisible screen can never be left behind. The
+          power-transition screen is a third state of the same crossfade. */}
       <div
-        key={active ? "main" : "splash"}
+        key={transition ? "transition" : active ? "main" : "splash"}
         className="screen-fade z-0 flex min-h-0 flex-1 flex-col"
       >
-        {active ? <MainScreen /> : <SplashScreen />}
+        {transition ? (
+          <PowerTransitionScreen direction={transition} />
+        ) : active ? (
+          <MainScreen />
+        ) : (
+          <SplashScreen />
+        )}
       </div>
     </div>
   );
