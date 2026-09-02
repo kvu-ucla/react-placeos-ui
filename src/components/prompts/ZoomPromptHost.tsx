@@ -81,10 +81,15 @@ function PromptModal({
     }
   };
 
+  // Payload-driven title/actions when the config provides them (reminders
+  // carry Zoom-supplied button text); static config otherwise.
+  const title = config.getTitle?.(payload) ?? config.title;
+  const actions = config.getActions?.(payload) ?? config.actions;
+
   // Esc = the negative/dismiss action, only when dismissable
   const dismissAction =
-    config.actions.filter((action) => !action.primary).at(-1) ??
-    config.actions[config.actions.length - 1];
+    actions.filter((action) => !action.primary).at(-1) ??
+    actions[actions.length - 1];
   useEscapeKey(() => {
     if (config.dismissable && !busy) runAction(dismissAction);
   });
@@ -98,7 +103,7 @@ function PromptModal({
         className="modal-box modal-pop max-h-[90vh] overflow-y-auto max-w-none w-[min(90vw,48rem)] rounded-lg bg-white p-8"
       >
         <h3 id="zoom-prompt-title" className="font-bold text-3xl mb-4">
-          {config.title}
+          {title}
         </h3>
         {config.showSpinner && (
           <span
@@ -108,9 +113,9 @@ function PromptModal({
         )}
         <p className="py-4 text-xl">{config.getBody(payload)}</p>
         <div className="flex items-center justify-center w-full gap-4">
-          {config.actions.map((action) => (
+          {actions.map((action, index) => (
             <Button
-              key={action.label}
+              key={`${index}-${action.label}`}
               ref={action.primary ? primaryRef : undefined}
               variant={action.primary ? "primary" : "outline"}
               disabled={busy}

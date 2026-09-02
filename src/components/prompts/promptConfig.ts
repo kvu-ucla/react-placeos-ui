@@ -24,8 +24,12 @@ export interface PromptAction {
 
 export interface PromptConfigEntry {
   title: string;
+  /** Payload-driven title override; falls back to `title` when it returns nothing */
+  getTitle?: (payload: unknown) => string | undefined;
   getBody: (payload: unknown) => string;
   actions: PromptAction[];
+  /** Payload-driven actions (e.g. Zoom-supplied button text); `actions` is the fallback */
+  getActions?: (payload: unknown) => PromptAction[];
   /** When true, Esc/backdrop runs the dismiss (last non-primary) action */
   dismissable: boolean;
   /** Show an indeterminate spinner above the body (waiting_for_host) */
@@ -115,6 +119,73 @@ const privacyCloseAction = (action: string | number): string | number => {
     ? "PRIVACY_ALERT_ACTION_CLOSE_DISCLAIMER"
     : "PRIVACY_ALERT_ACTION_CLOSE";
 };
+
+// Zoom-supplied button text can be arbitrarily long; cap it so a verbose
+// label can't break the two-button row. firstString already trims.
+const MAX_ACTION_LABEL = 24;
+const actionLabel = (
+  payload: unknown,
+  paths: string[][],
+  fallback: string,
+): string => {
+  const raw = firstString(payload, paths);
+  if (!raw) return fallback;
+  return raw.length > MAX_ACTION_LABEL
+    ? raw.slice(0, MAX_ACTION_LABEL - 1).trimEnd() + "…"
+    : raw;
+};
+
+// Live meeting_reminder payload (smoke-tested on a real room, 2026-09-02):
+// { event: "OnMeetingReminderNotification", reminderContent: { title,
+//   message, positiveActionText, negativeActionText, linkText, linkUrl,
+//   privacyMessage, ... }, isShowing, reminderType }, and the driver clears
+// the key to null after answering (observed). customized_reminder's
+// customizedContent is assumed to mirror this shape, so both build from the
+// same factory — every read stays defensive for older/divergent payloads.
+const reminderEntry = (
+  key: ZoomPromptKey,
+  contentKey: string,
+): PromptConfigEntry => ({
+  title: "Meeting reminder",
+  getTitle: (payload) => firstString(payload, [[contentKey, "title"]]),
+  getBody: (payload) => {
+    const body =
+      firstString(payload, [
+        [contentKey, "message"],
+        [contentKey, "content"],
+        [contentKey, "description"],
+        [contentKey, "title"],
+        ...GENERIC_TEXT_PATHS,
+      ]) ?? "This meeting has a reminder that needs a response.";
+    // Link rendered as plain appended text, never a hyperlink — a kiosk
+    // shouldn't open external URLs; showing the URL lets people follow it
+    // on their own device.
+    const linkText = firstString(payload, [[contentKey, "linkText"]]);
+    const linkUrl = firstString(payload, [[contentKey, "linkUrl"]]);
+    return linkText && linkUrl ? `${body} (${linkText}: ${linkUrl})` : body;
+  },
+  dismissable: true,
+  actions: agreeDismiss(key),
+  getActions: (payload) => [
+    {
+      label: actionLabel(
+        payload,
+        [[contentKey, "positiveActionText"]],
+        "Agree",
+      ),
+      primary: true,
+      run: ({ answerPrompt }) => answerPrompt(key, true),
+    },
+    {
+      label: actionLabel(
+        payload,
+        [[contentKey, "negativeActionText"]],
+        "Dismiss",
+      ),
+      run: ({ answerPrompt }) => answerPrompt(key, false),
+    },
+  ],
+});
 
 const agreeDismiss = (key: ZoomPromptKey): PromptAction[] => [
   {
@@ -219,24 +290,11 @@ export const PROMPT_CONFIG: Partial<Record<ZoomPromptKey, PromptConfigEntry>> =
         },
       ],
     },
-    meeting_reminder: {
-      title: "Meeting reminder",
-      getBody: bodyFrom("This meeting has a reminder that needs a response.", [
-        ["reminderContent", "content"],
-        ["reminderContent", "title"],
-      ]),
-      dismissable: true,
-      actions: agreeDismiss("meeting_reminder"),
-    },
-    customized_reminder: {
-      title: "Meeting reminder",
-      getBody: bodyFrom("This meeting has a reminder that needs a response.", [
-        ["customizedContent", "description"],
-        ["customizedContent", "title"],
-      ]),
-      dismissable: true,
-      actions: agreeDismiss("customized_reminder"),
-    },
+    meeting_reminder: reminderEntry("meeting_reminder", "reminderContent"),
+    customized_reminder: reminderEntry(
+      "customized_reminder",
+      "customizedContent",
+    ),
     privacy_alert: {
       title: "Privacy notice",
       getBody: bodyFrom(
