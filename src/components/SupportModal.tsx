@@ -48,13 +48,28 @@ function collectDiagnostics(xBtn: HTMLButtonElement | null): [string, string][] 
     return `appearance=${appearanceOf(s)}; bg=${s.backgroundColor}; border=${s.border || `${s.borderWidth} ${s.borderStyle}`}${tag}`;
   });
   safe("header shadow", () => {
-    const s = styleOf(document.querySelector("header"));
-    return s ? s.boxShadow.slice(0, 60) : "n/a";
+    // shadow-lg lives on the <header> element but ONLY while the system is
+    // active — say which case we measured so 'none' is interpretable
+    const el = document.querySelector("header");
+    if (!el) return "n/a";
+    const has = el.classList.contains("shadow-lg");
+    return `class=${has ? "yes" : "no (shadow-lg is active-only)"}; computed=${getComputedStyle(el).boxShadow.slice(0, 60)}`;
   });
   safe("x-btn", () => {
     const s = styleOf(xBtn);
     return s ? `appearance=${appearanceOf(s)}; bg=${s.backgroundColor}` : "n/a";
   });
+  safe("x-btn --btn-bg", () => {
+    const s = styleOf(xBtn);
+    return s ? s.getPropertyValue("--btn-bg").trim() || "(unset)" : "n/a";
+  });
+  safe("forced-colors", () =>
+    [
+      `active=${matchMedia("(forced-colors: active)").matches}`,
+      `contrast-more=${matchMedia("(prefers-contrast: more)").matches}`,
+      `inverted=${matchMedia("(inverted-colors: inverted)").matches}`,
+    ].join("; "),
+  );
   safe("@property", () => String("CSSPropertyRule" in window));
   safe("@layer", () => String("CSSLayerBlockRule" in window));
   safe(":has", () => String(CSS.supports("selector(:has(a))")));

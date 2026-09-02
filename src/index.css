@@ -44,13 +44,27 @@ html {
 }
 .nav-btn {
   background-color: transparent;
+  /* daisyui's button-face variable, redefined plain in case any consumer is
+     in play (the modal X buttons carry btn-ghost) */
+  --btn-bg: transparent;
   appearance: none;
   -webkit-appearance: none;
   border: 0;
   -webkit-tap-highlight-color: transparent;
+  /* On-glass trace showed the panel forcing ButtonFace rgb(239,239,239)
+     over our author background while appearance:none from this very rule
+     applied — the signature of forced-colors mode, which overrides author
+     backgrounds and strips shadows at the UA level. Opt these elements out,
+     and pin both states with !important so no same-origin winner exists
+     either. All plain syntax — zero relative-color dependence. */
+  forced-color-adjust: none;
+}
+.nav-btn:not(.nav-btn-selected) {
+  background-color: transparent !important;
 }
 .nav-btn-selected {
-  background-color: #155dfc; /* tailwind v4 blue-600 (matches bg-blue-600) */
+  background-color: #155dfc !important; /* tailwind v4 blue-600 (matches bg-blue-600) */
+  forced-color-adjust: none;
 }
 /* Panel webview (Android 12 wv, Chromium 118) fallbacks — verified via
    Playwright A/B that desktop 117 and 119 both compute these paths fine, so
@@ -70,6 +84,7 @@ header.shadow-lg {
   box-shadow:
     0 10px 15px -3px rgba(0, 0, 0, 0.1),
     0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  forced-color-adjust: none; /* forced-colors strips box-shadow */
 }
 
 @layer utilities {
