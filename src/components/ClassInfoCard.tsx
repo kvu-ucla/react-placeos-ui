@@ -108,7 +108,7 @@ export function ClassInfoCard() {
     <div className="flex flex-col justify-between items-center card bg-white p-4 rounded shadow w-full max-w-[620px] text-center h-[300px]">
       {!noMeeting ? (
         <>
-          <div className="text-2xl flex items-center justify-center gap-2">
+          <div className="text-2xl flex items-center justify-center gap-2 tabular-nums">
             <Icon
               icon="material-symbols:schedule-outline-rounded"
               width={48}
@@ -127,7 +127,7 @@ export function ClassInfoCard() {
               <p className="text-xl">{meetingDetails.instructor}</p>
             ) : null}
           </div>
-          <div className="mt-8 mb-8 text-xl flex items-center justify-center gap-2">
+          <div className="mt-8 mb-8 text-xl flex items-center justify-center gap-2 tabular-nums">
             <span>Ends at</span>
             <span>{meetingDetails.classEnd}</span>
             <span className="text-xs mx-2">●</span>

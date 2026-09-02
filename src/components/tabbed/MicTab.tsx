@@ -54,7 +54,7 @@ const MicControl = memo(function MicControl({
         <div className="border border-[#999] rounded-lg p-4">
             <div className="flex items-center justify-between">
                 <h4 className="font-semibold mb-2">{mic.name} volume</h4>
-                <span className="font-bold text-blue-600">{micPercentage}%</span>
+                <span className="font-bold text-blue-600 tabular-nums">{micPercentage}%</span>
             </div>
             <div className="flex items-center justify-between mb-2">
                 <Icon
@@ -82,10 +82,10 @@ const MicControl = memo(function MicControl({
                 onClick={() => {
                     onToggleMute(micId);
                 }}
-                className={`btn w-full h-[64px] rounded-lg text-xl font-medium ${
+                className={`btn w-full h-[64px] rounded-lg text-xl font-medium transition-colors duration-200 ${
                     mic.is_muted
-                        ? "bg-gray-800 text-white"
-                        : "text-avit-grey-80 bg-gray-100 border-gray-100"
+                        ? "bg-gray-800 text-white active:bg-gray-700"
+                        : "text-avit-grey-80 bg-gray-100 border-gray-100 active:bg-gray-200"
                 }`}
             >
                 {mic.is_muted ? "Unmute Mic" : "Mute Mic"}
@@ -160,20 +160,24 @@ export function MicTab() {
                     {/* Title */}
                     <div className="flex w-full items-center justify-between">
                         <p className="font-semibold">Speaker volume</p>
-                        <span className="text-blue-600 font-bold">
+                        <span className="text-blue-600 font-bold tabular-nums">
                           {percentage}%
                         </span>
                     </div>
 
                     {/* Slider */}
-                    <div className="flex w-full items-center">
+                    <div
+                        className={`flex w-full items-center transition-opacity duration-200 ${
+                            volume === undefined ? "opacity-50" : ""
+                        }`}
+                    >
                         <Icon
                             icon="material-symbols:volume-mute-outline-rounded"
                             width={64}
                             height={64}
                         ></Icon>
                         <VolumeSlider
-                            value={value!}
+                            value={value ?? 800}
                             onChange={setValue}
                             onCommit={handleRelease}
                             onDragStart={handleDragStart}
@@ -188,21 +192,17 @@ export function MicTab() {
                     </div>
                 </div>
                 <div className="flex justify-end items-end">
-                    {volumeMute ? (
-                        <button
-                            onClick={toggleMasterMute}
-                            className="btn w-[300px] h-[64px] ml-4 bg-black border-black px-9 py-6 rounded-lg text-xl text-white font-medium"
-                        >
-                            Unmute Speaker
-                        </button>
-                    ) : (
-                        <button
-                            onClick={toggleMasterMute}
-                            className="btn w-[300px] h-[64px] ml-4 bg-gray-100 border-gray-100 px-9 py-6 rounded-lg text-xl text-avit-grey-80 font-medium"
-                        >
-                            Mute Speaker
-                        </button>
-                    )}
+                    {/* Single element so the mute flip transitions instead of remounting */}
+                    <button
+                        onClick={toggleMasterMute}
+                        className={`btn w-[300px] h-[64px] ml-4 px-9 py-6 rounded-lg text-xl font-medium transition-colors duration-200 ${
+                            volumeMute
+                                ? "bg-black border-black text-white active:bg-gray-800"
+                                : "bg-gray-100 border-gray-100 text-avit-grey-80 active:bg-gray-200"
+                        }`}
+                    >
+                        {volumeMute ? "Unmute Speaker" : "Mute Speaker"}
+                    </button>
                 </div>
             </div>
 

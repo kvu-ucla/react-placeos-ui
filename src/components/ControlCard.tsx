@@ -29,7 +29,7 @@ export function ControlCard({
         if (buttonAction && !isLoading) buttonAction();
       }}
       id={id}
-      className={`w-full h-full btn-primary p-0 border-none aria-disabled:!bg-avit-blue aria-disabled:active:!bg-avit-blue rounded-[10px] transition-colors text-white ${buttonState ? "bg-white border-white active:bg-gray-100" : "bg-avit-blue active:bg-[#011c50]"}`}
+      className={`group w-full h-full btn-primary p-0 border-none aria-disabled:!bg-avit-blue aria-disabled:active:!bg-avit-blue rounded-[10px] transition-colors duration-200 text-white ${buttonState ? "bg-white border-white active:bg-gray-100" : "bg-avit-blue active:bg-[#011c50]"}`}
     >
       <div className="px-4 py-4 w-full h-full flex flex-col items-center justify-center relative">
         {!disabled && detailsButton && (
@@ -52,7 +52,7 @@ export function ControlCard({
         <div className="relative text-xl mb-3.5">
           <div
             aria-disabled={disabled}
-            className={`ui-disabled rounded-2xl h-25 w-25 flex justify-center items-center aria-disabled:!bg-avit-blue aria-disabled:!border-[#507AE7] aria-disabled:!border-[3px]
+            className={`ui-disabled rounded-2xl h-25 w-25 flex justify-center items-center transition-colors duration-200 group-active:brightness-90 aria-disabled:!bg-avit-blue aria-disabled:!border-[#507AE7] aria-disabled:!border-[3px]
             ${
               buttonState
                 ? "bg-avit-grey-button border-avit-grey border-[3px]"
@@ -110,7 +110,7 @@ export function ControlCard({
         </div>
         <div
           aria-disabled={disabled}
-          className={`aria-disabled:text-white text-xl font-medium ${buttonState ? "text-avit-grey-80" : "text-white"}`}
+          className={`aria-disabled:text-white text-xl font-medium transition-colors duration-200 ${buttonState ? "text-avit-grey-80" : "text-white"}`}
         >
           {label} {hasButtonState && (buttonState ? "Off" : "On")}
         </div>

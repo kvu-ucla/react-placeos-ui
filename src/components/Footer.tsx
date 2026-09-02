@@ -93,9 +93,13 @@ export default function Footer() {
                     width={72}
                     height={72}
                 />}
-          <div className="ml-4 w-[360px] min-h-[48px] overflow-visible">
+          <div
+            className={`ml-4 w-[360px] min-h-[48px] overflow-visible transition-opacity duration-200 ${
+              volume === undefined ? "opacity-50" : ""
+            }`}
+          >
             <VolumeSlider
-                value={value!}
+                value={value ?? 800}
                 onChange={setValue}
                 onCommit={handleRelease}
                 onDragStart={handleDragStart}

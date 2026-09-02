@@ -20,12 +20,12 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
   const surveyURL = `https://uclaapoanonsurvey.qualtrics.com/jfe/form/SV_9H4E6e9mv9VJnTg?room_location=${room}&t=${refreshKey}`;
   
   return (
-    <div className="modal modal-open bg-black/40">
+    <div className="modal modal-open modal-fade bg-black/40">
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Survey"
-        className="bg-white p-8 rounded-lg"
+        className="modal-pop bg-white p-8 rounded-lg max-h-[90vh] overflow-y-auto"
       >
         {/* Header */}
         <div className="flex justify-between items-center border-b border-avit-grey pb-8">
@@ -42,7 +42,15 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
             ></Icon>
           </button>
         </div>
-        <iframe src={surveyURL} height="650px" width="650px"></iframe>
+        {/* Contain the fixed-size survey so it scrolls instead of clipping */}
+        <div className="max-w-full overflow-auto">
+          <iframe
+            src={surveyURL}
+            height="650px"
+            width="650px"
+            className="max-w-full"
+          ></iframe>
+        </div>
       </div>
 
       {/* Optional: backdrop click closes modal */}

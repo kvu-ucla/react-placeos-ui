@@ -24,7 +24,8 @@ export interface ZoomContextValue {
   wsConnection?: boolean;
   zoomOnline: boolean;
   callStatus: CallStatus;
-  participants: ZrcParticipant[];
+  /** undefined until the driver first reports; [] means a confirmed-empty meeting */
+  participants?: ZrcParticipant[];
   bookings?: Booking[];
   currentMeeting?: Booking;
   nextMeeting?: Booking;

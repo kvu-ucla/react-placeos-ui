@@ -13,25 +13,25 @@ export default function ShutdownModal({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="modal modal-open bg-black/40">
+    <div className="modal modal-open modal-fade bg-black/40">
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Shut down system"
-        className="modal-box rounded-lg bg-white p-8"
+        className="modal-box modal-pop rounded-lg bg-white p-8"
       >
         <h3 className="font-bold text-3xl mb-4">
           Are you sure you want to shut the system down?
         </h3>
         <div className="flex flex-col">
           <button
-            className="btn text-3xl min-w-64 min-h-24 text-white bg-avit-blue mb-4 p-4"
+            className="btn text-3xl min-w-64 min-h-24 text-white bg-avit-blue active:bg-[#011c50] mb-4 p-4"
             onClick={systemOff}
           >
             Yes, I'm sure
           </button>
           <button
-            className="btn text-3xl min-w-64 min-h-24 btn-outline p-4"
+            className="btn text-3xl min-w-64 min-h-24 btn-outline active:bg-gray-100 p-4"
             onClick={() => onClose()}
           >
             No, go back

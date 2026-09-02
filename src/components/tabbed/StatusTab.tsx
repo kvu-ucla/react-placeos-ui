@@ -41,8 +41,12 @@ export function StatusTab() {
     const {
         currentMeeting,
         activeBooking,
-        participants
+        participants,
+        bookings
     } = useZoomContext();
+
+    // undefined = driver hasn't reported yet; [] = confirmed-empty meeting
+    const participantsLoading = participants === undefined;
 
     // Separate participants by status
     const activeParticipants = useMemo(
@@ -66,12 +70,29 @@ export function StatusTab() {
                     {currentMeeting?.title}
                 </div>
                 <div className="text-gray-600 flex gap-4">
-                    <span>Meeting Number: {activeBooking?.id ?? "No Meeting"}</span>
+                    {/* Neutral dash until bookings hydrate — no "No Meeting" flash */}
+                    <span>
+                        Meeting Number:{" "}
+                        {bookings === undefined
+                            ? "—"
+                            : activeBooking?.id ?? "No Meeting"}
+                    </span>
                 </div>
             </div>
 
             {/* Participants List */}
             <div className="max-w-4xl mx-auto bg-white">
+                {/* Loading — driver hasn't reported participants yet */}
+                {participantsLoading && (
+                    <div
+                        className="flex justify-center py-8"
+                        role="status"
+                        aria-label="Loading participants"
+                    >
+                        <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-avit-blue"></div>
+                    </div>
+                )}
+
                 {/* Active Participants */}
                 {activeParticipants.length > 0 && (
                     <div className="relative">
@@ -117,8 +138,8 @@ export function StatusTab() {
                     </div>
                 )}
 
-                {/* No Participants */}
-                {activeParticipants.length === 0 && waitingParticipants.length === 0 && (
+                {/* No Participants — only once the driver has confirmed empty */}
+                {!participantsLoading && activeParticipants.length === 0 && waitingParticipants.length === 0 && (
                     <div className="text-center text-gray-500 py-8">
                         <p>No participants in this meeting</p>
                     </div>

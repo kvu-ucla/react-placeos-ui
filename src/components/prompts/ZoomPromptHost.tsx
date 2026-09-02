@@ -89,12 +89,12 @@ function PromptModal({
   });
 
   return (
-    <div className="modal modal-open bg-black/40">
+    <div className="modal modal-open modal-fade bg-black/40">
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="zoom-prompt-title"
-        className="modal-box max-h-none overflow-visible max-w-none w-[min(90vw,48rem)] rounded-lg bg-white p-8"
+        className="modal-box modal-pop max-h-[90vh] overflow-y-auto max-w-none w-[min(90vw,48rem)] rounded-lg bg-white p-8"
       >
         <h3 id="zoom-prompt-title" className="font-bold text-3xl mb-4">
           {config.title}
@@ -115,8 +115,8 @@ function PromptModal({
               onClick={() => runAction(action)}
               className={
                 action.primary
-                  ? "btn text-3xl min-w-64 min-h-24 text-white rounded-lg bg-avit-blue p-4"
-                  : "btn text-3xl min-w-64 min-h-24 rounded-lg btn-outline p-4"
+                  ? "btn text-3xl min-w-64 min-h-24 text-white rounded-lg bg-avit-blue active:bg-[#011c50] p-4"
+                  : "btn text-3xl min-w-64 min-h-24 rounded-lg btn-outline active:bg-gray-100 p-4"
               }
             >
               {action.label}

@@ -4,8 +4,8 @@ export default function OfflineModal() {
   
 
   return (
-  <div className="modal modal-open bg-black/40 backdrop-blur-sm">
-    <div className="bg-white p-8 rounded-lg max-w-md">
+  <div className="modal modal-open modal-fade bg-black/40 backdrop-blur-sm">
+    <div className="modal-pop bg-white p-8 rounded-lg max-w-md">
       {/* Gradient top bar */}
       <div className="h-1 bg-error mb-8" />
 

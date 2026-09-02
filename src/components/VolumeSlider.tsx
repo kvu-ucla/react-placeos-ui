@@ -96,7 +96,7 @@ export default function VolumeSlider({
           <Slider.Range className="absolute h-full bg-blue-500 rounded-full" />
         </Slider.Track>
         <Slider.Thumb
-          className="block w-12 h-12 bg-white border-2 border-blue-500 rounded-full shadow-md hover:scale-110 transition-transform focus:outline-none focus:ring-6 focus:ring-blue-500"
+          className="block w-12 h-12 bg-white border-2 border-blue-500 rounded-full shadow-md hover:scale-110 active:scale-110 transition-transform motion-reduce:transition-none focus:outline-none focus:ring-6 focus:ring-blue-500"
           aria-label={ariaLabel}
         />
       </Slider.Root>

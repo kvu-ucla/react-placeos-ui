@@ -22,13 +22,13 @@ export default function SettingsModal({
   const meetingTabs: TabSection[] = ["Status", "Camera"];
 
   return (
-    <div className="modal modal-open bg-black/40">
+    <div className="modal modal-open modal-fade bg-black/40">
       <div
         id="settings"
         role="dialog"
         aria-modal="true"
         aria-label="Settings"
-        className="modal-box bg-white p-8 max-w-full rounded-lg"
+        className="modal-box modal-pop bg-white p-8 max-w-full max-h-[90vh] overflow-y-auto rounded-lg"
       >
         <div className="">
           {/* Header */}
@@ -72,13 +72,16 @@ export default function SettingsModal({
 
             {/* Content */}
             <div className="w-full space-y-6 flex-col justify-end items-center">
-              {activeTab === "Volume" && <MicTab></MicTab>}
+              {/* Keyed so a tab switch remounts with a light entrance fade */}
+              <div key={activeTab} className="tab-fade">
+                {activeTab === "Volume" && <MicTab></MicTab>}
 
-              {activeTab === "Display" && <DisplayTab />}
+                {activeTab === "Display" && <DisplayTab />}
 
-              {activeTab === "Status" && <StatusTab />}
+                {activeTab === "Status" && <StatusTab />}
 
-              {activeTab === "Camera" && <CameraTab></CameraTab>}
+                {activeTab === "Camera" && <CameraTab></CameraTab>}
+              </div>
 
               <div className="mt-6">
                 <div className="bg-blue-100 text-blue-900 p-3 text-xl rounded flex items-center justify-left">
@@ -135,10 +138,10 @@ function Section({
         {tabs.map((tab) => (
           <button
             key={tab}
-            className={`block w-full text-left px-4 py-4 rounded-lg font-medium ${
+            className={`block w-full text-left px-4 py-4 rounded-lg font-medium transition-colors duration-200 ${
               activeTab === tab
                 ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                : "bg-gray-100 text-gray-800 hover:bg-gray-200 active:bg-gray-300"
             }`}
             onClick={() => setActiveTab(tab)}
           >

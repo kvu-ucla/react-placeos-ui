@@ -47,12 +47,12 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
   ];
 
   return (
-    <div className="modal modal-open bg-black/40">
+    <div className="modal modal-open modal-fade bg-black/40">
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Support"
-        className="modal-box bg-white p-8 max-w-full rounded-lg"
+        className="modal-box modal-pop bg-white p-8 max-w-full max-h-[90vh] overflow-y-auto rounded-lg"
       >
         {/* Header */}
         <div className="flex justify-between items-center border-b border-avit-grey pb-8">
@@ -79,10 +79,10 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab as "Contact")}
-                  className={`text-left px-6 py-4 rounded font-medium ${
+                  className={`text-left px-6 py-4 rounded font-medium transition-colors duration-200 ${
                     activeTab === tab
                       ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                      : "bg-gray-100 text-gray-800 hover:bg-gray-200 active:bg-gray-300"
                   }`}
                 >
                   {tab}

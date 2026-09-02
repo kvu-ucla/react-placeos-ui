@@ -1,4 +1,3 @@
-import { Header } from "./Header";
 import { ClassInfoCard } from "./ClassInfoCard";
 import { useControlContext } from "../hooks/ControlStateContext";
 import { useZoomContext } from "../hooks/ZoomContext";
@@ -20,12 +19,11 @@ export default function SplashScreen() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center text-center bg-gray-100">
-        <Header />
-
+    <div className="min-h-full w-full flex flex-col items-center text-center overflow-y-auto">
         <div className="flex flex-col">
+          {/* Hold the line height until the room name resolves — never flash a fallback */}
           <h1 className="text-4xl font-semibold mt-6 m-6">
-            Welcome to {system.name ?? "Unknown Room"}
+            {system.name ? `Welcome to ${system.name}` : " "}
           </h1>
           <main className="flex-1 flex items-center justify-center">
             <ClassInfoCard />
@@ -33,19 +31,21 @@ export default function SplashScreen() {
           <footer className="p-6">
             <button
                 onClick={startAdHoc}
-                className="btn bg-avit-blue mt-5 mb-5 mr-5 min-w-32 min-h-[5rem] text-white px-6 py-2 rounded-lg text-xl"
+                className="btn bg-avit-blue active:bg-[#011c50] mt-5 mb-5 mr-5 min-w-32 min-h-[5rem] text-white px-6 py-2 rounded-lg text-xl"
             >
               Start Ad-Hoc Session
             </button>
-            {!noMeeting && (
-                <button
-                    onClick={startScheduled}
-                    className="btn bg-avit-blue mt-5 mb-5 min-w-32 min-h-[5rem] text-white px-6 py-2 rounded-lg text-xl"
-                >
-                  Start Scheduled Class
-                </button>
-            )}
-            
+            {/* Always rendered so the row never shifts; disabled both while
+                bookings hydrate and when no class is scheduled */}
+            <button
+                onClick={startScheduled}
+                disabled={noMeeting}
+                aria-disabled={noMeeting}
+                className="btn ui-disabled bg-avit-blue active:bg-[#011c50] mt-5 mb-5 min-w-32 min-h-[5rem] text-white px-6 py-2 rounded-lg text-xl"
+            >
+              Start Scheduled Class
+            </button>
+
             <p className="max-w-4xl text-xl text-gray-500">
               This will start the <b className="text-avit-blue">Zoom Room</b> for
               this session. Once started, you can{" "}

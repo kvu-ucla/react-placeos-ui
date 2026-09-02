@@ -115,7 +115,9 @@ export function useZoomRoom(systemId: string, mod = "ZoomZRC") {
   const [meetingActive, setMeetingActive] = useState<boolean>(false);
   const [isMicMuted, setIsMicMuted] = useState<boolean>();
   const [isCamMuted, setIsCamMuted] = useState<boolean>();
-  const [participants, setParticipants] = useState<ZrcParticipant[]>([]);
+  // undefined until the driver reports for the first time, so consumers can
+  // distinguish "still loading" from "empty meeting"
+  const [participants, setParticipants] = useState<ZrcParticipant[]>();
   const [online, setOnline] = useState<boolean>(false);
   const [zrcConnectionState, setZrcConnectionState] = useState<string | null>();
   const [paired, setPaired] = useState<boolean>();
