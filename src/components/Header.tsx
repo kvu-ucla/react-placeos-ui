@@ -1,4 +1,5 @@
 // src/components/Header.tsx
+import { useEffect, useRef, useState } from "react";
 import Clock from "./Clock";
 import { useControlContext } from "../hooks/ControlStateContext";
 
@@ -20,8 +21,39 @@ export function Header() {
   const { modalType, initialTab, showModal, closeModal } = useModalContext();
   const { setIsOpen } = useTour();
 
+  // The panel's OEM webview refuses author box-shadow on the header (on-glass
+  // diagnostics: shadow-lg class present, computed shadow none, even with our
+  // plain un-layered rule — it acts below the author cascade). Runtime
+  // detection: after the shadow-lg class applies, if the COMPUTED shadow is
+  // still none, render a static gradient underlay that approximates it. On
+  // any engine that honors box-shadow the check reads a real value and the
+  // fallback never renders. Double-rAF defers past the mount/active-flip
+  // paint so an initial not-yet-styled frame can't false-positive.
+  const headerRef = useRef<HTMLElement>(null);
+  const [shadowFallback, setShadowFallback] = useState(false);
+  useEffect(() => {
+    if (!active) {
+      setShadowFallback(false);
+      return;
+    }
+    let raf = requestAnimationFrame(() => {
+      raf = requestAnimationFrame(() => {
+        const el = headerRef.current;
+        if (!el) return;
+        if (
+          el.classList.contains("shadow-lg") &&
+          getComputedStyle(el).boxShadow === "none"
+        ) {
+          setShadowFallback(true);
+        }
+      });
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [active]);
+
   return (
     <header
+      ref={headerRef}
       className={`first-step relative min-h-32 w-full flex justify-between items-center px-6 py-3 ${active ? "bg-transparent shadow-lg" : ""}`}
     >
       <div className="flex items-center space-x-6">
@@ -113,6 +145,20 @@ export function Header() {
           initial connection is still being established */}
       {connection === "offline" && (
         <OfflineModal />
+      )}
+      {/* Shadow fallback: static gradient strip on the header's bottom edge
+          (inside the shell's z-10 header band, so it sits above the screen
+          content without touching header content; static → reduced-motion
+          safe) */}
+      {shadowFallback && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-0 right-0 top-full h-3"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0))",
+          }}
+        />
       )}
     </header>
   );

@@ -63,6 +63,17 @@ function collectDiagnostics(xBtn: HTMLElement | null): [string, string][] {
     const s = styleOf(xBtn);
     return s ? s.getPropertyValue("--btn-bg").trim() || "(unset)" : "n/a";
   });
+  safe("inline-shadow test", () => {
+    // Same idea as inline-bg: does the highest-precedence author shadow
+    // (inline style) survive on this engine?
+    const el = document.querySelector("header") as HTMLElement | null;
+    if (!el) return "n/a";
+    const prev = el.style.boxShadow;
+    el.style.boxShadow = "0 10px 15px -3px rgba(0,0,0,0.1)";
+    const read = getComputedStyle(el).boxShadow;
+    el.style.boxShadow = prev;
+    return read;
+  });
   safe("inline-bg test", () => {
     // Does an INLINE background take effect? Distinguishes "our stylesheet
     // rule loses somewhere" from "the engine overrides author backgrounds
