@@ -9,6 +9,7 @@ import { useZoomContext } from "../../hooks/ZoomContext";
 import type { ZoomPromptKey } from "../../hooks/useZoomRoom";
 import { useEscapeKey } from "../../hooks/useEscapeKey";
 import MeetingPasswordModal from "./MeetingPasswordModal";
+import { Button } from "../Button";
 import {
   MODAL_PROMPT_PRIORITY,
   PROMPT_CONFIG,
@@ -108,19 +109,16 @@ function PromptModal({
         <p className="py-4 text-xl">{config.getBody(payload)}</p>
         <div className="flex items-center justify-center w-full gap-4">
           {config.actions.map((action) => (
-            <button
+            <Button
               key={action.label}
               ref={action.primary ? primaryRef : undefined}
+              variant={action.primary ? "primary" : "outline"}
               disabled={busy}
               onClick={() => runAction(action)}
-              className={
-                action.primary
-                  ? "btn text-3xl min-w-64 min-h-24 text-white rounded-lg bg-avit-blue active:bg-[#011c50] p-4"
-                  : "btn text-3xl min-w-64 min-h-24 rounded-lg btn-outline active:bg-gray-100 p-4"
-              }
+              className="text-3xl min-w-64 min-h-24 p-4"
             >
               {action.label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

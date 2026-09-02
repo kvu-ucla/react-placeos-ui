@@ -1,6 +1,7 @@
 import { ClassInfoCard } from "./ClassInfoCard";
 import { useControlContext } from "../hooks/ControlStateContext";
 import { useZoomContext } from "../hooks/ZoomContext";
+import { Button } from "./Button";
 
 export default function SplashScreen() {
   const { system, togglePower } = useControlContext();
@@ -29,22 +30,23 @@ export default function SplashScreen() {
             <ClassInfoCard />
           </main>
           <footer className="p-6">
-            <button
+            <Button
+                variant="primary"
                 onClick={startAdHoc}
-                className="btn bg-avit-blue active:bg-[#011c50] mt-5 mb-5 mr-5 min-w-32 min-h-[5rem] text-white px-6 py-2 rounded-lg text-xl"
+                className="mt-5 mb-5 mr-5 min-w-32 min-h-[5rem] px-6 py-2 text-xl"
             >
               Start Ad-Hoc Session
-            </button>
+            </Button>
             {/* Always rendered so the row never shifts; disabled both while
                 bookings hydrate and when no class is scheduled */}
-            <button
+            <Button
+                variant="primary"
                 onClick={startScheduled}
                 disabled={noMeeting}
-                aria-disabled={noMeeting}
-                className="btn ui-disabled bg-avit-blue active:bg-[#011c50] mt-5 mb-5 min-w-32 min-h-[5rem] text-white px-6 py-2 rounded-lg text-xl"
+                className="mt-5 mb-5 min-w-32 min-h-[5rem] px-6 py-2 text-xl"
             >
               Start Scheduled Class
-            </button>
+            </Button>
 
             <p className="max-w-4xl text-xl text-gray-500">
               This will start the <b className="text-avit-blue">Zoom Room</b> for

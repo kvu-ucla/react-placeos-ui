@@ -249,6 +249,8 @@ export default function SessionControls() {
             checked={openAccordion === 'wireless'}
             onChange={() => handleAccordionClick('wireless')}
           />
+          {/* after:! overrides required: daisyUI's .collapse-arrow>.collapse-title:after
+              sets width/height/top/inset-inline-end at higher specificity */}
           <div
             className="collapse-title font-semibold inline-flex after:border-r-3 after:border-b-3 after:border-current
      after:!w-6 after:!h-6 after:!top-10 after:!right-10"
@@ -286,6 +288,8 @@ export default function SessionControls() {
             checked={openAccordion === 'local'}
             onChange={() => handleAccordionClick('local')}
           />
+          {/* after:! overrides required: daisyUI's .collapse-arrow>.collapse-title:after
+              sets width/height/top/inset-inline-end at higher specificity */}
           <div
             className="collapse-title font-semibold inline-flex after:border-r-3 after:border-b-3 after:border-current
      after:!w-6 after:!h-6 after:!top-10 after:!right-10"

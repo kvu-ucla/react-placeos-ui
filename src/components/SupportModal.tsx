@@ -79,7 +79,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab as "Contact")}
-                  className={`text-left px-6 py-4 rounded font-medium transition-colors duration-200 ${
+                  className={`text-left px-6 py-4 rounded-lg font-medium transition-colors duration-200 ${
                     activeTab === tab
                       ? "bg-blue-600 text-white"
                       : "bg-gray-100 text-gray-800 hover:bg-gray-200 active:bg-gray-300"

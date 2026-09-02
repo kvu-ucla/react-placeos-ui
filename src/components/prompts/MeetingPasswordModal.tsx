@@ -3,6 +3,7 @@
 // it, so this modal is not dismissable via Esc/backdrop — Cancel exits the join.
 import { useEffect, useState } from "react";
 import { useZoomContext } from "../../hooks/ZoomContext";
+import { Button } from "../Button";
 
 const dig = (payload: unknown, path: string[]): unknown =>
   path.reduce<unknown>(
@@ -91,20 +92,22 @@ export default function MeetingPasswordModal() {
             </p>
           )}
           <div className="flex items-center justify-center w-full gap-4 mt-4">
-            <button
+            <Button
               type="button"
-              className="btn text-3xl min-w-64 min-h-24 rounded-lg btn-outline active:bg-gray-100 p-4"
+              variant="outline"
+              className="text-3xl min-w-64 min-h-24 p-4"
               onClick={() => exitMeeting()}
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
+              variant="primary"
               disabled={submitting || !password.trim()}
-              className="btn text-3xl min-w-64 min-h-24 text-white rounded-lg bg-avit-blue active:bg-[#011c50] p-4"
+              className="text-3xl min-w-64 min-h-24 p-4"
             >
               {submitting ? "Submitting…" : "Submit"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

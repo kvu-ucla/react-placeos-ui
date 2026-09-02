@@ -21,6 +21,9 @@ export function ControlCard({
 }) {
   const hasButtonState = buttonState !== undefined && buttonState !== null;
 
+  // The aria-disabled:! overrides below are required: they must beat both
+  // daisyUI's .btn-primary background and ui-disabled's own equal-specificity
+  // aria-disabled:bg-white/20, where stylesheet order would otherwise decide.
   return (
     <button
       disabled={disabled || isLoading} // Disable during loading

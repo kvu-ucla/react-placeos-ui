@@ -2,6 +2,7 @@
 
 import { useControlContext } from "../hooks/ControlStateContext";
 import { useEscapeKey } from "../hooks/useEscapeKey";
+import { Button } from "./Button";
 
 export default function ShutdownModal({ onClose }: { onClose: () => void }) {
   const { togglePower } = useControlContext();
@@ -24,18 +25,22 @@ export default function ShutdownModal({ onClose }: { onClose: () => void }) {
           Are you sure you want to shut the system down?
         </h3>
         <div className="flex flex-col">
-          <button
-            className="btn text-3xl min-w-64 min-h-24 text-white bg-avit-blue active:bg-[#011c50] mb-4 p-4"
+          {/* rounded-lg via Button normalizes a radius drift vs the other
+              confirm modals' buttons (they all carry rounded-lg) */}
+          <Button
+            variant="primary"
+            className="text-3xl min-w-64 min-h-24 mb-4 p-4"
             onClick={systemOff}
           >
             Yes, I'm sure
-          </button>
-          <button
-            className="btn text-3xl min-w-64 min-h-24 btn-outline active:bg-gray-100 p-4"
+          </Button>
+          <Button
+            variant="outline"
+            className="text-3xl min-w-64 min-h-24 p-4"
             onClick={() => onClose()}
           >
             No, go back
-          </button>
+          </Button>
         </div>
       </div>
       {/* Optional: backdrop click closes modal */}

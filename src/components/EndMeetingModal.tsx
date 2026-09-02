@@ -1,6 +1,7 @@
 // src/components/EndMeetingModal.tsx
 import { useZoomContext } from "../hooks/ZoomContext";
 import { useEscapeKey } from "../hooks/useEscapeKey";
+import { Button } from "./Button";
 
 export default function EndMeetingModal({ onClose }: { onClose: () => void }) {
   const { exitMeeting } = useZoomContext();
@@ -23,18 +24,20 @@ export default function EndMeetingModal({ onClose }: { onClose: () => void }) {
           This will end any in-progress Zoom meetings. Continue?
         </p>
         <div className="flex items-center justify-center w-full gap-4">
-          <button
-            className="btn text-3xl min-w-64 min-h-24 rounded-lg btn-outline active:bg-gray-100 p-4"
+          <Button
+            variant="outline"
+            className="text-3xl min-w-64 min-h-24 p-4"
             onClick={() => onClose()}
           >
             Go back
-          </button>
-          <button
-            className="btn text-3xl min-w-64 min-h-24 text-white rounded-lg bg-avit-blue active:bg-[#011c50] p-4"
+          </Button>
+          <Button
+            variant="primary"
+            className="text-3xl min-w-64 min-h-24 p-4"
             onClick={endMeeting}
           >
             End class
-          </button>
+          </Button>
         </div>
       </div>
       {/* Optional: backdrop click closes modal */}
