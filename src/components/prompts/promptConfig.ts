@@ -135,19 +135,52 @@ const actionLabel = (
     : raw;
 };
 
+// Reminder shape detection: any payload carrying a reminderContent or
+// customizedContent object is an OnMeetingReminderNotification /
+// OnCustomizedReminderNotification-shaped event, regardless of which status
+// key the driver surfaced it on. ZoomPromptHost routes such payloads through
+// reminderEntry so Zoom-supplied text always wins over a key's generic entry.
+export type ReminderContentKey = "reminderContent" | "customizedContent";
+
+export const reminderContentKey = (
+  payload: unknown,
+): ReminderContentKey | null => {
+  if (payload && typeof payload === "object") {
+    for (const key of ["reminderContent", "customizedContent"] as const) {
+      const value = (payload as Record<string, unknown>)[key];
+      if (value && typeof value === "object") return key;
+    }
+  }
+  return null;
+};
+
+/** Whether a reminder-shaped payload carries any usable title or message */
+export const reminderHasText = (
+  payload: unknown,
+  contentKey: ReminderContentKey,
+): boolean =>
+  firstString(payload, [
+    [contentKey, "title"],
+    ["title"],
+    [contentKey, "message"],
+    ["message"],
+  ]) !== undefined;
+
 // Live meeting_reminder payload (smoke-tested on a real room, 2026-09-02):
 // { event: "OnMeetingReminderNotification", reminderContent: { title,
 //   message, positiveActionText, negativeActionText, linkText, linkUrl,
 //   privacyMessage, ... }, isShowing, reminderType }, and the driver clears
 // the key to null after answering (observed). customized_reminder's
 // customizedContent is assumed to mirror this shape, so both build from the
-// same factory — every read stays defensive for older/divergent payloads.
-const reminderEntry = (
+// same factory — every read stays defensive for older/divergent payloads,
+// including SDK variants that flatten title/message to the top level.
+export const reminderEntry = (
   key: ZoomPromptKey,
   contentKey: string,
 ): PromptConfigEntry => ({
   title: "Meeting reminder",
-  getTitle: (payload) => firstString(payload, [[contentKey, "title"]]),
+  getTitle: (payload) =>
+    firstString(payload, [[contentKey, "title"], ["title"]]),
   getBody: (payload) => {
     const body =
       firstString(payload, [

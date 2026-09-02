@@ -14,6 +14,9 @@ import {
   MODAL_PROMPT_PRIORITY,
   PROMPT_CONFIG,
   TOAST_PROMPTS,
+  reminderContentKey,
+  reminderEntry,
+  reminderHasText,
   type PromptAction,
   type PromptConfigEntry,
 } from "./promptConfig";
@@ -21,26 +24,63 @@ import {
 export default function ZoomPromptHost() {
   const { prompts } = useZoomContext();
 
+  const activeKey = MODAL_PROMPT_PRIORITY.find((key) => prompts[key] != null);
+  const activePayload = activeKey ? prompts[activeKey] : undefined;
+  // Shape-based routing: a reminder-shaped payload gets the payload-driven
+  // reminder presentation WHATEVER key it arrived on (answerPrompt still
+  // targets the actual key)
+  const activeReminderShape =
+    activeKey && activeKey !== "meeting_password_required"
+      ? reminderContentKey(activePayload)
+      : null;
+  const reminderActive =
+    activeReminderShape !== null ||
+    prompts.meeting_reminder != null ||
+    prompts.customized_reminder != null;
+
   // Toast-only keys: fire on null→value transitions; stable toastId per key
-  // prevents duplicates across re-renders.
+  // prevents duplicates across re-renders. The recording_disclaimer_needed
+  // flag is informational — while an actionable reminder modal is up it is
+  // redundant, so it's suppressed (and dismissed below if already shown).
   const prevToastValues = useRef<Partial<Record<ZoomPromptKey, unknown>>>({});
   useEffect(() => {
     for (const [key, message] of Object.entries(TOAST_PROMPTS)) {
       const promptKey = key as ZoomPromptKey;
       const value = prompts[promptKey];
-      if (value != null && prevToastValues.current[promptKey] == null) {
+      const suppressed =
+        promptKey === "recording_disclaimer_needed" && reminderActive;
+      if (
+        value != null &&
+        prevToastValues.current[promptKey] == null &&
+        !suppressed
+      ) {
         toast.info(message, { toastId: promptKey });
       }
       prevToastValues.current[promptKey] = value;
     }
-  }, [prompts]);
+  }, [prompts, reminderActive]);
 
-  const activeKey = MODAL_PROMPT_PRIORITY.find((key) => prompts[key] != null);
+  useEffect(() => {
+    if (reminderActive) toast.dismiss("recording_disclaimer_needed");
+  }, [reminderActive]);
+
+  // Dev aid: make future payload-shape drift visible instead of silently
+  // rendering generic fallbacks
+  useEffect(() => {
+    if (!activeKey || !activeReminderShape) return;
+    if (!reminderHasText(activePayload, activeReminderShape)) {
+      console.warn(
+        `Zoom reminder payload on "${activeKey}" carried no title or message; showing generic fallbacks`,
+      );
+    }
+  }, [activeKey, activeReminderShape, activePayload]);
 
   if (!activeKey) return null;
   if (activeKey === "meeting_password_required") return <MeetingPasswordModal />;
 
-  const config = PROMPT_CONFIG[activeKey];
+  const config = activeReminderShape
+    ? reminderEntry(activeKey, activeReminderShape)
+    : PROMPT_CONFIG[activeKey];
   if (!config) return null;
 
   return <PromptModal promptKey={activeKey} config={config} />;
