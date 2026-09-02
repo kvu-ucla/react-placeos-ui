@@ -79,6 +79,30 @@ The repo has no test runner. Verification is:
   `room_status` carries them, confirm the phone renders in both modals and the
   `tel:` link is correct; remove the keys and confirm the row hides.
 
+## Extension (approved same day): all contact cards from the help map
+
+`SupportModal`'s three contact cards (AV/Facilities/Emergency) render from the
+whole `help` map instead of hardcoded TSX. Every page whose `title` is a
+non-empty string becomes a card: `title` → card title, `content` → description
+(non-string → `""`), phone keys as above (`phone` absent → card without a
+link). Card order = YAML key order (Crystal Hash and JS objects both preserve
+string-key insertion order).
+
+New pure function in `useControlState.ts`:
+
+```ts
+extractSupportCards(help: unknown): SupportCard[]
+// SupportCard = { title: string; description: string; phone: string | null; href: string | null }
+```
+
+`ControlState` gains `supportCards: SupportCard[]`. **Fallback:** when the
+extracted list is empty (setting absent/unparseable), `SupportModal` renders
+today's three hardcoded cards unchanged — including the AV card's
+Dodd-conditional description and its `supportPhone` binding.
+
+The `SettingsModal` banner is unchanged: it already pulls its number from the
+`support` page via `supportPhone`/`supportPhoneDisplay`.
+
 ## Out of scope
 
 - Rendering `help` page titles/content anywhere new.
