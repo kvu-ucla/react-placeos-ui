@@ -60,7 +60,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
           <button
             onClick={onClose}
             aria-label="Close"
-            className="btn-ghost text-2xl font-bold "
+            className="nav-btn btn-ghost text-2xl font-bold "
           >
             <Icon
               icon="material-symbols:close-small-outline-rounded"

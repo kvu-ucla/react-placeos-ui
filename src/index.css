@@ -52,6 +52,25 @@ html {
 .nav-btn-selected {
   background-color: #155dfc; /* tailwind v4 blue-600 (matches bg-blue-600) */
 }
+/* Panel webview (Android 12 wv, Chromium 118) fallbacks — verified via
+   Playwright A/B that desktop 117 and 119 both compute these paths fine, so
+   the hardware defects are webview-native behaviors, not version parse
+   failures:
+   - Preflight normalizes buttons to appearance:button, which Android draws
+     as the native grey rounded widget face (desktop draws nothing). The
+     .nav-btn hook above (appearance:none) covers the header nav buttons and
+     the modal X close buttons.
+   - shadow-lg's box-shadow is a 5-slot var() chain whose empty slots come
+     from @property initial values; OEM webview builds can ship without
+     @property, leaving the vars undefined and the whole declaration invalid.
+     This plain rule is shadow-lg's exact resolved value with zero var
+     dependency; un-layered it overrides the layered utility at equal value,
+     so modern rendering is pixel-identical. */
+header.shadow-lg {
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
 
 @layer utilities {
   :root,
