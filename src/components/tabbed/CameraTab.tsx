@@ -2,6 +2,7 @@ import CameraController from "../CameraController";
 import {useModuleExecute} from "../../hooks/placeos";
 import {useZoomContext} from "../../hooks/ZoomContext";
 import {useParams} from "react-router-dom";
+import {useRef} from "react";
 import {CameraPresetButton} from "./CameraPresetButton";
 
 export function CameraTab() {
@@ -12,8 +13,14 @@ export function CameraTab() {
     } = useZoomContext();
     const { system_id } = useParams();
     const execute = useModuleExecute(system_id!);
+    const dropdownRef = useRef<HTMLDivElement>(null);
     const cameraSelection = (camera_id: string) => {
-        (document.activeElement as HTMLElement)?.blur()
+        // daisyUI dropdowns close on blur; only blur focus held inside this
+        // dropdown rather than whatever element is focused app-wide
+        const active = document.activeElement;
+        if (active instanceof HTMLElement && dropdownRef.current?.contains(active)) {
+            active.blur();
+        }
         execute('System', 'selected_camera', [camera_id]);
     }
     
@@ -27,7 +34,7 @@ export function CameraTab() {
                 <label className="block text-gray-800 font-medium mb-2">
                     Active Camera
                 </label>
-                <div className="dropdown dropdown-bottom dropdown-center w-full">
+                <div ref={dropdownRef} className="dropdown dropdown-bottom dropdown-center w-full">
                     <div tabIndex={0} role="button" className="w-full text-3xl h-15 btn m-1">
                         {cams?.[selectedCamera ?? -1]?.camera_name ?? 'Select a camera to control'}
                     </div>

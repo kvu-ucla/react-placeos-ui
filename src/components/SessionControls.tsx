@@ -48,7 +48,9 @@ export default function SessionControls() {
     loadingTimeouts.current[key] = setTimeout(() => {
       loadingTimeouts.current[key] = null;
       setLoadingStates((prev) => ({ ...prev, [key]: false }));
-      toast.error("No response from room controls");
+      toast.error("No response from room controls", {
+        toastId: "control-timeout",
+      });
     }, LOADING_TIMEOUT_MS);
   };
 
@@ -105,19 +107,42 @@ export default function SessionControls() {
   
   //accordion logic
   const [openAccordion, setOpenAccordion] = useState<'wireless' | 'local' | null>(null);
+  const wirelessRef = useRef<HTMLDivElement>(null);
+  const localRef = useRef<HTMLDivElement>(null);
+  // Cancels a scroll-after-transition wait still pending from a previous open
+  const cancelAccordionScroll = useRef<(() => void) | null>(null);
 
-  const handleAccordionClick = (accordionName: 'wireless' | 'local', element: HTMLElement | null) => {
+  useEffect(() => () => cancelAccordionScroll.current?.(), []);
+
+  const handleAccordionClick = (accordionName: 'wireless' | 'local') => {
+    cancelAccordionScroll.current?.();
     if (openAccordion === accordionName) {
       setOpenAccordion(null); // Close if already open
-    } else {
-      setOpenAccordion(accordionName); // Open and close others
-      setTimeout(() => {
-        element?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest'
-        });
-      }, 100);
+      return;
     }
+    setOpenAccordion(accordionName); // Open and close others
+
+    // Scroll once the daisyUI collapse transition finishes instead of after a
+    // fixed delay; safety timeout in case no transition event ever fires.
+    const element =
+      accordionName === 'wireless' ? wirelessRef.current : localRef.current;
+    if (!element) return;
+    const scroll = () => {
+      cancelAccordionScroll.current?.();
+      element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    };
+    const onTransitionEnd = (ev: TransitionEvent) => {
+      // only the expand transition matters, not e.g. the arrow rotation
+      if (!/height|grid-template-rows/.test(ev.propertyName)) return;
+      scroll();
+    };
+    const fallback = setTimeout(scroll, 350);
+    element.addEventListener('transitionend', onTransitionEnd);
+    cancelAccordionScroll.current = () => {
+      element.removeEventListener('transitionend', onTransitionEnd);
+      clearTimeout(fallback);
+      cancelAccordionScroll.current = null;
+    };
   };
 
   // Wrapper functions that handle loading states
@@ -183,7 +208,7 @@ export default function SessionControls() {
           id="microphone"
           label="Microphone: "
           icon={IconType.Mic}
-          disabled={recording}
+          disabled={!isJoined || recording}
           buttonAction={handleToggleMic}
           buttonState={isMicAudioMuted}
           isLoading={loadingStates.mic}
@@ -193,7 +218,7 @@ export default function SessionControls() {
           id="camera"
           label="Camera: "
           icon={IconType.Camera}
-          disabled={recording}
+          disabled={!isJoined || recording}
           buttonAction={handleToggleCamera}
           buttonState={isVideoMuted}
           isLoading={loadingStates.camera}
@@ -203,6 +228,7 @@ export default function SessionControls() {
           id="gallery"
           label="Gallery: "
           icon={IconType.Gallery}
+          disabled={!isJoined || recording}
           buttonAction={handleToggleGallery}
           buttonState={gallery}
           isLoading={loadingStates.gallery}
@@ -217,14 +243,14 @@ export default function SessionControls() {
       <h2 className="font-semibold text-2xl mb-4">Join from your device</h2>
       <div id="zoom-join" className="grid grid-cols-2 gap-4">
         {/*Share Wirelessly*/}
-        <div className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
+        <div ref={wirelessRef} className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
           <input
             type="checkbox"
             checked={openAccordion === 'wireless'}
-            onChange={(e) => handleAccordionClick('wireless', e.target.closest('.collapse'))}
+            onChange={() => handleAccordionClick('wireless')}
           />
           <div
-            className="collapse-title font-semibold inline-flex after:border-r-3 after: after:border-b-3 after:border-current
+            className="collapse-title font-semibold inline-flex after:border-r-3 after:border-b-3 after:border-current
      after:!w-6 after:!h-6 after:!top-10 after:!right-10"
           >
             <img
@@ -254,11 +280,11 @@ export default function SessionControls() {
         </div>
 
         {/*Share Local*/}
-        <div className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
+        <div ref={localRef} className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
           <input
             type="checkbox"
             checked={openAccordion === 'local'}
-            onChange={(e) => handleAccordionClick('local', e.target.closest('.collapse'))}
+            onChange={() => handleAccordionClick('local')}
           />
           <div
             className="collapse-title font-semibold inline-flex after:border-r-3 after:border-b-3 after:border-current

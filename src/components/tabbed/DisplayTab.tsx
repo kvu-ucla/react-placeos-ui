@@ -1,20 +1,32 @@
 import { useZoomContext } from "../../hooks/ZoomContext";
 import { useModuleExecute } from "../../hooks/placeos";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 
 export function DisplayTab() {
   const { system_id, inputs, outputs } = useZoomContext();
 
-  const [displays, setDisplays] = useState(true);
+  // The toggle executes "power" on every output, so its checked state derives
+  // from the outputs' power bindings (undefined = not reported yet, treat as on).
+  const allPowered = Object.values(outputs).every((o) => o.power !== false);
+
+  // Optimistic in-flight state; cleared once the power bindings catch up
+  const [pendingDisplays, setPendingDisplays] = useState<boolean | null>(null);
+  const displays = pendingDisplays ?? allPowered;
+
+  useEffect(() => {
+    if (pendingDisplays !== null && allPowered === pendingDisplays) {
+      setPendingDisplays(null);
+    }
+  }, [allPowered, pendingDisplays]);
 
   const execute = useModuleExecute(system_id);
 
   const toggleDisplays = () => {
-    if (!outputs) return;
+    if (!outputs || Object.keys(outputs).length === 0) return;
 
     const newDisplayState = !displays;
-    setDisplays(newDisplayState);
+    setPendingDisplays(newDisplayState);
 
     for (const output of Object.keys(outputs)) {
       execute(output, "power", [newDisplayState]);
