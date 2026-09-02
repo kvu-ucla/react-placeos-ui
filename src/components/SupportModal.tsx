@@ -4,13 +4,7 @@ import { Icon } from "@iconify/react";
 import { useZoomContext } from "../hooks/ZoomContext.tsx";
 import { useControlContext } from "../hooks/ControlStateContext.tsx";
 import { useEscapeKey } from "../hooks/useEscapeKey";
-
-interface ContactInfo {
-  title: string;
-  description: string;
-  phone: string | null;
-  href: string | null;
-}
+import type { SupportCard } from "../hooks/useControlState";
 
 // On-glass rendering diagnostics — the physical panel's webview shows defects
 // desktop Chrome doesn't and devtools can't attach, so the ground truth
@@ -137,7 +131,8 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
   }, []);
 
   const { connection } = useZoomContext();
-  const { system, supportPhone, supportPhoneDisplay } = useControlContext();
+  const { system, supportPhone, supportPhoneDisplay, supportCards } =
+    useControlContext();
 
   const avDescription = system.name?.includes("Dodd")
     ? "Please see staff in Dodd 300 for assistance."
@@ -145,7 +140,9 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
 
   useEscapeKey(onClose);
 
-  const contacts: ContactInfo[] = [
+  // Cards come from the System module's `help` setting; until it's authored
+  // (or if it fails to parse) fall back to the historical hardcoded three.
+  const fallbackContacts: SupportCard[] = [
     {
       title: "AV Technical Support",
       description: avDescription,
@@ -165,6 +162,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
       href: "tel:+18009008525",
     },
   ];
+  const contacts = supportCards.length > 0 ? supportCards : fallbackContacts;
 
   return (
     <div className="modal modal-open modal-fade bg-black/40">

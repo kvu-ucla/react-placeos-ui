@@ -99,25 +99,54 @@ export interface SupportContact {
   display: string | null;
 }
 
-// The `help` status is meet.cr's Hash(String, HelpPage); a page keyed
-// "support" may carry unmapped `phone`/`phone_display` keys authored in the
-// system settings YAML. Any malformed shape must resolve to nulls, never throw.
-export function extractSupportContact(help: unknown): SupportContact {
-  const none: SupportContact = { phone: null, display: null };
-  if (typeof help !== "object" || help === null) return none;
-  const support = (help as Record<string, unknown>).support;
-  if (typeof support !== "object" || support === null) return none;
-  const page = support as Record<string, unknown>;
+export interface SupportCard {
+  title: string;
+  description: string;
+  phone: string | null;
+  href: string | null;
+}
+
+// The `help` status is meet.cr's Hash(String, HelpPage); pages may carry
+// unmapped `phone`/`phone_display` keys authored in the system settings YAML.
+// Any malformed shape must resolve to nulls/empty, never throw.
+function pagePhone(page: Record<string, unknown>): SupportContact {
   const phone =
     typeof page.phone === "string" && page.phone.trim() !== ""
       ? page.phone
       : null;
-  if (!phone) return none;
+  if (!phone) return { phone: null, display: null };
   const display =
     typeof page.phone_display === "string" && page.phone_display.trim() !== ""
       ? page.phone_display
       : phone;
   return { phone, display };
+}
+
+export function extractSupportContact(help: unknown): SupportContact {
+  const none: SupportContact = { phone: null, display: null };
+  if (typeof help !== "object" || help === null) return none;
+  const support = (help as Record<string, unknown>).support;
+  if (typeof support !== "object" || support === null) return none;
+  return pagePhone(support as Record<string, unknown>);
+}
+
+// Every help page with a title becomes a contact card, in YAML key order.
+export function extractSupportCards(help: unknown): SupportCard[] {
+  if (typeof help !== "object" || help === null) return [];
+  const cards: SupportCard[] = [];
+  for (const value of Object.values(help as Record<string, unknown>)) {
+    if (typeof value !== "object" || value === null) continue;
+    const page = value as Record<string, unknown>;
+    if (typeof page.title !== "string" || page.title.trim() === "") continue;
+    const { phone, display } = pagePhone(page);
+    cards.push({
+      title: page.title,
+      description: typeof page.content === "string" ? page.content : "",
+      phone: display,
+      href: phone ? `tel:${phone}` : null,
+    });
+  }
+  return cards;
 }
 
 export interface SystemState {
@@ -141,6 +170,8 @@ export interface ControlState {
   /** AV support contact from the System module's help["support"] page */
   supportPhone: string | null;
   supportPhoneDisplay: string | null;
+  /** One card per help page with a title, YAML order; empty when unset */
+  supportCards: SupportCard[];
   /** In-flight power transition, null when settled */
   pendingPower: PendingPower;
   /** Clear a pending transition — no-op unless seq matches the current arm */
@@ -165,6 +196,7 @@ export function useControlState(
     phone: null,
     display: null,
   });
+  const [supportCards, setSupportCards] = useState<SupportCard[]>([]);
   const pendingSeqRef = useRef(0);
 
   const powerRef = useRef(false);
@@ -226,6 +258,7 @@ export function useControlState(
 
       binder.listen(moduleAlias, "help", (val) => {
         setSupportContact(extractSupportContact(val));
+        setSupportCards(extractSupportCards(val));
       });
     },
     [moduleAlias],
@@ -287,6 +320,7 @@ export function useControlState(
     connected,
     supportPhone: supportContact.phone,
     supportPhoneDisplay: supportContact.display,
+    supportCards,
     pendingPower,
     clearPendingPower,
     toggleMute,
