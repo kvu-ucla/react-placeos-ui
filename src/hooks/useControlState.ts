@@ -16,7 +16,7 @@ import { useBinder, useModuleExecute } from "./placeos";
 // a repeat toggle toward the SAME target still re-runs the lifecycle
 // effects (a bare "on" → "on" would be a same-value set that React bails
 // out of), and lets async paths clear only their own attempt. `armedAt`
-// anchors the show-delay and minimum-dwell timers.
+// anchors the minimum-dwell timer.
 export type PendingPower = {
   target: "on" | "off";
   seq: number;

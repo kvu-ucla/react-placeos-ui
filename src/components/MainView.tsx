@@ -1,17 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import {
   ControlStateProvider,
   useControlContext,
 } from "../hooks/ControlStateContext";
 import SplashScreen from "./SplashScreen";
 import MainScreen from "./MainScreen";
-import PowerTransitionScreen from "./PowerTransitionScreen";
+import PowerTransitionModal from "./PowerTransitionModal";
 
-// Don't render the transition screen at all if the room is fully ready
-// within this window (anti-flash for instant transitions).
-const TRANSITION_SHOW_DELAY_MS = 300;
-// Once the screen IS shown, hold it at least this long from arming so a
-// near-instant readiness flip doesn't strobe splash → loading → main.
+// The transition modal always shows for at least this long from arming, even
+// if the room reports ready instantly — a sub-second flash would read as a
+// glitch, and on systems that ack optimistically it's the only honest
+// "something is happening" feedback the user gets.
 const TRANSITION_MIN_DWELL_MS = 4_000;
 import { Header } from "./Header";
 import { Navigate, useParams } from "react-router-dom";
@@ -60,43 +59,22 @@ function MainViewInner() {
     active === (pendingPower.target === "on") &&
     outputsReady;
 
-  // Show/clear pacing. pendingPower is a fresh object per arm (seq), so a
-  // repeat toggle re-runs this effect and re-anchors both timers to the new
-  // armedAt; if the screen is already up, re-arming leaves it up.
-  const [showTransition, setShowTransition] = useState(false);
+  // Clear pacing: the modal shows immediately on arm (rendered whenever
+  // pendingPower is set) and clears once ready AND the minimum dwell from
+  // arming has elapsed. Not ready → no timer; readiness or the 60s
+  // abandonment in useControlState ends the wait. pendingPower is a fresh
+  // object per arm (seq), so a repeat toggle re-runs this effect and
+  // re-anchors the dwell to the new armedAt.
   useEffect(() => {
-    if (!pendingPower) {
-      setShowTransition(false);
-      return;
-    }
+    if (!pendingPower || !ready) return;
     const { seq, armedAt } = pendingPower;
-    if (ready && !showTransition) {
-      // Fully ready before the screen ever showed — skip it entirely
-      clearPendingPower(seq);
-      return;
-    }
-    if (ready) {
-      // Shown and ready — hold until the minimum dwell (from arming) is met
-      const remaining = Math.max(
-        0,
-        armedAt + TRANSITION_MIN_DWELL_MS - Date.now(),
-      );
-      const timer = setTimeout(() => clearPendingPower(seq), remaining);
-      return () => clearTimeout(timer);
-    }
-    if (!showTransition) {
-      // Not ready — surface the screen once the show delay elapses
-      const remaining = Math.max(
-        0,
-        armedAt + TRANSITION_SHOW_DELAY_MS - Date.now(),
-      );
-      const timer = setTimeout(() => setShowTransition(true), remaining);
-      return () => clearTimeout(timer);
-    }
-    // Shown and not ready — wait for readiness or the 60s abandonment
-  }, [pendingPower, ready, showTransition, clearPendingPower]);
-
-  const transition = showTransition && pendingPower ? pendingPower.target : null;
+    const remaining = Math.max(
+      0,
+      armedAt + TRANSITION_MIN_DWELL_MS - Date.now(),
+    );
+    const timer = setTimeout(() => clearPendingPower(seq), remaining);
+    return () => clearTimeout(timer);
+  }, [pendingPower, ready, clearPendingPower]);
   return (
     <div className="first-step relative isolate flex h-screen w-full flex-col overflow-hidden bg-avit-bg">
       {/* One Header for both screens so it never remounts on the swap */}
@@ -104,20 +82,18 @@ function MainViewInner() {
         <Header />
       </div>
       {/* Key-based remount + entrance fade; the outgoing screen unmounts
-          instantly, so an invisible screen can never be left behind. The
-          power-transition screen is a third state of the same crossfade. */}
+          instantly, so an invisible screen can never be left behind. During
+          a power transition the underlying screen stays mounted (and may
+          crossfade splash ↔ main) behind the modal's scrim. */}
       <div
-        key={transition ? "transition" : active ? "main" : "splash"}
+        key={active ? "main" : "splash"}
         className="screen-fade z-0 flex min-h-0 flex-1 flex-col"
       >
-        {transition ? (
-          <PowerTransitionScreen direction={transition} />
-        ) : active ? (
-          <MainScreen />
-        ) : (
-          <SplashScreen />
-        )}
+        {active ? <MainScreen /> : <SplashScreen />}
       </div>
+      {pendingPower && (
+        <PowerTransitionModal direction={pendingPower.target} />
+      )}
     </div>
   );
 }
