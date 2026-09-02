@@ -169,22 +169,58 @@ export const reminderContentKey = (
   return null;
 };
 
+// Some reminder variants nest their text one level deeper under a
+// type-specific key (live-confirmed 2026-09-02: REMINDER_TYPE_RECORDING_DISCLAIMER
+// carries title/message/action labels in reminderContent.disclaimerPrivacy,
+// with isShowing/reminderType as siblings). Resolve the path prefix of the
+// object that actually carries the text: the content object itself when its
+// title/message are flat, else the first nested object that has them.
+const hasOwnText = (o: Record<string, unknown>): boolean =>
+  (typeof o.title === "string" && o.title.trim() !== "") ||
+  (typeof o.message === "string" && o.message.trim() !== "");
+
+const reminderTextRoot = (payload: unknown, contentKey: string): string[] => {
+  const content = dig(payload, [contentKey]);
+  if (content && typeof content === "object") {
+    const c = content as Record<string, unknown>;
+    if (hasOwnText(c)) return [contentKey];
+    for (const [key, value] of Object.entries(c)) {
+      if (
+        value &&
+        typeof value === "object" &&
+        hasOwnText(value as Record<string, unknown>)
+      )
+        return [contentKey, key];
+    }
+  }
+  return [contentKey];
+};
+
 /** Whether a reminder-shaped payload carries any usable title or message */
 export const reminderHasText = (
   payload: unknown,
   contentKey: ReminderContentKey,
-): boolean =>
-  firstString(payload, [
-    [contentKey, "title"],
-    ["title"],
-    [contentKey, "message"],
-    ["message"],
-  ]) !== undefined;
+): boolean => {
+  const root = reminderTextRoot(payload, contentKey);
+  return (
+    firstString(payload, [
+      [...root, "title"],
+      ["title"],
+      [...root, "message"],
+      ["message"],
+    ]) !== undefined
+  );
+};
 
-// Live meeting_reminder payload (smoke-tested on a real room, 2026-09-02):
-// { event: "OnMeetingReminderNotification", reminderContent: { title,
-//   message, positiveActionText, negativeActionText, linkText, linkUrl,
-//   privacyMessage, ... }, isShowing, reminderType }, and the driver clears
+// Live meeting_reminder payloads come in (at least) two shapes, both
+// observed on real rooms 2026-09-02:
+// - flat: { event: "OnMeetingReminderNotification", reminderContent: {
+//   title, message, positiveActionText, negativeActionText, linkText,
+//   linkUrl, ... }, isShowing, reminderType }
+// - nested (REMINDER_TYPE_RECORDING_DISCLAIMER): { event: ...,
+//   reminderContent: { disclaimerPrivacy: { title, message,
+//   positiveActionText, negativeActionText, ... }, isShowing, reminderType } }
+// reminderTextRoot resolves which object carries the text. The driver clears
 // the key to null after answering (observed). customized_reminder's
 // customizedContent is assumed to mirror this shape, so both build from the
 // same factory — every read stays defensive for older/divergent payloads,
@@ -195,44 +231,47 @@ export const reminderEntry = (
 ): PromptConfigEntry => ({
   title: "Meeting reminder",
   getTitle: (payload) =>
-    firstString(payload, [[contentKey, "title"], ["title"]]),
+    firstString(payload, [
+      [...reminderTextRoot(payload, contentKey), "title"],
+      ["title"],
+    ]),
   getBody: (payload) => {
+    const root = reminderTextRoot(payload, contentKey);
     const body =
       firstString(payload, [
-        [contentKey, "message"],
-        [contentKey, "content"],
-        [contentKey, "description"],
-        [contentKey, "title"],
+        [...root, "message"],
+        [...root, "content"],
+        [...root, "description"],
+        [...root, "title"],
         ...GENERIC_TEXT_PATHS,
       ]) ?? "This meeting has a reminder that needs a response.";
     // Link rendered as plain appended text, never a hyperlink — a kiosk
     // shouldn't open external URLs; showing the URL lets people follow it
     // on their own device.
-    const linkText = firstString(payload, [[contentKey, "linkText"]]);
-    const linkUrl = firstString(payload, [[contentKey, "linkUrl"]]);
+    const linkText = firstString(payload, [[...root, "linkText"]]);
+    const linkUrl = firstString(payload, [[...root, "linkUrl"]]);
     return linkText && linkUrl ? `${body} (${linkText}: ${linkUrl})` : body;
   },
   dismissable: true,
   actions: agreeDismiss(key),
-  getActions: (payload) => [
-    {
-      label: actionLabel(
-        payload,
-        [[contentKey, "positiveActionText"]],
-        "Agree",
-      ),
-      primary: true,
-      run: ({ answerPrompt }) => answerPrompt(key, true),
-    },
-    {
-      label: actionLabel(
-        payload,
-        [[contentKey, "negativeActionText"]],
-        "Dismiss",
-      ),
-      run: ({ answerPrompt }) => answerPrompt(key, false),
-    },
-  ],
+  getActions: (payload) => {
+    const root = reminderTextRoot(payload, contentKey);
+    return [
+      {
+        label: actionLabel(payload, [[...root, "positiveActionText"]], "Agree"),
+        primary: true,
+        run: ({ answerPrompt }) => answerPrompt(key, true),
+      },
+      {
+        label: actionLabel(
+          payload,
+          [[...root, "negativeActionText"]],
+          "Dismiss",
+        ),
+        run: ({ answerPrompt }) => answerPrompt(key, false),
+      },
+    ];
+  },
 });
 
 const agreeDismiss = (key: ZoomPromptKey): PromptAction[] => [
