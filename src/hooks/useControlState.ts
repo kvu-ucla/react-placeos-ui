@@ -94,6 +94,32 @@ export interface RoomOutput {
   hidden?: boolean;
 }
 
+export interface SupportContact {
+  phone: string | null;
+  display: string | null;
+}
+
+// The `help` status is meet.cr's Hash(String, HelpPage); a page keyed
+// "support" may carry unmapped `phone`/`phone_display` keys authored in the
+// system settings YAML. Any malformed shape must resolve to nulls, never throw.
+export function extractSupportContact(help: unknown): SupportContact {
+  const none: SupportContact = { phone: null, display: null };
+  if (typeof help !== "object" || help === null) return none;
+  const support = (help as Record<string, unknown>).support;
+  if (typeof support !== "object" || support === null) return none;
+  const page = support as Record<string, unknown>;
+  const phone =
+    typeof page.phone === "string" && page.phone.trim() !== ""
+      ? page.phone
+      : null;
+  if (!phone) return none;
+  const display =
+    typeof page.phone_display === "string" && page.phone_display.trim() !== ""
+      ? page.phone_display
+      : phone;
+  return { phone, display };
+}
+
 export interface SystemState {
   name?: string;
   power?: boolean;
@@ -112,6 +138,9 @@ export interface ControlState {
   connected?: boolean;
   mute?: boolean;
   volume?: number;
+  /** AV support contact from the System module's help["support"] page */
+  supportPhone: string | null;
+  supportPhoneDisplay: string | null;
   /** In-flight power transition, null when settled */
   pendingPower: PendingPower;
   /** Clear a pending transition — no-op unless seq matches the current arm */
@@ -132,6 +161,10 @@ export function useControlState(
   const [system, setSystem] = useState<SystemState>({});
   const [connected, setConnected] = useState<boolean>(false);
   const [pendingPower, setPendingPower] = useState<PendingPower>(null);
+  const [supportContact, setSupportContact] = useState<SupportContact>({
+    phone: null,
+    display: null,
+  });
   const pendingSeqRef = useRef(0);
 
   const powerRef = useRef(false);
@@ -190,6 +223,10 @@ export function useControlState(
       bind("name", () => {});
       bind("selected_input", () => {});
       bind("selected_tab", () => {});
+
+      binder.listen(moduleAlias, "help", (val) => {
+        setSupportContact(extractSupportContact(val));
+      });
     },
     [moduleAlias],
   );
@@ -248,6 +285,8 @@ export function useControlState(
     volume,
     system,
     connected,
+    supportPhone: supportContact.phone,
+    supportPhoneDisplay: supportContact.display,
     pendingPower,
     clearPendingPower,
     toggleMute,
