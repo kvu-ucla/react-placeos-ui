@@ -1,17 +1,27 @@
 // src/hooks/useControlState.ts
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useBinder, useModuleExecute } from "./placeos";
 
 // In-flight power transition. The System module exposes no transitional
-// status var (only power/active/connected), so this is driven locally:
-// armed in togglePower — the ONLY code path that changes System power —
-// and cleared when `active` reaches the target or a generous timeout gives
-// up. `seq` makes every arm a distinct object so a repeat toggle toward the
-// SAME target still re-runs the lifecycle effects (a bare "on" → "on" would
-// be a same-value set that React bails out of), and lets async paths
-// (execute rejection, timeout) clear only their own attempt.
-export type PendingPower = { target: "on" | "off"; seq: number } | null;
+// status var, and its power() sets `active` OPTIMISTICALLY (before the
+// hardware actually powers), so `active` alone can't gate the transition
+// screen. Ownership is split: this hook arms (togglePower is the ONLY code
+// path that changes System power) and owns the 60s abandonment timeout and
+// the execute-rejection clear; MainViewInner owns the readiness gate
+// (active + display power + minimum dwell) and clears via
+// clearPendingPower, because display outputs live in ZoomContext, which is
+// nested INSIDE ControlStateProvider — reading them here would be a
+// circular provider dependency. `seq` makes every arm a distinct object so
+// a repeat toggle toward the SAME target still re-runs the lifecycle
+// effects (a bare "on" → "on" would be a same-value set that React bails
+// out of), and lets async paths clear only their own attempt. `armedAt`
+// anchors the show-delay and minimum-dwell timers.
+export type PendingPower = {
+  target: "on" | "off";
+  seq: number;
+  armedAt: number;
+} | null;
 
 // Real hardware power-up can take many seconds; past this we assume the
 // transition failed and fall back to the real state rather than strand the
@@ -102,8 +112,10 @@ export interface ControlState {
   connected?: boolean;
   mute?: boolean;
   volume?: number;
-  /** Direction of an in-flight power transition, null when settled */
+  /** In-flight power transition, null when settled */
   pendingPower: PendingPower;
+  /** Clear a pending transition — no-op unless seq matches the current arm */
+  clearPendingPower: (seq: number) => void;
   togglePower: () => void;
   setVolume: (val: number) => void;
   toggleMute: () => void;
@@ -185,15 +197,13 @@ export function useControlState(
   // Clear the pending transition when `active` reaches the target (instant
   // flips clear before the screen's 300ms anti-flash delay ever shows it),
   // or give up after the timeout so the user is never stranded.
+  // Abandonment timeout only — readiness clearing (active + display power +
+  // dwell) lives in MainViewInner, see the PendingPower comment above. The
+  // timer belongs to this arm: cleanup clears it whenever a newer arm
+  // replaces the object, so it can only fire for the latest attempt; the
+  // seq guard is a backstop.
   useEffect(() => {
     if (!pendingPower) return;
-    if (active === (pendingPower.target === "on")) {
-      setPendingPower(null);
-      return;
-    }
-    // The timeout belongs to this arm: cleanup clears it whenever a newer
-    // arm replaces the object, so it can only fire for the latest attempt;
-    // the seq guard is a backstop.
     const { seq } = pendingPower;
     const timer = setTimeout(() => {
       toast.error(
@@ -202,12 +212,16 @@ export function useControlState(
       setPendingPower((cur) => (cur?.seq === seq ? null : cur));
     }, POWER_TRANSITION_TIMEOUT_MS);
     return () => clearTimeout(timer);
-  }, [pendingPower, active]);
+  }, [pendingPower]);
+
+  const clearPendingPower = useCallback((seq: number) => {
+    setPendingPower((cur) => (cur?.seq === seq ? null : cur));
+  }, []);
 
   const togglePower = async () => {
     const target = !activeRef.current;
     const seq = ++pendingSeqRef.current;
-    setPendingPower({ target: target ? "on" : "off", seq });
+    setPendingPower({ target: target ? "on" : "off", seq, armedAt: Date.now() });
     try {
       await execute(moduleAlias, "power", [target]);
     } catch (err) {
@@ -235,6 +249,7 @@ export function useControlState(
     system,
     connected,
     pendingPower,
+    clearPendingPower,
     toggleMute,
     setVolume,
     togglePower,
