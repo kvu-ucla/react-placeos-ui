@@ -82,14 +82,21 @@ export function StatusTab() {
 
             {/* Participants List */}
             <div className="max-w-4xl mx-auto bg-white">
-                {/* Loading — driver hasn't reported participants yet */}
+                {/* Loading — driver hasn't reported participants yet.
+                    Skeleton rows in ParticipantRow geometry (avatar + name),
+                    matching the app-wide skeleton loading pattern */}
                 {participantsLoading && (
                     <div
-                        className="flex justify-center py-8"
+                        className="py-4"
                         role="status"
                         aria-label="Loading participants"
                     >
-                        <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-avit-blue"></div>
+                        {[0, 1, 2].map((i) => (
+                            <div key={i} className="flex items-center space-x-3 py-4">
+                                <div className="skeleton h-10 w-10 shrink-0 rounded-full"></div>
+                                <div className="skeleton h-5 w-44"></div>
+                            </div>
+                        ))}
                     </div>
                 )}
 

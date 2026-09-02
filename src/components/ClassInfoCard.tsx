@@ -10,7 +10,8 @@ interface meetingDetails {
 }
 
 export function ClassInfoCard() {
-  const { nextMeeting, currentMeeting } = useZoomContext();
+  const { nextMeeting, currentMeeting, bookings, connection } =
+    useZoomContext();
   const [meetingDetails, setMeetingDetails] = useState<meetingDetails>({
     classStart: "",
     classEnd: "",
@@ -25,6 +26,9 @@ export function ClassInfoCard() {
   );
 
   const noMeeting = currentMeeting == null;
+  // Skeleton until the Bookings module has reported once — before that,
+  // "no meeting" is indistinguishable from "not hydrated yet"
+  const bookingsLoading = connection === "connecting" || bookings === undefined;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -106,7 +110,19 @@ export function ClassInfoCard() {
 
   return (
     <div className="flex flex-col justify-between items-center card bg-white p-4 rounded shadow w-full max-w-[620px] text-center h-[300px]">
-      {!noMeeting ? (
+      {bookingsLoading ? (
+        /* Same three-row geometry as the booked state, so nothing shifts
+           when the schedule lands */
+        <div
+          className="flex h-full w-full flex-col items-center justify-between"
+          role="status"
+          aria-label="Loading class schedule"
+        >
+          <div className="skeleton mt-2 h-9 w-4/5" />
+          <div className="skeleton h-9 w-3/5" />
+          <div className="skeleton mb-10 h-7 w-2/3" />
+        </div>
+      ) : !noMeeting ? (
         <>
           <div className="text-2xl flex items-center justify-center gap-2 tabular-nums">
             <Icon

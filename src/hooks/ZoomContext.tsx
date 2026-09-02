@@ -3,6 +3,7 @@ import {
   useZoomRoom,
   type Booking,
   type CallStatus,
+  type ConnectionState,
   type ZoomPromptKey,
   type ZrcParticipant,
 } from "./useZoomRoom";
@@ -21,7 +22,10 @@ export interface ZoomContextValue {
   zoomMod: string;
 
   // Zoom Room (ZoomZRC + Bookings)
+  /** Raw last-emitted websocket boolean; prefer `connection` for UI gating */
   wsConnection?: boolean;
+  /** Tri-state websocket status — "connecting" during cold-load grace window */
+  connection: ConnectionState;
   zoomOnline: boolean;
   callStatus: CallStatus;
   /** undefined until the driver first reports; [] means a confirmed-empty meeting */
@@ -89,6 +93,7 @@ export function ZoomProvider({
       system_id: systemId,
       zoomMod: mod,
       wsConnection: zoom.wsConnection,
+      connection: zoom.connection,
       zoomOnline: zoom.zoomOnline,
       callStatus: zoom.callStatus,
       participants: zoom.participants,

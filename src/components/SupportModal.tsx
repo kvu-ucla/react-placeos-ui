@@ -16,7 +16,7 @@ interface ContactInfo {
 export default function SupportModal({ onClose }: { onClose: () => void }) {
   const [activeTab, setActiveTab] = useState<"Contact">("Contact");
 
-  const { wsConnection } = useZoomContext();
+  const { connection } = useZoomContext();
   const { system } = useControlContext();
 
   const avDescription = system.name?.includes("Dodd")
@@ -138,9 +138,11 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
 
                   <div className="mt-6 text-left">
                     <div className="inline-flex items-center gap-2 rounded bg-gray-100 px-3 py-1 text-sm">
-                      <div className={`h-4 w-4 rounded-full ${wsConnection ? 'bg-green-500' : 'bg-gray-400' } mr-1 animate-pulse`}/>
+                      <div className={`h-4 w-4 rounded-full ${connection === 'online' ? 'bg-green-500' : 'bg-gray-400' } mr-1 animate-pulse`}/>
                       <span className="text-gray-700 text-base font-medium">
-                        All systems {wsConnection ? 'online' : 'offline'}
+                        {connection === 'connecting'
+                          ? 'Connecting to systems…'
+                          : `All systems ${connection}`}
                       </span>
                     </div>
                   </div>

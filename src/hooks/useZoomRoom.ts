@@ -5,6 +5,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { connectionState } from "@placeos/ts-client";
 import { useBinder, useModuleExecute } from "./placeos";
 
+// Websocket tri-state: "connecting" until the socket first opens (with a grace
+// window before declaring the backend unreachable), so a cold load never
+// flashes the offline UI while merely connecting.
+export type ConnectionState = "connecting" | "online" | "offline";
+
+// How long a never-connected socket may stay "connecting" before we call it
+// genuinely unreachable.
+const CONNECT_GRACE_MS = 10_000;
+
 export type CallState =
   | "NOT_IN_MEETING"
   | "CONNECTING_MEETING"
@@ -123,6 +132,10 @@ export function useZoomRoom(systemId: string, mod = "ZoomZRC") {
   const [paired, setPaired] = useState<boolean>();
   const [health, setHealth] = useState<unknown>();
   const [wsConnection, setWsConnection] = useState<boolean>();
+  const [connection, setConnection] = useState<ConnectionState>("connecting");
+  // Whether the websocket has EVER connected — a false emitted before the
+  // first open just means "still dialing", not a real loss.
+  const hasConnectedRef = useRef(false);
   const [bookings, setBookings] = useState<Booking[]>();
   const [currentMeeting, setCurrentMeeting] = useState<Booking>();
   const [nextMeeting, setNextMeeting] = useState<Booking>();
@@ -182,13 +195,35 @@ export function useZoomRoom(systemId: string, mod = "ZoomZRC") {
       // Observable<[number, number]> in ts-client but actually emits the
       // boolean connection status subject (matches the old integration).
       binder.track(
-        connectionState().subscribe((value) =>
-          setWsConnection(value as unknown as boolean),
-        ),
+        connectionState().subscribe((value) => {
+          const connected = value as unknown as boolean;
+          setWsConnection(connected);
+          if (connected) {
+            hasConnectedRef.current = true;
+            setConnection("online");
+          } else if (hasConnectedRef.current) {
+            // Real loss — we had a connection and dropped it.
+            setConnection("offline");
+          }
+          // false while never-connected: stay "connecting"; the grace timer
+          // below declares "offline" if the socket never opens.
+        }),
       );
     },
     [mod],
   );
+
+  // Grace window: armed while "connecting" (i.e. from mount), cleared when the
+  // state leaves "connecting" (first connect) or on unmount. The state never
+  // re-enters "connecting", so this fires at most once, ~10s from mount.
+  useEffect(() => {
+    if (connection !== "connecting") return;
+    const timer = setTimeout(
+      () => setConnection((c) => (c === "connecting" ? "offline" : c)),
+      CONNECT_GRACE_MS,
+    );
+    return () => clearTimeout(timer);
+  }, [connection]);
 
   // Time the room joined the current meeting. Lost on page reload mid-meeting
   // (accepted limitation — the driver does not expose a joined timestamp).
@@ -267,6 +302,7 @@ export function useZoomRoom(systemId: string, mod = "ZoomZRC") {
   return useMemo(
     () => ({
       wsConnection,
+      connection,
       zoomOnline: online,
       zrcConnectionState,
       paired,
@@ -290,6 +326,7 @@ export function useZoomRoom(systemId: string, mod = "ZoomZRC") {
     }),
     [
       wsConnection,
+      connection,
       online,
       zrcConnectionState,
       paired,

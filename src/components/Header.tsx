@@ -16,7 +16,7 @@ import { Button } from "./Button";
 
 export function Header() {
   const { active, system } = useControlContext();
-  const { wsConnection } = useZoomContext();
+  const { connection } = useZoomContext();
   const { modalType, initialTab, showModal, closeModal } = useModalContext();
   const { setIsOpen } = useTour();
 
@@ -109,7 +109,9 @@ export function Header() {
       {modalType == "survey" && (
           <SurveyModal onClose={() => closeModal()} />
       )}
-      {wsConnection == false && (
+      {/* Only for a confirmed loss / unreachable backend — never while the
+          initial connection is still being established */}
+      {connection === "offline" && (
         <OfflineModal />
       )}
     </header>

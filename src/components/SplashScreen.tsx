@@ -22,9 +22,18 @@ export default function SplashScreen() {
   return (
     <div className="min-h-full w-full flex flex-col items-center text-center overflow-y-auto">
         <div className="flex flex-col">
-          {/* Hold the line height until the room name resolves — never flash a fallback */}
+          {/* Same line box whether skeleton or text, so nothing shifts when
+              the room name resolves — never flash a fallback */}
           <h1 className="text-4xl font-semibold mt-6 m-6">
-            {system.name ? `Welcome to ${system.name}` : " "}
+            {system.name ? (
+              `Welcome to ${system.name}`
+            ) : (
+              <span
+                className="skeleton inline-block h-10 w-96 max-w-full align-middle"
+                role="status"
+                aria-label="Loading room name"
+              />
+            )}
           </h1>
           <main className="flex-1 flex items-center justify-center">
             <ClassInfoCard />
