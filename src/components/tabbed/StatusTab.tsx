@@ -83,8 +83,9 @@ export function StatusTab() {
             {/* Participants List */}
             <div className="max-w-4xl mx-auto bg-white">
                 {/* Loading — driver hasn't reported participants yet.
-                    Skeleton rows in ParticipantRow geometry (avatar + name),
-                    matching the app-wide skeleton loading pattern */}
+                    Skeleton rows in ParticipantRow geometry (avatar + name);
+                    this surface appears post-load, so it keeps its own
+                    skeleton rather than the RoomStatusModal treatment */}
                 {participantsLoading && (
                     <div
                         className="py-4"

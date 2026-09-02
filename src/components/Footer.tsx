@@ -51,19 +51,6 @@ export default function Footer() {
 
   return (
     <footer className="min-h-32 bg-blue-900 text-white px-4 py-2  flex justify-between items-center">
-      {/* Pill + caption skeleton while the feature list hydrates, so the
-          BruinCast status doesn't pop in; resolves to nothing if the room
-          has no BruinCast */}
-      {getFeatures === undefined && (
-        <div
-          className="flex flex-col items-start justify-start gap-1 p-2"
-          role="status"
-          aria-label="Loading recording status"
-        >
-          <div className="skeleton h-11 w-56" />
-          <div className="skeleton h-6 w-64" />
-        </div>
-      )}
       {getFeatures?.includes(SYSTEM_FEATURE.BruinCast) && (
         recording ? (
           <div className="flex flex-col items-start justify-start p-2">

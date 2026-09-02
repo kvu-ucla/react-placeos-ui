@@ -5,7 +5,7 @@ import {
 } from "../hooks/ControlStateContext";
 import SplashScreen from "./SplashScreen";
 import MainScreen from "./MainScreen";
-import PowerTransitionModal from "./PowerTransitionModal";
+import RoomStatusModal from "./RoomStatusModal";
 
 // The transition modal always shows for at least this long from arming, even
 // if the room reports ready instantly — a sub-second flash would read as a
@@ -37,7 +37,7 @@ export default function MainView() {
 
 function MainViewInner() {
   const { active, pendingPower, clearPendingPower } = useControlContext();
-  const { outputs } = useZoomContext();
+  const { outputs, connection } = useZoomContext();
 
   // System.power() sets `active` optimistically, so readiness also requires
   // every display output that reports a power state to have reached the
@@ -75,6 +75,14 @@ function MainViewInner() {
     const timer = setTimeout(() => clearPendingPower(seq), remaining);
     return () => clearTimeout(timer);
   }, [pendingPower, ready, clearPendingPower]);
+
+  const statusVariant = pendingPower
+    ? pendingPower.target === "on"
+      ? "starting"
+      : "stopping"
+    : connection === "connecting"
+      ? "loading"
+      : null;
   return (
     <div className="first-step relative isolate flex h-screen w-full flex-col overflow-hidden bg-avit-bg">
       {/* One Header for both screens so it never remounts on the swap */}
@@ -91,8 +99,13 @@ function MainViewInner() {
       >
         {active ? <MainScreen /> : <SplashScreen />}
       </div>
-      {pendingPower && (
-        <PowerTransitionModal direction={pendingPower.target} />
+      {/* One modal for all three loading states. pendingPower wins the
+          message if it and cold-load connecting ever hold together; while
+          offline the Header's OfflineModal takes over instead, so the two
+          overlays can never stack ('loading' also can't coexist with it —
+          connecting and offline are exclusive states). */}
+      {statusVariant && connection !== "offline" && (
+        <RoomStatusModal variant={statusVariant} />
       )}
     </div>
   );
