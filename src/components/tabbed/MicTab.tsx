@@ -38,8 +38,13 @@ const MicControl = memo(function MicControl({
         dragging.current = true;
     }, []);
 
-    const handleCommit = (val: number) => {
+    // Fires on every pointerup/pointercancel; onCommit alone is unreliable
+    // (Radix skips it when the value didn't change)
+    const handleDragEnd = useCallback(() => {
         dragging.current = false;
+    }, []);
+
+    const handleCommit = (val: number) => {
         onCommit(micId, val);
     };
 
@@ -64,6 +69,7 @@ const MicControl = memo(function MicControl({
                     onChange={setLocalMicValue}
                     onCommit={handleCommit}
                     onDragStart={handleDragStart}
+                    onDragEnd={handleDragEnd}
                     ariaLabel={`${mic.name} volume`}
                 />
                 <Icon
@@ -122,9 +128,14 @@ export function MicTab() {
         dragging.current = true;
     }, []);
 
+    // Fires on every pointerup/pointercancel; onCommit alone is unreliable
+    // (Radix skips it when the value didn't change)
+    const handleDragEnd = useCallback(() => {
+        dragging.current = false;
+    }, []);
+
     //handle speaker volume
     const handleRelease = (val: number) => {
-        dragging.current = false;
         if (!val) return;
 
         setMasterMute(val === 800);
@@ -166,6 +177,7 @@ export function MicTab() {
                             onChange={setValue}
                             onCommit={handleRelease}
                             onDragStart={handleDragStart}
+                            onDragEnd={handleDragEnd}
                             ariaLabel="Speaker volume"
                         />
                         <Icon

@@ -1,4 +1,5 @@
 // src/components/VolumeSlider.tsx
+import { useEffect, useRef } from "react";
 import { Icon } from "@iconify/react";
 import * as Slider from "@radix-ui/react-slider";
 
@@ -10,6 +11,7 @@ export default function VolumeSlider({
   onChange,
   onCommit,
   onDragStart,
+  onDragEnd,
   muted,
   onToggleMute,
   ariaLabel = "Volume",
@@ -20,12 +22,47 @@ export default function VolumeSlider({
   step?: number;
   onChange: (value: number) => void;
   onCommit: (value: number) => void;
-  /** Fired on pointer down so consumers can pause binding-echo syncs until onCommit */
+  /** Fired on pointer down so consumers can pause binding-echo syncs while dragging */
   onDragStart?: () => void;
+  /**
+   * Fired when the pointer interaction ends, on ALL end paths (pointerup or
+   * pointercancel anywhere on the window). Radix only fires onValueCommit when
+   * the value changed, so consumers must clear drag guards here, not in onCommit.
+   */
+  onDragEnd?: () => void;
   muted?: boolean;
   onToggleMute?: () => void;
   ariaLabel?: string;
 }) {
+  const onDragEndRef = useRef(onDragEnd);
+  useEffect(() => {
+    onDragEndRef.current = onDragEnd;
+  });
+
+  // Detach fn for the currently-registered window listeners, if any
+  const detachRef = useRef<(() => void) | null>(null);
+
+  const handlePointerDown = () => {
+    onDragStart?.();
+    if (detachRef.current) return; // already tracking this drag
+    const end = () => {
+      detachRef.current?.();
+      onDragEndRef.current?.();
+    };
+    detachRef.current = () => {
+      window.removeEventListener("pointerup", end);
+      window.removeEventListener("pointercancel", end);
+      detachRef.current = null;
+    };
+    // Window-level so the end signal fires even if the pointer leaves the
+    // slider or the interaction is cancelled; bubbles after Radix's own
+    // pointerup handling, so onValueCommit (when it fires) runs first.
+    window.addEventListener("pointerup", end);
+    window.addEventListener("pointercancel", end);
+  };
+
+  useEffect(() => () => detachRef.current?.(), []);
+
   return (
     <>
       {muted !== undefined && onToggleMute && (
@@ -51,7 +88,7 @@ export default function VolumeSlider({
         max={max}
         step={step}
         value={[value]}
-        onPointerDown={onDragStart}
+        onPointerDown={handlePointerDown}
         onValueChange={([val]) => onChange(val)}
         onValueCommit={([val]) => onCommit(val)}
       >

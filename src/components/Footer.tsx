@@ -28,8 +28,13 @@ export default function Footer() {
     dragging.current = true;
   }, []);
 
-  const handleRelease = (val: number) => {
+  // Fires on every pointerup/pointercancel; onCommit alone is unreliable
+  // (Radix skips it when the value didn't change)
+  const handleDragEnd = useCallback(() => {
     dragging.current = false;
+  }, []);
+
+  const handleRelease = (val: number) => {
     if (!val) return;
 
     setMasterMute(val === 800);
@@ -94,6 +99,7 @@ export default function Footer() {
                 onChange={setValue}
                 onCommit={handleRelease}
                 onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
                 ariaLabel="Master volume"
             />
           </div>
