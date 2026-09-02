@@ -2,7 +2,7 @@
 import { Icon } from "@iconify/react";
 import { useModalContext } from "../hooks/ModalContext";
 import { useZoomContext } from "../hooks/ZoomContext";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import VolumeSlider from "./VolumeSlider";
 import {SYSTEM_FEATURE} from "../hooks/useAvControls.ts";
 
@@ -22,14 +22,23 @@ export default function Footer() {
   const { showModal } = useModalContext();
   const isJoined = callStatus?.status === "IN_MEETING";
   const [value, setValue] = useState(volume);
+  const dragging = useRef(false);
+
+  const handleDragStart = useCallback(() => {
+    dragging.current = true;
+  }, []);
+
   const handleRelease = (val: number) => {
+    dragging.current = false;
     if (!val) return;
 
     setMasterMute(val === 800);
     adjustMasterVolume(val);
   };
 
+  // Sync from the binding only while not dragging, so echoes can't yank the thumb
   useEffect(() => {
+    if (dragging.current) return;
     if (!volume) return;
 
     setValue(volume);
@@ -84,6 +93,7 @@ export default function Footer() {
                 value={value!}
                 onChange={setValue}
                 onCommit={handleRelease}
+                onDragStart={handleDragStart}
                 ariaLabel="Master volume"
             />
           </div>

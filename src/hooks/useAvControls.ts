@@ -1,7 +1,7 @@
 // src/hooks/useAvControls.ts
 // Local AV control state (cameras, displays, inputs, DSP audio, recording)
 // bound from the System / Mixer / Recording PlaceOS modules.
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { showSystem } from "@placeos/ts-client";
 import { useBinder, useModuleExecute, type Binder } from "./placeos";
 
@@ -273,58 +273,110 @@ export function useAvControls(systemId: string) {
     );
   });
 
+  // Latest-value refs so the action callbacks below stay referentially stable
+  // (adding the state itself to their deps would recreate them on every echo).
+  const galleryRef = useRef(gallery);
+  useEffect(() => {
+    galleryRef.current = gallery;
+  }, [gallery]);
+
+  const volumeMuteRef = useRef(volumeMute);
+  useEffect(() => {
+    volumeMuteRef.current = volumeMute;
+  }, [volumeMute]);
+
+  const micsRef = useRef(mics);
+  useEffect(() => {
+    micsRef.current = mics;
+  }, [mics]);
+
   //toggle "gallery"/"participant", which is just routing different NVX routes to each display
-  const toggleGallery = async () => {
-    if (gallery) {
+  const toggleGallery = useCallback(async () => {
+    if (galleryRef.current) {
       await execute("System", "apply_default_routes");
       setGallery(false);
     } else {
       await execute("System", "apply_participant_routes");
       setGallery(true);
     }
-  };
+  }, [execute]);
 
   //adjust Shure IMX volume for the master fader
-  const adjustMasterVolume = (value: number) => {
-    execute("Mixer", "set_audio_gain_hi_res", [MASTER_FADER, value]);
-  };
+  const adjustMasterVolume = useCallback(
+    (value: number) => {
+      execute("Mixer", "set_audio_gain_hi_res", [MASTER_FADER, value]);
+    },
+    [execute],
+  );
 
   //toggle Shure IMX mute for the master fader
-  const toggleMasterMute = () => {
-    execute("Mixer", "set_audio_mute", [MASTER_FADER, !volumeMute]);
-  };
+  const toggleMasterMute = useCallback(() => {
+    execute("Mixer", "set_audio_mute", [MASTER_FADER, !volumeMuteRef.current]);
+  }, [execute]);
 
   //set Shure IMX mute for the master fader
-  const setMasterMute = (state: boolean) => {
-    execute("Mixer", "set_audio_mute", [MASTER_FADER, state]);
-  };
+  const setMasterMute = useCallback(
+    (state: boolean) => {
+      execute("Mixer", "set_audio_mute", [MASTER_FADER, state]);
+    },
+    [execute],
+  );
 
   //adjust Shure IMX volume for generic fader
-  const adjustDspVolume = (value: number, id: string) => {
-    execute("Mixer", "set_audio_gain_hi_res", [Number(id), value]);
-  };
+  const adjustDspVolume = useCallback(
+    (value: number, id: string) => {
+      execute("Mixer", "set_audio_gain_hi_res", [Number(id), value]);
+    },
+    [execute],
+  );
 
   //adjust Shure IMX toggle mute for generic fader
-  const toggleDspMute = (id: string) => {
-    execute("Mixer", "set_audio_mute", [Number(id), !mics[id].is_muted]);
-  };
+  const toggleDspMute = useCallback(
+    (id: string) => {
+      execute("Mixer", "set_audio_mute", [
+        Number(id),
+        !micsRef.current[id].is_muted,
+      ]);
+    },
+    [execute],
+  );
 
-  return {
-    volume,
-    volumeMute,
-    recording,
-    gallery,
-    mics,
-    cams,
-    outputs,
-    inputs,
-    selectedCamera,
-    getFeatures,
-    toggleGallery,
-    adjustMasterVolume,
-    toggleMasterMute,
-    setMasterMute,
-    adjustDspVolume,
-    toggleDspMute,
-  };
+  return useMemo(
+    () => ({
+      volume,
+      volumeMute,
+      recording,
+      gallery,
+      mics,
+      cams,
+      outputs,
+      inputs,
+      selectedCamera,
+      getFeatures,
+      toggleGallery,
+      adjustMasterVolume,
+      toggleMasterMute,
+      setMasterMute,
+      adjustDspVolume,
+      toggleDspMute,
+    }),
+    [
+      volume,
+      volumeMute,
+      recording,
+      gallery,
+      mics,
+      cams,
+      outputs,
+      inputs,
+      selectedCamera,
+      getFeatures,
+      toggleGallery,
+      adjustMasterVolume,
+      toggleMasterMute,
+      setMasterMute,
+      adjustDspVolume,
+      toggleDspMute,
+    ],
+  );
 }

@@ -9,6 +9,7 @@ export default function VolumeSlider({
   step = 10,
   onChange,
   onCommit,
+  onDragStart,
   muted,
   onToggleMute,
   ariaLabel = "Volume",
@@ -19,6 +20,8 @@ export default function VolumeSlider({
   step?: number;
   onChange: (value: number) => void;
   onCommit: (value: number) => void;
+  /** Fired on pointer down so consumers can pause binding-echo syncs until onCommit */
+  onDragStart?: () => void;
   muted?: boolean;
   onToggleMute?: () => void;
   ariaLabel?: string;
@@ -48,6 +51,7 @@ export default function VolumeSlider({
         max={max}
         step={step}
         value={[value]}
+        onPointerDown={onDragStart}
         onValueChange={([val]) => onChange(val)}
         onValueCommit={([val]) => onCommit(val)}
       >

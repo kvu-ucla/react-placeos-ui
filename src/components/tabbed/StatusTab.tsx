@@ -1,21 +1,13 @@
+import { memo, useMemo } from "react";
 import { useZoomContext } from "../../hooks/ZoomContext";
 import type { ZrcParticipant } from "../../hooks/useZoomRoom";
 
-export function StatusTab() {
-    const {
-        currentMeeting,
-        activeBooking,
-        participants
-    } = useZoomContext();
+const displayName = (participant: ZrcParticipant) =>
+    participant.user_name ?? "Unknown";
 
-    const displayName = (participant: ZrcParticipant) =>
-        participant.user_name ?? "Unknown";
-
-    // Separate participants by status
-    const activeParticipants = participants?.filter(p => !p.is_in_waiting_room) || [];
-    const waitingParticipants = participants?.filter(p => p.is_in_waiting_room) || [];
-
-    const ParticipantRow = ({ participant }: { participant: ZrcParticipant }) => (
+// Module-scope + memo so StatusTab re-renders don't remount every row
+const ParticipantRow = memo(function ParticipantRow({ participant }: { participant: ZrcParticipant }) {
+    return (
         <div className="flex items-center justify-between py-4 px-0">
             {/* User info section */}
             <div className="flex items-center space-x-3">
@@ -42,6 +34,24 @@ export function StatusTab() {
                 </div>
             </div>
         </div>
+    );
+});
+
+export function StatusTab() {
+    const {
+        currentMeeting,
+        activeBooking,
+        participants
+    } = useZoomContext();
+
+    // Separate participants by status
+    const activeParticipants = useMemo(
+        () => participants?.filter(p => !p.is_in_waiting_room) || [],
+        [participants],
+    );
+    const waitingParticipants = useMemo(
+        () => participants?.filter(p => p.is_in_waiting_room) || [],
+        [participants],
     );
 
     return (

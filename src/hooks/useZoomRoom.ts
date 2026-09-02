@@ -1,7 +1,7 @@
 // src/hooks/useZoomRoom.ts
 // Zoom Room state + actions backed by the ZoomZRC driver and the Bookings
 // (booking_converter) module.
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { connectionState } from "@placeos/ts-client";
 import { useBinder, useModuleExecute } from "./placeos";
 
@@ -213,55 +213,101 @@ export function useZoomRoom(systemId: string, mod = "ZoomZRC") {
 
   const execute = useModuleExecute(systemId);
 
-  const exitMeeting = async () => {
+  // Latest-value refs so the mute toggles stay referentially stable instead of
+  // being recreated on every mute-state echo.
+  const isMicMutedRef = useRef(isMicMuted);
+  useEffect(() => {
+    isMicMutedRef.current = isMicMuted;
+  }, [isMicMuted]);
+
+  const isCamMutedRef = useRef(isCamMuted);
+  useEffect(() => {
+    isCamMutedRef.current = isCamMuted;
+  }, [isCamMuted]);
+
+  const exitMeeting = useCallback(async () => {
     await execute(mod, "exit_meeting");
-  };
+  }, [execute, mod]);
 
-  const startInstantMeeting = async () => {
+  const startInstantMeeting = useCallback(async () => {
     await execute(mod, "start_instant_meeting");
-  };
+  }, [execute, mod]);
 
-  const joinMeeting = async (meetingNumber: string) => {
-    await execute(mod, "join_meeting", [meetingNumber]);
-  };
+  const joinMeeting = useCallback(
+    async (meetingNumber: string) => {
+      await execute(mod, "join_meeting", [meetingNumber]);
+    },
+    [execute, mod],
+  );
 
-  const toggleMicMute = async () => {
-    await execute(mod, "mute_audio", [!isMicMuted]);
-  };
+  const toggleMicMute = useCallback(async () => {
+    await execute(mod, "mute_audio", [!isMicMutedRef.current]);
+  }, [execute, mod]);
 
-  const toggleCameraMute = async () => {
-    await execute(mod, "mute_video", [!isCamMuted]);
-  };
+  const toggleCameraMute = useCallback(async () => {
+    await execute(mod, "mute_video", [!isCamMutedRef.current]);
+  }, [execute, mod]);
 
-  const answerPrompt = async (key: ZoomPromptKey, agree = true) => {
-    await execute(mod, "confirm_prompt", [key, agree]);
-  };
+  const answerPrompt = useCallback(
+    async (key: ZoomPromptKey, agree = true) => {
+      await execute(mod, "confirm_prompt", [key, agree]);
+    },
+    [execute, mod],
+  );
 
-  const sendMeetingPassword = async (password: string) => {
-    await execute(mod, "send_meeting_password", [password]);
-  };
+  const sendMeetingPassword = useCallback(
+    async (password: string) => {
+      await execute(mod, "send_meeting_password", [password]);
+    },
+    [execute, mod],
+  );
 
-  return {
-    wsConnection,
-    zoomOnline: online,
-    zrcConnectionState,
-    paired,
-    health,
-    callStatus,
-    participants,
-    bookings,
-    currentMeeting,
-    nextMeeting,
-    activeBooking,
-    timeJoined,
-    prompts,
-    meetingError,
-    exitMeeting,
-    startInstantMeeting,
-    joinMeeting,
-    toggleMicMute,
-    toggleCameraMute,
-    answerPrompt,
-    sendMeetingPassword,
-  };
+  return useMemo(
+    () => ({
+      wsConnection,
+      zoomOnline: online,
+      zrcConnectionState,
+      paired,
+      health,
+      callStatus,
+      participants,
+      bookings,
+      currentMeeting,
+      nextMeeting,
+      activeBooking,
+      timeJoined,
+      prompts,
+      meetingError,
+      exitMeeting,
+      startInstantMeeting,
+      joinMeeting,
+      toggleMicMute,
+      toggleCameraMute,
+      answerPrompt,
+      sendMeetingPassword,
+    }),
+    [
+      wsConnection,
+      online,
+      zrcConnectionState,
+      paired,
+      health,
+      callStatus,
+      participants,
+      bookings,
+      currentMeeting,
+      nextMeeting,
+      activeBooking,
+      timeJoined,
+      prompts,
+      meetingError,
+      exitMeeting,
+      startInstantMeeting,
+      joinMeeting,
+      toggleMicMute,
+      toggleCameraMute,
+      answerPrompt,
+      sendMeetingPassword,
+    ],
+  );
 }

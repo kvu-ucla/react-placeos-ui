@@ -29,7 +29,7 @@ export function ClassInfoCard() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCountdown(getCountdownToTime(meetingDetails.classStart));
-    }, 1000); // updates every second (can change to 60000 for 1 min)
+    }, 15000); // countdown text has minute resolution; 15s keeps it fresh without per-second renders
 
     return () => clearInterval(interval); // cleanup
   }, [meetingDetails.classStart]);
