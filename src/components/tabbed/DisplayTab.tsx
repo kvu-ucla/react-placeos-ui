@@ -14,13 +14,17 @@ export function DisplayTab() {
   // from the outputs' power bindings (undefined = not reported yet, treat as on).
   const allPowered = Object.values(outputs).every((o) => o.power !== false);
 
-  // Optimistic in-flight state; cleared once the power bindings catch up,
-  // an execute fails, or the timeout expires
-  const [pendingDisplays, setPendingDisplays] = useState<boolean | null>(null);
-  const displays = pendingDisplays ?? allPowered;
+  // Optimistic in-flight state, tagged with its toggle's sequence number.
+  // Cleared once the power bindings catch up, an execute fails, or the
+  // timeout expires — each clear decided against the CURRENT pending via
+  // functional updates, so a stale callback can't wipe a newer toggle's state.
+  const [pending, setPending] = useState<{
+    value: boolean;
+    seq: number;
+  } | null>(null);
+  const displays = pending?.value ?? allPowered;
 
   const pendingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // Identifies the latest toggle so a stale failure/timeout can't clear a newer one
   const toggleSeq = useRef(0);
 
   const clearPendingTimeout = () => {
@@ -30,12 +34,22 @@ export function DisplayTab() {
     }
   };
 
+  // Reconcile: drop pending once the bindings match its value. The updater
+  // compares against the pending that is actually current at update time, so
+  // a delayed effect run from an earlier commit cannot clear a newer toggle
+  // (its value check fails against the new pending).
   useEffect(() => {
-    if (pendingDisplays !== null && allPowered === pendingDisplays) {
-      clearPendingTimeout();
-      setPendingDisplays(null);
-    }
-  }, [allPowered, pendingDisplays]);
+    setPending((current) =>
+      current !== null && current.value === allPowered ? null : current,
+    );
+  }, [allPowered, pending]);
+
+  // The timer only matters while a pending value is displayed; whenever
+  // pending is cleared (reconcile or abandonment), drop the live timer too.
+  // Re-toggle replaces the timer itself before arming a new one.
+  useEffect(() => {
+    if (pending === null) clearPendingTimeout();
+  }, [pending]);
 
   useEffect(() => clearPendingTimeout, []);
 
@@ -46,12 +60,11 @@ export function DisplayTab() {
 
     const newDisplayState = !displays;
     const seq = ++toggleSeq.current;
-    setPendingDisplays(newDisplayState);
+    setPending({ value: newDisplayState, seq });
 
+    // Abandon THIS toggle's pending only if it is still the one displayed
     const abandonPending = () => {
-      if (toggleSeq.current !== seq) return;
-      clearPendingTimeout();
-      setPendingDisplays(null);
+      setPending((current) => (current?.seq === seq ? null : current));
     };
 
     clearPendingTimeout();
