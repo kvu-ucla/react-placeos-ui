@@ -60,6 +60,10 @@ jobs:
           then
               echo "configuration=staging" >> $GITHUB_OUTPUT
               echo "deploy_branch=uat" >> $GITHUB_OUTPUT
+          elif [[ ${{ steps.branch_name.outputs.name }} == "feat_"* ]]
+          then
+              echo "configuration=development" >> $GITHUB_OUTPUT
+              echo "deploy_branch=${{ steps.branch_name.outputs.name }}" >> $GITHUB_OUTPUT
           else
               echo "configuration=staging" >> $GITHUB_OUTPUT
               echo "deploy_branch=dev" >> $GITHUB_OUTPUT
