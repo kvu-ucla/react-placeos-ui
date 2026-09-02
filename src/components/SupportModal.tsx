@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import { useZoomContext } from "../hooks/ZoomContext.tsx";
 import { useControlContext } from "../hooks/ControlStateContext.tsx";
-import { SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY } from "../config";
 import { useEscapeKey } from "../hooks/useEscapeKey";
 
 interface ContactInfo {
@@ -138,7 +137,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
   }, []);
 
   const { connection } = useZoomContext();
-  const { system } = useControlContext();
+  const { system, supportPhone, supportPhoneDisplay } = useControlContext();
 
   const avDescription = system.name?.includes("Dodd")
     ? "Please see staff in Dodd 300 for assistance."
@@ -150,8 +149,8 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
     {
       title: "AV Technical Support",
       description: avDescription,
-      phone: SUPPORT_PHONE_DISPLAY,
-      href: SUPPORT_PHONE ? `tel:${SUPPORT_PHONE}` : null,
+      phone: supportPhoneDisplay,
+      href: supportPhone ? `tel:${supportPhone}` : null,
     },
     {
       title: "Facilities Support",

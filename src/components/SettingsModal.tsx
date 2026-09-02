@@ -5,7 +5,7 @@ import { CameraTab } from "./tabbed/CameraTab.tsx";
 import { MicTab } from "./tabbed/MicTab.tsx";
 import { DisplayTab } from "./tabbed/DisplayTab.tsx";
 import { StatusTab } from "./tabbed/StatusTab.tsx";
-import { SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY } from "../config";
+import { useControlContext } from "../hooks/ControlStateContext.tsx";
 import { useEscapeKey } from "../hooks/useEscapeKey";
 
 export default function SettingsModal({
@@ -17,6 +17,7 @@ export default function SettingsModal({
 }) {
   const [activeTab, setActiveTab] = useState<TabSection>(initialTab);
   useEscapeKey(onClose);
+  const { supportPhone, supportPhoneDisplay } = useControlContext();
   const audioTabs: TabSection[] = ["Volume"];
   const videoTabs: TabSection[] = ["Display"];
   const meetingTabs: TabSection[] = ["Status", "Camera"];
@@ -106,12 +107,12 @@ export default function SettingsModal({
                       assistance:
                     </span>
                   </div>
-                  {SUPPORT_PHONE && SUPPORT_PHONE_DISPLAY && (
+                  {supportPhone && (
                     <a
-                      href={`tel:${SUPPORT_PHONE}`}
+                      href={`tel:${supportPhone}`}
                       className="ml-2 font-bold hover:underline"
                     >
-                      {SUPPORT_PHONE_DISPLAY}
+                      {supportPhoneDisplay}
                     </a>
                   )}
                 </div>
