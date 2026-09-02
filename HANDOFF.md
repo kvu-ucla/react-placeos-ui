@@ -23,7 +23,16 @@ Supersedes the 2026-09-01 rev-2 handoff (see git history of this file). Start a 
 1. **Sharing key**: paste `ZoomZRC_1 → room_status` from the debug console — unblocks restoring the wireless sharing key in the join accordion (UI bind if present in room_status; else a ZRC driver/microservice addition).
 2. **Driver fixes still UNCOMMITTED** in `~/Documents/drivers` (`ucla-dev`): participant-refresh coalescing + event-owned mic/camera state (spec-verified) — unblocks single-fetch rosters and honest mute loading on the panel.
 3. **Backend booking_converter repoint** (`ZoomCSAPI_1:BookingsListResult` → `ZoomZRC_1:meetings`) — unblocks bookings end-to-end (README documents it).
-4. **Real AV support phone** for `src/config.ts` — unblocks visible support links.
+4. **Real AV support phone** — now a backstage setting, not code (`src/config.ts` deleted). Add to the system settings YAML (`title`/`content` are required or the whole `help` parse fails, wiping all help pages):
+   ```yaml
+   help:
+     support:
+       title: "AV Support"
+       content: ""
+       phone: "+1310XXXXXXX"
+       phone_display: "(310) XXX-XXXX"
+   ```
+   UI binds `System.help` → `help.support.phone`/`.phone_display` (spec + plan in `docs/superpowers/`). Extraction unit-verified; live verification pending the real number.
 5. **Merge**: PR `feat/ui-polish` → `development` (contains the migration; `development` also needs the CI workflow commits `ffa11a4`/`29ca490`).
 
 ## Where things live
