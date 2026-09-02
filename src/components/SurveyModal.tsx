@@ -30,8 +30,16 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
         {/* Header */}
         <div className="flex justify-between items-center border-b border-avit-grey pb-8">
           <h2 className="text-4xl font-semibold">Survey</h2>
-          <button
+          <div
+            role="button"
+            tabIndex={0}
             onClick={onClose}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClose();
+              }
+            }}
             aria-label="Close"
             className="nav-btn btn-ghost text-2xl font-bold "
           >
@@ -40,7 +48,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
                 width={48}
                 height={48}
             ></Icon>
-          </button>
+          </div>
         </div>
         {/* Contain the fixed-size survey so it scrolls instead of clipping */}
         <div className="max-w-full overflow-auto">

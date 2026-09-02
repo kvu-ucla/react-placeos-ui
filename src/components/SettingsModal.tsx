@@ -34,8 +34,16 @@ export default function SettingsModal({
           {/* Header */}
           <div className="flex justify-between items-center border-b border-avit-grey pb-8">
             <h2 className="text-4xl font-semibold">Settings</h2>
-            <button
+            <div
+              role="button"
+              tabIndex={0}
               onClick={onClose}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onClose();
+                }
+              }}
               aria-label="Close"
               className="nav-btn btn-ghost text-2xl font-bold "
             >
@@ -44,7 +52,7 @@ export default function SettingsModal({
                 width={48}
                 height={48}
               ></Icon>
-            </button>
+            </div>
           </div>
 
           <div className="flex mt-4 space-x-6">

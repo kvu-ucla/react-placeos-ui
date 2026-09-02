@@ -18,7 +18,7 @@ interface ContactInfo {
 // (computed styles + engine feature support + which build is on glass) has to
 // be readable on the panel itself. Every probe is individually guarded: a
 // hostile webview must never crash the support modal.
-function collectDiagnostics(xBtn: HTMLButtonElement | null): [string, string][] {
+function collectDiagnostics(xBtn: HTMLElement | null): [string, string][] {
   const rows: [string, string][] = [];
   const safe = (name: string, fn: () => string) => {
     try {
@@ -63,6 +63,44 @@ function collectDiagnostics(xBtn: HTMLButtonElement | null): [string, string][] 
     const s = styleOf(xBtn);
     return s ? s.getPropertyValue("--btn-bg").trim() || "(unset)" : "n/a";
   });
+  safe("inline-bg test", () => {
+    // Does an INLINE background take effect? Distinguishes "our stylesheet
+    // rule loses somewhere" from "the engine overrides author backgrounds
+    // on this element wholesale" — inline style is the highest author
+    // precedence CSS offers.
+    const el = (document.querySelector(
+      "header .nav-btn:not(.nav-btn-selected)",
+    ) ?? document.querySelector("header .nav-btn")) as HTMLElement | null;
+    if (!el) return "n/a";
+    const prev = el.style.backgroundColor;
+    el.style.backgroundColor = "transparent";
+    const read = getComputedStyle(el).backgroundColor;
+    el.style.backgroundColor = prev;
+    return read;
+  });
+  safe("cssom", () => {
+    // Prove our nav-btn rules exist in the parsed CSSOM on this engine
+    let count = 0;
+    let first = "";
+    const walk = (rules: CSSRuleList) => {
+      for (const rule of Array.from(rules)) {
+        const r = rule as CSSStyleRule & { cssRules?: CSSRuleList };
+        if (r.selectorText?.includes("nav-btn")) {
+          count++;
+          if (!first) first = r.cssText.slice(0, 60);
+        }
+        if (r.cssRules) walk(r.cssRules);
+      }
+    };
+    for (const sheet of Array.from(document.styleSheets)) {
+      try {
+        walk(sheet.cssRules);
+      } catch {
+        /* cross-origin sheet — skip */
+      }
+    }
+    return `count=${count}; first=${first || "none"}`;
+  });
   safe("forced-colors", () =>
     [
       `active=${matchMedia("(forced-colors: active)").matches}`,
@@ -81,7 +119,7 @@ function collectDiagnostics(xBtn: HTMLButtonElement | null): [string, string][] 
 
 export default function SupportModal({ onClose }: { onClose: () => void }) {
   const [activeTab, setActiveTab] = useState<"Contact">("Contact");
-  const xBtnRef = useRef<HTMLButtonElement>(null);
+  const xBtnRef = useRef<HTMLDivElement>(null);
   const [diagnostics, setDiagnostics] = useState<[string, string][]>([]);
   // Read at modal-open time, from the live DOM
   useEffect(() => {
@@ -129,9 +167,17 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
         {/* Header */}
         <div className="flex justify-between items-center border-b border-avit-grey pb-8">
           <h2 className="text-4xl font-semibold">Support</h2>
-          <button
+          <div
             ref={xBtnRef}
+            role="button"
+            tabIndex={0}
             onClick={onClose}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClose();
+              }
+            }}
             aria-label="Close"
             className="nav-btn btn-ghost text-2xl font-bold "
           >
@@ -140,7 +186,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
               width={48}
               height={48}
             ></Icon>
-          </button>
+          </div>
         </div>
 
         {/* Body */}
