@@ -50,6 +50,13 @@ body,
       opacity: 1;
     }
   }
+  /* Backdrop entrance animates background-color only, so the modal-box
+     children stay opaque while the scrim darkens behind them. */
+  @keyframes ui-backdrop-in {
+    from {
+      background-color: transparent;
+    }
+  }
   @keyframes ui-modal-in {
     from {
       opacity: 0;
@@ -67,10 +74,10 @@ body,
     animation: ui-fade-in 150ms ease-out;
   }
   .modal-fade {
-    animation: ui-fade-in 200ms ease-out;
+    animation: ui-backdrop-in 200ms ease-out;
   }
   .modal-pop {
-    animation: ui-modal-in 200ms ease-out;
+    animation: ui-modal-in 150ms ease-out;
   }
   @media (prefers-reduced-motion: reduce) {
     .screen-fade,
