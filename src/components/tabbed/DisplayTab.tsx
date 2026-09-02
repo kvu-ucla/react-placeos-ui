@@ -1,7 +1,11 @@
 import { useZoomContext } from "../../hooks/ZoomContext";
 import { useModuleExecute } from "../../hooks/placeos";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
+
+// If the power bindings never confirm the requested state, stop showing it
+// after this long (matches the SessionControls loading timeout)
+const PENDING_TIMEOUT_MS = 10000;
 
 export function DisplayTab() {
   const { system_id, inputs, outputs } = useZoomContext();
@@ -10,15 +14,30 @@ export function DisplayTab() {
   // from the outputs' power bindings (undefined = not reported yet, treat as on).
   const allPowered = Object.values(outputs).every((o) => o.power !== false);
 
-  // Optimistic in-flight state; cleared once the power bindings catch up
+  // Optimistic in-flight state; cleared once the power bindings catch up,
+  // an execute fails, or the timeout expires
   const [pendingDisplays, setPendingDisplays] = useState<boolean | null>(null);
   const displays = pendingDisplays ?? allPowered;
 
+  const pendingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Identifies the latest toggle so a stale failure/timeout can't clear a newer one
+  const toggleSeq = useRef(0);
+
+  const clearPendingTimeout = () => {
+    if (pendingTimeout.current) {
+      clearTimeout(pendingTimeout.current);
+      pendingTimeout.current = null;
+    }
+  };
+
   useEffect(() => {
     if (pendingDisplays !== null && allPowered === pendingDisplays) {
+      clearPendingTimeout();
       setPendingDisplays(null);
     }
   }, [allPowered, pendingDisplays]);
+
+  useEffect(() => clearPendingTimeout, []);
 
   const execute = useModuleExecute(system_id);
 
@@ -26,11 +45,27 @@ export function DisplayTab() {
     if (!outputs || Object.keys(outputs).length === 0) return;
 
     const newDisplayState = !displays;
+    const seq = ++toggleSeq.current;
     setPendingDisplays(newDisplayState);
 
-    for (const output of Object.keys(outputs)) {
-      execute(output, "power", [newDisplayState]);
-    }
+    const abandonPending = () => {
+      if (toggleSeq.current !== seq) return;
+      clearPendingTimeout();
+      setPendingDisplays(null);
+    };
+
+    clearPendingTimeout();
+    pendingTimeout.current = setTimeout(abandonPending, PENDING_TIMEOUT_MS);
+
+    // Fall back to the derived state if any command fails
+    // (useModuleExecute already surfaces its own error toast)
+    Promise.allSettled(
+      Object.keys(outputs).map((output) =>
+        execute(output, "power", [newDisplayState]),
+      ),
+    ).then((results) => {
+      if (results.some((r) => r.status === "rejected")) abandonPending();
+    });
   };
 
   return (
