@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ControlStateProvider,
   useControlContext,
@@ -12,6 +12,13 @@ import RoomStatusModal from "./RoomStatusModal";
 // glitch, and on systems that ack optimistically it's the only honest
 // "something is happening" feedback the user gets.
 const TRANSITION_MIN_DWELL_MS = 4_000;
+
+// Loading-variant hydration pacing (cosmetic — no toast on expiry).
+// Bookings may never report on some systems (known backend gap), so it only
+// blocks dismissal for a bounded window after connect; the cap dismisses
+// regardless so the modal can never strand.
+const BOOKINGS_WAIT_MS = 8_000;
+const LOADING_CAP_MS = 15_000;
 import { Header } from "./Header";
 import { Navigate, useParams } from "react-router-dom";
 import { ZoomProvider, useZoomContext } from "../hooks/ZoomContext";
@@ -36,8 +43,9 @@ export default function MainView() {
 }
 
 function MainViewInner() {
-  const { active, pendingPower, clearPendingPower } = useControlContext();
-  const { outputs, connection } = useZoomContext();
+  const { active, pendingPower, clearPendingPower, system } =
+    useControlContext();
+  const { outputs, connection, bookings, getFeatures } = useZoomContext();
 
   // System.power() sets `active` optimistically, so readiness also requires
   // every display output that reports a power state to have reached the
@@ -76,11 +84,45 @@ function MainViewInner() {
     return () => clearTimeout(timer);
   }, [pendingPower, ready, clearPendingPower]);
 
+  // The loading variant dismisses on HYDRATION, not on websocket connect —
+  // otherwise the page still pops in behind it. Track when the socket first
+  // connected to anchor the bookings escape hatch and the overall cap.
+  const [connectedAt, setConnectedAt] = useState<number | null>(null);
+  useEffect(() => {
+    if (connection === "online")
+      setConnectedAt((cur) => cur ?? Date.now());
+  }, [connection]);
+
+  const [bookingsWaived, setBookingsWaived] = useState(false);
+  const [loadingCapped, setLoadingCapped] = useState(false);
+  useEffect(() => {
+    if (connectedAt === null) return;
+    const t1 = setTimeout(
+      () => setBookingsWaived(true),
+      Math.max(0, connectedAt + BOOKINGS_WAIT_MS - Date.now()),
+    );
+    const t2 = setTimeout(
+      () => setLoadingCapped(true),
+      Math.max(0, connectedAt + LOADING_CAP_MS - Date.now()),
+    );
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [connectedAt]);
+
+  const hydrated =
+    connection === "online" &&
+    !!system.name &&
+    getFeatures !== undefined &&
+    (bookings !== undefined || bookingsWaived);
+
   const statusVariant = pendingPower
     ? pendingPower.target === "on"
       ? "starting"
       : "stopping"
-    : connection === "connecting"
+    : connection === "connecting" ||
+        (connection === "online" && !hydrated && !loadingCapped)
       ? "loading"
       : null;
   return (
@@ -99,14 +141,15 @@ function MainViewInner() {
       >
         {active ? <MainScreen /> : <SplashScreen />}
       </div>
-      {/* One modal for all three loading states. pendingPower wins the
-          message if it and cold-load connecting ever hold together; while
-          offline the Header's OfflineModal takes over instead, so the two
-          overlays can never stack ('loading' also can't coexist with it —
-          connecting and offline are exclusive states). */}
-      {statusVariant && connection !== "offline" && (
-        <RoomStatusModal variant={statusVariant} />
-      )}
+      {/* One modal for all three loading states, always mounted so it can
+          run its own exit fade when the variant drops to null. pendingPower
+          wins the message if it and cold-load loading ever hold together;
+          while offline the Header's OfflineModal takes over instead (the
+          brief exit fade may overlap its entrance, then only OfflineModal
+          remains). */}
+      <RoomStatusModal
+        variant={connection === "offline" ? null : statusVariant}
+      />
     </div>
   );
 }

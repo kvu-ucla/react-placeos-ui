@@ -79,11 +79,47 @@ body,
   .modal-pop {
     animation: ui-modal-in 150ms ease-out;
   }
+  /* RoomStatusModal only: scrim color and backdrop blur fade in together
+     (plain .modal-fade would snap the blur on), and the exit — the
+     component keeps the element mounted for it — reverses both while
+     fading the box. backdrop-filter interpolation is fine on the Chromium
+     kiosk. */
+  @keyframes ui-status-in {
+    from {
+      background-color: transparent;
+      -webkit-backdrop-filter: blur(0);
+      backdrop-filter: blur(0);
+    }
+  }
+  @keyframes ui-status-out {
+    to {
+      background-color: transparent;
+      -webkit-backdrop-filter: blur(0);
+      backdrop-filter: blur(0);
+    }
+  }
+  @keyframes ui-fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+  .status-modal-fade {
+    animation: ui-status-in 200ms ease-out;
+  }
+  .status-modal-exit {
+    animation: ui-status-out 200ms ease-in forwards;
+  }
+  .status-modal-exit .modal-box {
+    animation: ui-fade-out 200ms ease-in forwards;
+  }
   @media (prefers-reduced-motion: reduce) {
     .screen-fade,
     .tab-fade,
     .modal-fade,
-    .modal-pop {
+    .modal-pop,
+    .status-modal-fade,
+    .status-modal-exit,
+    .status-modal-exit .modal-box {
       animation: none;
     }
   }
