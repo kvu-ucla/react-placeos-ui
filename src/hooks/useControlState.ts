@@ -1,6 +1,6 @@
 // src/hooks/useControlState.ts
 import { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
+import { notify } from "../notify";
 import { useBinder, useModuleExecute } from "./placeos";
 
 // In-flight power transition. The System module exposes no transitional
@@ -276,7 +276,7 @@ export function useControlState(
     if (!pendingPower) return;
     const { seq } = pendingPower;
     const timer = setTimeout(() => {
-      toast.error(
+      notify.error(
         "The room is taking longer than expected — showing current status.",
       );
       setPendingPower((cur) => (cur?.seq === seq ? null : cur));

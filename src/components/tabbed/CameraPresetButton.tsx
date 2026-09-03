@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { toast } from "react-toastify";
+import { notify } from "../../notify";
 import { useModuleExecute } from "../../hooks/placeos";
 
 interface CameraPresetButtonProps {
@@ -38,13 +38,13 @@ export function CameraPresetButton({
 
     const handleSave = () => {
         if (!camera) return;
-        toast(`${camera.camera_name} ${preset} saved!`);
+        notify.success(`${camera.camera_name} ${preset} saved!`);
         execute(camera.camera_id, "cam_preset_save", [extractNumber(preset)]);
     };
 
     const handleRecall = () => {
         if (!camera) return;
-        toast(`${camera.camera_name} ${preset} recalled!`);
+        notify.success(`${camera.camera_name} ${preset} recalled!`);
         execute(camera.camera_id, "cam_preset_recall", [extractNumber(preset)]);
     };
 

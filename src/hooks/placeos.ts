@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState, type DependencyList } from "react";
 import { Subscription } from "rxjs";
 import { getModule } from "@placeos/ts-client";
-import { toast } from "react-toastify";
+import { notify } from "../notify";
 
 /** Per-instance subscription tracker. Create in an effect, destroy in its cleanup. */
 export interface Binder {
@@ -76,7 +76,7 @@ export function useBinding<T = unknown>(
 }
 
 /** Standard execute path — all component-level commands route through this.
- *  Catches errors -> console.error + toast.error(`Command failed: ${method}`), rethrows. */
+ *  Catches errors -> console.error + notify.error(`Command failed: ${method}`), rethrows. */
 export function useModuleExecute(systemId: string) {
   return useCallback(
     async <T = unknown>(
@@ -88,7 +88,7 @@ export function useModuleExecute(systemId: string) {
         return await getModule(systemId, moduleAlias).execute<T>(method, args);
       } catch (error) {
         console.error(`[execute] ${moduleAlias}.${method} failed:`, error);
-        toast.error(`Command failed: ${method}`);
+        notify.error(`Command failed: ${method}`);
         throw error;
       }
     },

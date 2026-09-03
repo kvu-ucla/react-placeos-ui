@@ -4,7 +4,7 @@
 // in the driver's status keys — answering a prompt clears its key, which
 // unmounts the modal.
 import { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
+import { notify } from "../../notify";
 import { useZoomContext } from "../../hooks/ZoomContext";
 import type { ZoomPromptKey } from "../../hooks/useZoomRoom";
 import { useEscapeKey } from "../../hooks/useEscapeKey";
@@ -56,14 +56,14 @@ export default function ZoomPromptHost() {
         prevToastValues.current[promptKey] == null &&
         !suppressed
       ) {
-        toast.info(message, { toastId: promptKey });
+        notify.info(message, promptKey);
       }
       prevToastValues.current[promptKey] = value;
     }
   }, [prompts, reminderActive]);
 
   useEffect(() => {
-    if (reminderActive) toast.dismiss("recording_disclaimer_needed");
+    if (reminderActive) notify.dismiss("recording_disclaimer_needed");
   }, [reminderActive]);
 
   // Dev aid: make future payload-shape drift visible instead of silently

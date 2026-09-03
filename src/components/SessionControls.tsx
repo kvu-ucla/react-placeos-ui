@@ -1,7 +1,7 @@
 // src/components/SessionControls.tsx
 import { Icon } from "@iconify/react";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { toast } from "react-toastify";
+import { notify } from "../notify";
 import { useModalContext } from "../hooks/ModalContext";
 import { useZoomContext } from "../hooks/ZoomContext";
 import {ControlCard } from "./ControlCard.tsx";
@@ -48,9 +48,7 @@ export default function SessionControls() {
     loadingTimeouts.current[key] = setTimeout(() => {
       loadingTimeouts.current[key] = null;
       setLoadingStates((prev) => ({ ...prev, [key]: false }));
-      toast.error("No response from room controls", {
-        toastId: "control-timeout",
-      });
+      notify.error("No response from room controls", "control-timeout");
     }, LOADING_TIMEOUT_MS);
   };
 
