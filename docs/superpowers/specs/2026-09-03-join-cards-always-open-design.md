@@ -29,8 +29,8 @@ static cards:
   `!pb-2` fought collapse's own padding; plain utilities now suffice) and the
   numbered steps bump `text-base` → `text-lg` for touch-panel readability.
   Subtitles stay (approved: "bigger steps, keep subtitle").
-- Both cards stay `self-start` in the existing 2-col grid; unequal content
-  heights just render at their natural height.
+- Both cards drop `self-start` so the grid's default stretch equalizes their
+  heights (revised 2026-09-03: cards must be the same size).
 
 ## Sharing key in the wireless card
 
@@ -44,12 +44,11 @@ without a driver change.
   `sharingKey` from the hook.
 - `src/hooks/ZoomContext.tsx`: add `sharingKey: string | null` to the
   context interface and value.
-- `SessionControls.tsx` wireless card: below the numbered steps, when
-  `sharingKey` is non-null render a key row —
-  `Sharing key: <span font-mono font-semibold text-2xl tracking-widest>{key}</span>`
-  — so a presenter can read it from across the room. When null, no row;
-  step 2's existing copy ("shown on the room display") remains the fallback
-  wording either way.
+- `SessionControls.tsx` wireless card: the key renders inline in step 2
+  (revised 2026-09-03 from a separate row). With a key: `Tap "Share Screen"
+  and input the sharing key: <span font-mono font-semibold
+  tracking-widest>{key}</span>.` Without: the original copy
+  ("…sharing key shown on the room display.").
 
 ## Invariant to respect
 

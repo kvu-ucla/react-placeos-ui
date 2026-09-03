@@ -202,7 +202,7 @@ export default function SessionControls() {
       <h2 className="font-semibold text-2xl mb-4">Join from your device</h2>
       <div id="zoom-join" className="grid grid-cols-2 gap-4">
         {/*Share Wirelessly*/}
-        <div className="self-start rounded-2xl p-2 bg-white backdrop-blur-xl">
+        <div className="rounded-2xl p-2 bg-white backdrop-blur-xl">
           <div className="p-4 font-semibold inline-flex">
             <img
               src={import.meta.env.BASE_URL + "zoom_logo.svg"}
@@ -224,22 +224,24 @@ export default function SessionControls() {
               </li>
               <li>
                 Tap "Share Screen" and input the{" "}
-                <span className="font-semibold">sharing key shown on the room display</span>.
+                {sharingKey ? (
+                  <>
+                    sharing key:{" "}
+                    <span className="font-mono font-semibold tracking-widest">
+                      {sharingKey}
+                    </span>
+                  </>
+                ) : (
+                  <span className="font-semibold">sharing key shown on the room display</span>
+                )}
+                .
               </li>
             </ol>
-            {sharingKey && (
-              <div className="mt-3 text-avit-grey-80">
-                Sharing key:{" "}
-                <span className="font-mono font-semibold text-2xl tracking-widest align-middle">
-                  {sharingKey}
-                </span>
-              </div>
-            )}
           </div>
         </div>
 
         {/*Share Local*/}
-        <div className="self-start rounded-2xl p-2 bg-white backdrop-blur-xl">
+        <div className="rounded-2xl p-2 bg-white backdrop-blur-xl">
           <div className="p-4 font-semibold inline-flex">
             <Icon
               className="text-[#3664DA]"
