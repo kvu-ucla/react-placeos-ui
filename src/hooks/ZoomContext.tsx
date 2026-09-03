@@ -30,6 +30,8 @@ export interface ZoomContextValue {
   callStatus: CallStatus;
   /** undefined until the driver first reports; [] means a confirmed-empty meeting */
   participants?: ZrcParticipant[];
+  /** Wireless sharing key while available, null when not sharing-capable */
+  sharingKey: string | null;
   bookings?: Booking[];
   currentMeeting?: Booking;
   nextMeeting?: Booking;
@@ -97,6 +99,7 @@ export function ZoomProvider({
       zoomOnline: zoom.zoomOnline,
       callStatus: zoom.callStatus,
       participants: zoom.participants,
+      sharingKey: zoom.sharingKey,
       bookings: zoom.bookings,
       currentMeeting: zoom.currentMeeting,
       nextMeeting: zoom.nextMeeting,
