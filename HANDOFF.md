@@ -20,7 +20,7 @@ Supersedes the 2026-09-01 rev-2 handoff (see git history of this file). Start a 
 
 ## Owner decisions / open items (each with what it unblocks)
 
-1. **Sharing key**: paste `ZoomZRC_1 → room_status` from the debug console — unblocks restoring the wireless sharing key in the join accordion (UI bind if present in room_status; else a ZRC driver/microservice addition).
+1. ~~**Sharing key**~~ RESOLVED 2026-09-03: the driver already published `sharing_key` (from `directPresentationSharingKey`, nulled on meeting end) — no paste needed. UI binds it via `useZoomRoom` → `ZoomContext.sharingKey` and shows it in the (now always-open) Join wirelessly card. Verify on-glass while sharing is available.
 2. **Driver fixes still UNCOMMITTED** in `~/Documents/drivers` (`ucla-dev`): participant-refresh coalescing + event-owned mic/camera state (spec-verified) — unblocks single-fetch rosters and honest mute loading on the panel.
 3. **Backend booking_converter repoint** (`ZoomCSAPI_1:BookingsListResult` → `ZoomZRC_1:meetings`) — unblocks bookings end-to-end (README documents it).
 4. **Real AV support phone** — now a backstage setting, not code (`src/config.ts` deleted). Add to the system settings YAML (`title`/`content` are required or the whole `help` parse fails, wiping all help pages):
