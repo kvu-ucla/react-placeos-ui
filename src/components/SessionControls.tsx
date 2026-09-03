@@ -15,6 +15,7 @@ export default function SessionControls() {
     toggleGallery,
     toggleMicMute,
     toggleCameraMute,
+    sharingKey,
   } = useZoomContext();
   const { showModal } = useModalContext();
 
@@ -201,17 +202,8 @@ export default function SessionControls() {
       <h2 className="font-semibold text-2xl mb-4">Join from your device</h2>
       <div id="zoom-join" className="grid grid-cols-2 gap-4">
         {/*Share Wirelessly*/}
-        {/* Radio-collapse pair (shared name): opening one closes the other,
-            so only one panel's height is ever added and the section can't
-            outgrow its flex space */}
-        <div className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
-          <input type="radio" name="zoom-join-accordion" />
-          {/* after:! overrides required: daisyUI's .collapse-arrow>.collapse-title:after
-              sets width/height/top/inset-inline-end at higher specificity */}
-          <div
-            className="collapse-title font-semibold inline-flex after:border-r-3 after:border-b-3 after:border-current
-     after:!w-6 after:!h-6 after:!top-10 after:!right-10"
-          >
+        <div className="self-start rounded-2xl p-2 bg-white backdrop-blur-xl">
+          <div className="p-4 font-semibold inline-flex">
             <img
               src={import.meta.env.BASE_URL + "zoom_logo.svg"}
               alt="zoom logo"
@@ -224,8 +216,7 @@ export default function SessionControls() {
               </div>
             </div>
           </div>
-          {/* Compact body so an open panel fits the section's flex space */}
-          <div className="collapse-content text-base font-normal leading-snug !pb-2">
+          <div className="px-4 pb-3 text-lg font-normal leading-snug">
             <ol className="list-decimal list-inside space-y-1">
               <li>
                 Open the Zoom client application on the device you wish to
@@ -236,18 +227,20 @@ export default function SessionControls() {
                 <span className="font-semibold">sharing key shown on the room display</span>.
               </li>
             </ol>
+            {sharingKey && (
+              <div className="mt-3 text-avit-grey-80">
+                Sharing key:{" "}
+                <span className="font-mono font-semibold text-2xl tracking-widest align-middle">
+                  {sharingKey}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
         {/*Share Local*/}
-        <div className="self-start collapse collapse-arrow p-2 bg-white backdrop-blur-xl">
-          <input type="radio" name="zoom-join-accordion" />
-          {/* after:! overrides required: daisyUI's .collapse-arrow>.collapse-title:after
-              sets width/height/top/inset-inline-end at higher specificity */}
-          <div
-            className="collapse-title font-semibold inline-flex after:border-r-3 after:border-b-3 after:border-current
-     after:!w-6 after:!h-6 after:!top-10 after:!right-10"
-          >
+        <div className="self-start rounded-2xl p-2 bg-white backdrop-blur-xl">
+          <div className="p-4 font-semibold inline-flex">
             <Icon
               className="text-[#3664DA]"
               icon="material-symbols:cable-rounded"
@@ -261,8 +254,7 @@ export default function SessionControls() {
               </div>
             </div>
           </div>
-          {/* Compact body so an open panel fits the section's flex space */}
-          <div className="collapse-content text-base font-normal leading-snug !pb-2">
+          <div className="px-4 pb-3 text-lg font-normal leading-snug">
             <ol className="list-decimal list-inside space-y-1">
               <li>
                 Connect one end of the USB-C or HDMI cable into your laptop.
