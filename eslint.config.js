@@ -19,5 +19,19 @@ export default tseslint.config([
             ecmaVersion: 2020,
             globals: globals.browser,
         },
+        rules: {
+            'no-restricted-imports': ['error', {
+                paths: [{
+                    name: 'react-toastify',
+                    message: 'Import { notify } from src/notify.ts instead — it enforces uniform toast semantics.',
+                }],
+            }],
+        },
+    },
+    {
+        files: ['src/notify.ts', 'src/App.tsx'],
+        rules: {
+            'no-restricted-imports': 'off',
+        },
     },
 ])
