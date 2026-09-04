@@ -96,7 +96,7 @@ export function StatusTab() {
                 {sharingKey && (
                     <div className="text-gray-600 mt-1">
                         Sharing Key:{" "}
-                        <span className="font-mono font-semibold tracking-widest text-black">
+                        <span className="font-semibold text-black">
                             {sharingKey}
                         </span>
                     </div>

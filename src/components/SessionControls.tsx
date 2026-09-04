@@ -250,9 +250,7 @@ export default function SessionControls() {
                 {sharingKey ? (
                   <>
                     sharing key:{" "}
-                    <span className="font-mono font-semibold tracking-widest">
-                      {sharingKey}
-                    </span>
+                    <span className="font-semibold">{sharingKey}</span>
                   </>
                 ) : (
                   <span className="font-semibold">sharing key shown on the room display</span>

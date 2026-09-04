@@ -10,7 +10,7 @@ interface meetingDetails {
 }
 
 export function ClassInfoCard() {
-  const { nextMeeting, currentMeeting } = useZoomContext();
+  const { nextMeeting, currentMeeting, sharingKey } = useZoomContext();
   const [meetingDetails, setMeetingDetails] = useState<meetingDetails>({
     classStart: "",
     classEnd: "",
@@ -133,6 +133,12 @@ export function ClassInfoCard() {
             <span className="text-xs mx-2">●</span>
             <div>{upcoming}</div>
           </div>
+
+          {sharingKey && (
+            <div className="flex items-center justify-center gap-2">
+              <div className="font-semibold">Sharing Key: {sharingKey}</div>
+            </div>
+          )}
         </>
       ) : (
         <>
