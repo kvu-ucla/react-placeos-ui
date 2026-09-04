@@ -93,7 +93,7 @@ export default function SessionControls() {
   useEffect(() => {
     if (waitingCount > 0 && prevWaitingCount.current === 0 && isJoined) {
       notify.info("Someone is waiting to join", "waiting-room", () =>
-        showModal("settings", { tab: "Status" }),
+        showModal("settings", { tab: "Status", view: "participants" }),
       );
     }
     if (waitingCount === 0) notify.dismiss("waiting-room");
@@ -214,7 +214,12 @@ export default function SessionControls() {
           id="meeting-ctrls"
           label="Meeting Controls"
           badge={waitingCount}
-          buttonAction={() => showModal("settings", { tab: "Status" })}
+          buttonAction={() =>
+            showModal("settings", {
+              tab: "Status",
+              view: waitingCount > 0 ? "participants" : undefined,
+            })
+          }
         />
       </div>
 

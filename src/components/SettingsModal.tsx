@@ -11,9 +11,11 @@ import { useEscapeKey } from "../hooks/useEscapeKey";
 export default function SettingsModal({
   onClose,
   initialTab = "Volume",
+  initialView,
 }: {
   onClose: () => void;
   initialTab?: TabSection;
+  initialView?: "participants";
 }) {
   const [activeTab, setActiveTab] = useState<TabSection>(initialTab);
   useEscapeKey(onClose);
@@ -87,7 +89,9 @@ export default function SettingsModal({
 
                 {activeTab === "Display" && <DisplayTab />}
 
-                {activeTab === "Status" && <StatusTab />}
+                {activeTab === "Status" && (
+                  <StatusTab initialView={initialView} />
+                )}
 
                 {activeTab === "Camera" && <CameraTab></CameraTab>}
               </div>
