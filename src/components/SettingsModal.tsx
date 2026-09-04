@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useModalContext } from "../hooks/ModalContext";
 import type { TabSection } from "../models/Modal";
 import { Icon } from "@iconify/react";
 import { CameraTab } from "./tabbed/CameraTab.tsx";
@@ -18,6 +19,12 @@ export default function SettingsModal({
   initialTab?: TabSection;
 }) {
   const [activeTab, setActiveTab] = useState<TabSection>(initialTab);
+  // Deep-links (waiting toast, Meeting Controls) must land even when the
+  // modal is already open — initialTab alone only applies at mount.
+  const { tabNonce } = useModalContext();
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab, tabNonce]);
   useEscapeKey(onClose);
   const { supportPhone, supportPhoneDisplay } = useControlContext();
   const { participants } = useZoomContext();

@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useZoomContext } from "../../hooks/ZoomContext";
 import type { ZrcParticipant } from "../../hooks/useZoomRoom";
 import { Button } from "../Button";
@@ -98,17 +98,25 @@ export function ParticipantsTab() {
         }
     };
 
+    // Admit-all covers the guests waiting AT COMMAND TIME; a new arrival
+    // mid-flight must neither be treated as busy nor strand the pending flag.
+    const admitAllIdsRef = useRef<Set<string>>(new Set());
+
     const admitAll = async () => {
+        admitAllIdsRef.current = new Set(
+            waitingParticipants.map((p) => String(p.user_id)),
+        );
         setAdmitAllPending(true);
         try {
             await execute(zoomMod, "admit_all_from_waiting_room", []);
         } catch {
+            admitAllIdsRef.current = new Set();
             setAdmitAllPending(false);
         }
     };
 
     // Roster refresh is the source of truth: prune pendings that left the
-    // waiting room, and clear admit-all once nobody is waiting.
+    // waiting room, and clear admit-all once every guest it covered has moved.
     useEffect(() => {
         const waitingKeys = new Set(
             waitingParticipants.map((p) => String(p.user_id)),
@@ -119,8 +127,14 @@ export function ParticipantsTab() {
             );
             return next.size === prev.size ? prev : next;
         });
-        if (waitingParticipants.length === 0) setAdmitAllPending(false);
-    }, [waitingParticipants]);
+        if (
+            admitAllPending &&
+            ![...admitAllIdsRef.current].some((key) => waitingKeys.has(key))
+        ) {
+            admitAllIdsRef.current = new Set();
+            setAdmitAllPending(false);
+        }
+    }, [waitingParticipants, admitAllPending]);
 
     return (
         <>
@@ -164,9 +178,11 @@ export function ParticipantsTab() {
                     the rows needing action), then everyone in the meeting */}
                 {waitingParticipants.map((participant, index) => {
                     const key = String(participant.user_id);
-                    const pendingAction = admitAllPending
-                        ? "admit"
-                        : pendingActions.get(key);
+                    const pendingAction =
+                        pendingActions.get(key) ??
+                        (admitAllPending && admitAllIdsRef.current.has(key)
+                            ? "admit"
+                            : undefined);
                     const busy = pendingAction != null;
                     const badId = admitId(participant.user_id) == null;
                     return (

@@ -28,7 +28,7 @@ export function useSystemHealth(systemId: string): {
   rows: HealthRow[];
   operationalSince: number | null;
 } {
-  const { connection, zoomOnline, paired, zrcConnectionState, callStatus } =
+  const { connection, zoomOnline, paired, zrcConnectionState, callStatus, zoomMod } =
     useZoomContext();
 
   const [graphOk, setGraphOk] = useState<boolean | undefined>();
@@ -36,26 +36,42 @@ export function useSystemHealth(systemId: string): {
   const [routesDetail, setRoutesDetail] = useState<
     Record<string, RouteDetailEntry> | undefined
   >();
+  // callStatus maps an UNREPORTED meeting_status to NOT_IN_MEETING (sane for
+  // the rest of the UI, poison for health): only trust it once the binding
+  // has actually delivered at least once.
+  const [meetingReported, setMeetingReported] = useState(false);
 
   useBinder(
     systemId,
     (binder) => {
+      // Rebinding starts a fresh evidence trail — nothing is "reported" yet
+      setMeetingReported(false);
+      // Invalid/unknown values RESET to undefined (checking) — retaining the
+      // previous healthy value would keep a row green on stale facts.
       binder.listen<boolean>("System", "signal_graph_ok", (val) => {
-        if (typeof val === "boolean") setGraphOk(val);
+        setGraphOk(typeof val === "boolean" ? val : undefined);
       });
       binder.listen<unknown[]>("System", "inputs", (val) => {
-        if (Array.isArray(val)) setInputs(val);
+        setInputs(Array.isArray(val) ? val : undefined);
       });
       // Absent Switcher module simply never delivers — row stays "checking"
       binder.listen<Record<string, RouteDetailEntry>>(
         "Switcher",
         "routes_detail",
         (val) => {
-          if (val && typeof val === "object") setRoutesDetail(val);
+          setRoutesDetail(
+            val && typeof val === "object" ? val : undefined,
+          );
         },
       );
+      // ts-client emits a synthetic `undefined` on subscribe before any real
+      // value arrives — only a delivered report (string or explicit null)
+      // counts as evidence.
+      binder.listen(zoomMod, "meeting_status", (val) => {
+        if (val !== undefined) setMeetingReported(true);
+      });
     },
-    [],
+    [zoomMod],
   );
 
   const rows: HealthRow[] = [
@@ -119,13 +135,12 @@ export function useSystemHealth(systemId: string): {
     },
     {
       label: "Meeting state",
-      state:
-        callStatus?.status == null
-          ? "checking"
-          : callStatus.status === "UNKNOWN"
-            ? "degraded"
-            : "ok",
-      note: callStatus?.status,
+      state: !meetingReported
+        ? "checking"
+        : callStatus?.status == null || callStatus.status === "UNKNOWN"
+          ? "degraded"
+          : "ok",
+      note: meetingReported ? callStatus?.status : undefined,
     },
   ];
 
