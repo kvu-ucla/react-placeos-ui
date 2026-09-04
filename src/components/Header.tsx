@@ -18,8 +18,7 @@ import { Button } from "./Button";
 export function Header() {
   const { active, system } = useControlContext();
   const { connection } = useZoomContext();
-  const { modalType, initialTab, initialView, showModal, closeModal } =
-    useModalContext();
+  const { modalType, initialTab, showModal, closeModal } = useModalContext();
   const { setIsOpen } = useTour();
 
   // The panel's OEM webview refuses author box-shadow on the header (on-glass
@@ -131,11 +130,7 @@ export function Header() {
       </div>
       {modalType == "support" && <SupportModal onClose={() => closeModal()} />}
       {modalType == "settings" && (
-        <SettingsModal
-          initialTab={initialTab}
-          initialView={initialView}
-          onClose={() => closeModal()}
-        />
+        <SettingsModal initialTab={initialTab} onClose={() => closeModal()} />
       )}
       {modalType == "shutdown" && (
         <ShutdownModal onClose={() => closeModal()} />

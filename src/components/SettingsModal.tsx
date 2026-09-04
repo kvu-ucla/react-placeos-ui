@@ -5,24 +5,27 @@ import { CameraTab } from "./tabbed/CameraTab.tsx";
 import { MicTab } from "./tabbed/MicTab.tsx";
 import { DisplayTab } from "./tabbed/DisplayTab.tsx";
 import { StatusTab } from "./tabbed/StatusTab.tsx";
+import { ParticipantsTab } from "./tabbed/ParticipantsTab.tsx";
+import { useZoomContext } from "../hooks/ZoomContext.tsx";
 import { useControlContext } from "../hooks/ControlStateContext.tsx";
 import { useEscapeKey } from "../hooks/useEscapeKey";
 
 export default function SettingsModal({
   onClose,
   initialTab = "Volume",
-  initialView,
 }: {
   onClose: () => void;
   initialTab?: TabSection;
-  initialView?: "participants";
 }) {
   const [activeTab, setActiveTab] = useState<TabSection>(initialTab);
   useEscapeKey(onClose);
   const { supportPhone, supportPhoneDisplay } = useControlContext();
+  const { participants } = useZoomContext();
+  const waitingCount =
+    participants?.filter((p) => p.is_in_waiting_room).length ?? 0;
   const audioTabs: TabSection[] = ["Volume"];
   const videoTabs: TabSection[] = ["Display"];
-  const meetingTabs: TabSection[] = ["Status", "Camera"];
+  const meetingTabs: TabSection[] = ["Status", "Participants", "Camera"];
 
   return (
     <div className="modal modal-open modal-fade bg-black/40">
@@ -31,7 +34,7 @@ export default function SettingsModal({
         role="dialog"
         aria-modal="true"
         aria-label="Settings"
-        className="modal-box modal-pop bg-white p-8 max-w-full max-h-[90vh] overflow-y-auto rounded-lg"
+        className="modal-box modal-pop bg-white p-8 w-[64rem] max-w-[95vw] h-[44rem] max-h-[90vh] overflow-y-auto rounded-lg"
       >
         <div className="">
           {/* Header */}
@@ -78,6 +81,7 @@ export default function SettingsModal({
                 tabs={meetingTabs}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
+                badges={{ Participants: waitingCount }}
               />
             </div>
 
@@ -89,9 +93,9 @@ export default function SettingsModal({
 
                 {activeTab === "Display" && <DisplayTab />}
 
-                {activeTab === "Status" && (
-                  <StatusTab initialView={initialView} />
-                )}
+                {activeTab === "Status" && <StatusTab />}
+
+                {activeTab === "Participants" && <ParticipantsTab />}
 
                 {activeTab === "Camera" && <CameraTab></CameraTab>}
               </div>
@@ -138,29 +142,40 @@ function Section({
   tabs,
   activeTab,
   setActiveTab,
+  badges,
 }: {
   label: string;
   tabs: TabSection[];
   activeTab: TabSection;
   setActiveTab: (tab: TabSection) => void;
+  /** Attention counts per tab (e.g. waiting guests); hidden when 0/absent */
+  badges?: Partial<Record<TabSection, number>>;
 }) {
   return (
     <div>
       <div className="text-xl text-gray-500 font-semibold mb-1">{label}</div>
       <div className="space-y-1">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            className={`block w-full text-left px-4 py-4 rounded-lg font-medium transition-colors duration-200 ${
-              activeTab === tab
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-800 hover:bg-gray-200 active:bg-gray-300"
-            }`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab}
-          </button>
-        ))}
+        {tabs.map((tab) => {
+          const badge = badges?.[tab] ?? 0;
+          return (
+            <button
+              key={tab}
+              className={`flex w-full items-center justify-between text-left px-4 py-4 rounded-lg font-medium transition-colors duration-200 ${
+                activeTab === tab
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-100 text-gray-800 hover:bg-gray-200 active:bg-gray-300"
+              }`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+              {badge > 0 && (
+                <span className="ml-2 min-w-7 h-7 px-2 rounded-full bg-amber-400 text-black text-base font-bold flex items-center justify-center">
+                  {badge}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
