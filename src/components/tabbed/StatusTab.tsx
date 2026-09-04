@@ -4,11 +4,10 @@ import { useZoomContext } from "../../hooks/ZoomContext";
 import type { ZrcParticipant } from "../../hooks/useZoomRoom";
 import { Button } from "../Button";
 
-// Deny calls the driver's deny_from_waiting_room (drivers branch
-// feat/waiting-room-deny @ 90faf5ed, wrapper expel verification in flight).
-// Hidden until that stack is deployed to nonprod; flipping this is the
-// whole enablement.
-const DENY_ENABLED = false;
+// Deny calls the driver's deny_from_waiting_room (on ucla-dev @ 52c6606114;
+// wrapper pod feat-waiting-room-deny-6f3d37d has the expel + admit routes
+// verified live). Requires the backstage ZoomZRC driver reload to be current.
+const DENY_ENABLED = true;
 
 const displayName = (participant: ZrcParticipant) =>
     participant.user_name ?? "Unknown";
