@@ -142,10 +142,13 @@ export function ClassInfoCard() {
         </>
       ) : (
         <>
-          <div className="p-6 text-2xl flex items-center justify-center gap-2 h-[300px]">
-            <span>
+          <div className="flex flex-col items-center justify-center gap-4 h-[300px] p-6">
+            <span className="text-2xl">
               No classes are currently scheduled. You can still start a session.
             </span>
+            {sharingKey && (
+              <div className="font-semibold">Sharing Key: {sharingKey}</div>
+            )}
           </div>
         </>
       )}
