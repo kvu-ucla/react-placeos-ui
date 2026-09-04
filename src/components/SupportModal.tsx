@@ -6,9 +6,31 @@ import { useControlContext } from "../hooks/ControlStateContext.tsx";
 import { useEscapeKey } from "../hooks/useEscapeKey";
 import type { SupportCard } from "../hooks/useControlState";
 
+type SupportTab = "Contact" | "Diagnostics";
+
+// Values arrive as unknown driver payloads; never let one crash the modal
+const showValue = (v: unknown): string => {
+  if (v == null) return "—";
+  if (typeof v === "string") return v;
+  try {
+    const s = JSON.stringify(v);
+    return s.length > 160 ? s.slice(0, 159) + "…" : s;
+  } catch {
+    return String(v);
+  }
+};
+
 export default function SupportModal({ onClose }: { onClose: () => void }) {
-  const [activeTab, setActiveTab] = useState<"Contact">("Contact");
-  const { connection } = useZoomContext();
+  const [activeTab, setActiveTab] = useState<SupportTab>("Contact");
+  const {
+    connection,
+    zoomOnline,
+    callStatus,
+    zrcConnectionState,
+    paired,
+    health,
+    meetingError,
+  } = useZoomContext();
   const { system, supportPhone, supportPhoneDisplay, supportCards } =
     useControlContext();
 
@@ -79,10 +101,10 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
           {/* Sidebar tabs */}
           <div className="w-1/4">
             <div className="flex flex-col space-y-2">
-              {["Contact"].map((tab) => (
+              {(["Contact", "Diagnostics"] as const).map((tab) => (
                 <button
                   key={tab}
-                  onClick={() => setActiveTab(tab as "Contact")}
+                  onClick={() => setActiveTab(tab)}
                   className={`text-left px-6 py-4 rounded-lg font-medium transition-colors duration-200 ${
                     activeTab === tab
                       ? "bg-blue-600 text-white"
@@ -152,6 +174,37 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
                   </div>
                 </div>
               </>
+            )}
+
+            {activeTab === "Diagnostics" && (
+              <div className="not-prose text-left text-avit-grey-80">
+                <h3 className="text-3xl font-semibold mb-4">Diagnostics</h3>
+                {/* Read-out support can ask a caller for over the phone —
+                    room-systems truth, not webview probes (those lived here
+                    during the defect hunt; revive from cc20602 if needed) */}
+                <div className="rounded-lg border border-avit-grey bg-white p-4 text-lg break-all">
+                  {(
+                    [
+                      ["Build", showValue(__BUILD_INFO__)],
+                      ["Controls link", connection],
+                      ["Zoom Room", zoomOnline ? "online" : "offline"],
+                      ["ZRC state", showValue(zrcConnectionState)],
+                      ["Paired", paired == null ? "—" : paired ? "yes" : "no"],
+                      ["Meeting", showValue(callStatus?.status)],
+                      ["Driver health", showValue(health)],
+                      ["Last meeting error", showValue(meetingError)],
+                      ["Browser", navigator.userAgent],
+                    ] as const
+                  ).map(([label, value]) => (
+                    <div key={label} className="flex gap-4 py-1.5 border-b border-gray-100 last:border-b-0">
+                      <span className="w-48 shrink-0 font-semibold text-gray-700">
+                        {label}
+                      </span>
+                      <span className="text-gray-600">{value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
         </div>

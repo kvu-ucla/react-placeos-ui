@@ -132,6 +132,7 @@ export function useZoomRoom(systemId: string, mod = "ZoomZRC") {
   const [paired, setPaired] = useState<boolean>();
   const [health, setHealth] = useState<unknown>();
   const [sharingKey, setSharingKey] = useState<string | null>(null);
+  const [hdmiSharing, setHdmiSharing] = useState<boolean>(false);
   const [wsConnection, setWsConnection] = useState<boolean>();
   const [connection, setConnection] = useState<ConnectionState>("connecting");
   // Whether the websocket has EVER connected — a false emitted before the
@@ -174,6 +175,9 @@ export function useZoomRoom(systemId: string, mod = "ZoomZRC") {
       binder.listen(mod, "health", setHealth);
       binder.listen<string | null>(mod, "sharing_key", (val) =>
         setSharingKey(typeof val === "string" && val.trim() ? val : null),
+      );
+      binder.listen<boolean>(mod, "hdmi_sharing", (val) =>
+        setHdmiSharing(!!val),
       );
       binder.listen(mod, "meeting_error", setMeetingError);
 
@@ -312,6 +316,7 @@ export function useZoomRoom(systemId: string, mod = "ZoomZRC") {
       paired,
       health,
       sharingKey,
+      hdmiSharing,
       callStatus,
       participants,
       bookings,
@@ -337,6 +342,7 @@ export function useZoomRoom(systemId: string, mod = "ZoomZRC") {
       paired,
       health,
       sharingKey,
+      hdmiSharing,
       callStatus,
       participants,
       bookings,

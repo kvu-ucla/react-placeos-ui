@@ -32,6 +32,12 @@ export interface ZoomContextValue {
   participants?: ZrcParticipant[];
   /** Wireless sharing key while available, null when not sharing-capable */
   sharingKey: string | null;
+  /** Local HDMI/BlackMagic content share currently active */
+  hdmiSharing: boolean;
+  /** ZRC transport diagnostics — surfaced on the Support Diagnostics tab */
+  zrcConnectionState?: string | null;
+  paired?: boolean;
+  health?: unknown;
   bookings?: Booking[];
   currentMeeting?: Booking;
   nextMeeting?: Booking;
@@ -100,6 +106,10 @@ export function ZoomProvider({
       callStatus: zoom.callStatus,
       participants: zoom.participants,
       sharingKey: zoom.sharingKey,
+      hdmiSharing: zoom.hdmiSharing,
+      zrcConnectionState: zoom.zrcConnectionState,
+      paired: zoom.paired,
+      health: zoom.health,
       bookings: zoom.bookings,
       currentMeeting: zoom.currentMeeting,
       nextMeeting: zoom.nextMeeting,
