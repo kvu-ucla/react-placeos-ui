@@ -9,6 +9,7 @@ export function ControlCard({
   buttonState,
   detailsButton,
   isLoading = false,
+  badge,
 }: {
   id: string;
   label: string;
@@ -18,6 +19,8 @@ export function ControlCard({
   buttonAction?: () => void;
   buttonState?: boolean;
   isLoading?: boolean; // Add to type definition
+  /** Attention count pinned to the card's top-right; hidden when 0/undefined */
+  badge?: number;
 }) {
   const hasButtonState = buttonState !== undefined && buttonState !== null;
 
@@ -35,6 +38,11 @@ export function ControlCard({
       className={`group w-full h-full btn-primary p-0 border-none aria-disabled:!bg-avit-blue aria-disabled:active:!bg-avit-blue rounded-[10px] transition-colors duration-200 text-white ${buttonState ? "bg-white border-white active:bg-gray-100" : "bg-avit-blue active:bg-[#011c50]"}`}
     >
       <div className="px-4 py-4 w-full h-full flex flex-col items-center justify-center relative">
+        {badge != null && badge > 0 && (
+          <span className="absolute top-3 right-3 min-w-8 h-8 px-2 rounded-full bg-amber-400 text-black text-lg font-bold flex items-center justify-center">
+            {badge}
+          </span>
+        )}
         {!disabled && detailsButton && (
           <button
             onClick={(e) => {

@@ -1,6 +1,6 @@
 // src/components/SessionControls.tsx
 import { Icon } from "@iconify/react";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { notify } from "../notify";
 import { useModalContext } from "../hooks/ModalContext";
 import { useZoomContext } from "../hooks/ZoomContext";
@@ -16,6 +16,7 @@ export default function SessionControls() {
     toggleMicMute,
     toggleCameraMute,
     sharingKey,
+    participants,
   } = useZoomContext();
   const { showModal } = useModalContext();
 
@@ -81,6 +82,23 @@ export default function SessionControls() {
   const isVideoMuted = callStatus?.isCamMuted;
   const isMicAudioMuted = callStatus?.isMicMuted;
   const isJoined = callStatus?.status === "IN_MEETING";
+
+  // Waiting-room attention: badge on Meeting Controls + a tappable toast on
+  // the 0→n transition that jumps to the Status tab where Admit lives.
+  const waitingCount = useMemo(
+    () => participants?.filter((p) => p.is_in_waiting_room).length ?? 0,
+    [participants],
+  );
+  const prevWaitingCount = useRef(0);
+  useEffect(() => {
+    if (waitingCount > 0 && prevWaitingCount.current === 0 && isJoined) {
+      notify.info("Someone is waiting to join", "waiting-room", () =>
+        showModal("settings", { tab: "Status" }),
+      );
+    }
+    if (waitingCount === 0) notify.dismiss("waiting-room");
+    prevWaitingCount.current = waitingCount;
+  }, [waitingCount, isJoined, showModal]);
 
   // Watch for state changes and clear loading when detected
   useEffect(() => {
@@ -195,6 +213,7 @@ export default function SessionControls() {
         <ControlCard
           id="meeting-ctrls"
           label="Meeting Controls"
+          badge={waitingCount}
           buttonAction={() => showModal("settings", { tab: "Status" })}
         />
       </div>
