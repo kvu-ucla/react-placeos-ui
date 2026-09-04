@@ -93,6 +93,13 @@ header.shadow-lg {
     --color-error: oklch(55% 0.23 29);
     --color-error-content: oklch(98% 0.01 29);
   }
+  /* One fixed frame for the full-size modals (Settings, Support): statically
+     sized so tab/content switches never reflow the chrome; long content
+     scrolls inside its own container. Shared hook so the two can't drift. */
+  .modal-frame {
+    @apply w-[72rem] max-w-[95vw] h-[45rem] max-h-[90vh];
+  }
+
   /* Dimmed-brand disabled state: the app's surfaces are light (#e4e6eb bg,
      white cards) — a white/20 fill computes to the background color there and
      the control vanishes. Soft avit-blue keeps the button visibly present but

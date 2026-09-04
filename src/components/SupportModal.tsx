@@ -70,7 +70,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
         role="dialog"
         aria-modal="true"
         aria-label="Support"
-        className="modal-box modal-pop bg-white p-8 max-w-full max-h-[90vh] overflow-y-auto rounded-lg"
+        className="modal-box modal-pop modal-frame bg-white p-8 overflow-y-auto rounded-lg"
       >
         {/* Header */}
         <div className="flex justify-between items-center border-b border-avit-grey pb-8">

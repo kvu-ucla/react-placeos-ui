@@ -34,7 +34,7 @@ export default function SettingsModal({
         role="dialog"
         aria-modal="true"
         aria-label="Settings"
-        className="modal-box modal-pop bg-white p-8 w-[64rem] max-w-[95vw] h-[44rem] max-h-[90vh] overflow-y-auto rounded-lg"
+        className="modal-box modal-pop modal-frame bg-white p-8 overflow-y-auto rounded-lg"
       >
         <div className="">
           {/* Header */}
