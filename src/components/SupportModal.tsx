@@ -5,6 +5,7 @@ import { useZoomContext } from "../hooks/ZoomContext.tsx";
 import { useControlContext } from "../hooks/ControlStateContext.tsx";
 import { useEscapeKey } from "../hooks/useEscapeKey";
 import type { SupportCard } from "../hooks/useControlState";
+import { useSystemHealth, type HealthState } from "../hooks/useSystemHealth";
 
 type SupportTab = "Contact" | "Diagnostics";
 
@@ -20,9 +21,16 @@ const showValue = (v: unknown): string => {
   }
 };
 
+const DOT_CLASS: Record<HealthState, string> = {
+  ok: "bg-green-500",
+  degraded: "bg-amber-500",
+  checking: "bg-gray-400 animate-pulse",
+};
+
 export default function SupportModal({ onClose }: { onClose: () => void }) {
   const [activeTab, setActiveTab] = useState<SupportTab>("Contact");
   const {
+    system_id,
     connection,
     zoomOnline,
     callStatus,
@@ -31,6 +39,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
     health,
     meetingError,
   } = useZoomContext();
+  const { rows: healthRows, operationalSince } = useSystemHealth(system_id);
   const { system, supportPhone, supportPhoneDisplay, supportCards } =
     useControlContext();
 
@@ -179,6 +188,35 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
             {activeTab === "Diagnostics" && (
               <div className="not-prose text-left text-avit-grey-80">
                 <h3 className="text-3xl font-semibold mb-4">Diagnostics</h3>
+
+                {/* Health checklist — the public statement. Unknown fails
+                    toward "checking", never default-green. */}
+                <div className="rounded-lg border border-avit-grey bg-white p-4 mb-4">
+                  <div className="text-xl font-semibold mb-3">
+                    {operationalSince != null
+                      ? `All systems operational — since ${new Date(operationalSince).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}`
+                      : "Checking system health…"}
+                  </div>
+                  {healthRows.map((row) => (
+                    <div
+                      key={row.label}
+                      className="flex items-center gap-3 py-1.5 text-lg"
+                    >
+                      <span
+                        className={`h-4 w-4 rounded-full shrink-0 ${DOT_CLASS[row.state]}`}
+                      />
+                      <span className="font-medium text-gray-800 w-56">
+                        {row.label}
+                        {row.environment && (
+                          <span className="text-sm text-gray-400"> (environment)</span>
+                        )}
+                      </span>
+                      <span className="text-gray-500 text-base">
+                        {row.state === "checking" ? "checking…" : row.note}
+                      </span>
+                    </div>
+                  ))}
+                </div>
                 {/* Read-out support can ask a caller for over the phone —
                     room-systems truth, not webview probes (those lived here
                     during the defect hunt; revive from cc20602 if needed) */}
