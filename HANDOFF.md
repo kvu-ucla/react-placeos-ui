@@ -1,51 +1,39 @@
-# Session handoff / resume pointer — 2026-09-02 (rev 3)
+# Session handoff / resume pointer — 2026-09-04 (rev 4)
 
-Supersedes the 2026-09-01 rev-2 handoff (see git history of this file). Start a fresh session by reading THIS file first. Plan-of-record: https://claude.ai/code/artifact/abc596ff-85e1-43e7-be3a-83b4c95b206e (updated same pass). Hardware/webview institutional knowledge lives in memory (`crestron-webview-quirks`) — the short version is in "Panel webview facts" below because it is load-bearing for ALL UI work on these panels.
+Supersedes rev 3 (git history). Read THIS first. Memory: `zoom-zrc-migration-status`, `health-pane-philosophy`, `crestron-webview-quirks`, `review-before-landing` (+ driver-lane memories in the drivers repo scope).
 
-## Landing (all verified unless marked pending)
+## PROCESS (owner-mandated, non-negotiable)
 
-`feat/ui-polish` @ `c3391d8` (pushed; **41 commits over `development`**, contains `feat/zoom-zrc-migration`). Everything below chunk-D was covered in rev 2; new since then, all implemented via the Herdr review lane (Claude implementer + independent reviewer — Codex until its spend cap, then Kiro `gpt-5.6-terra`) with verdicts archived in `review-verdicts/` (gitignored):
+- **Independent review before every push**: Kiro lane (`kiro-cli chat --trust-all-tools --model gpt-5.6-luna`, 0.10x credits) on the diff, verdict line APPROVE/CHANGES REQUESTED. Momentum never waives it (rev-4 session relearned this the hard way).
+- **Herdr**: spawned agents get their OWN TAB, never a pane split. Kiro stalls if prompted right after start — esc, ~2s, then prompt. Claude-agent composers may hold the owner's queued text — never blind-submit; esc + orchestrated prompt.
 
-- **Chunks E/F — loading states** (`67fc7f4`..`cbede85`): modal backdrop-color entrance (no see-through flash); connection tri-state (connecting/online/offline, 10s grace) with OfflineModal gated on real offline only; unified `RoomStatusModal` ("Connecting to room systems…"/"Starting up the room…"/"Shutting down the room…") with blurred scrim, animated enter/exit, hydration-gated dismissal (name+features+bookings, 8s bookings waiver, 15s cap); power transitions gated on display-power readiness + 4s dwell + 60s abandonment (seq-token guarded — three reviewer-caught races fixed). Verified on-glass.
-- **Chunk G — Settings/interaction** (`d2fb1fe`..`f67b81c`): Status/Camera tabs restyled to sibling card idiom; camera controls fit via scale(0.5) box (joystick dead zone converted to DEADZONE_RATIO after a reviewer-caught doubling); session-controls section never scrolls (exclusive radio accordions, scroll machinery deleted). Verified on-glass.
-- **Prompt payload fidelity** (`aa072b7`, `7e6f382`, `15e295a`): reminders render Zoom's real title/message/button labels (live-confirmed payload), shape-based routing with strict discriminators + specialized-key exclusions, redundant disclaimer toast suppressed. Live recording-disclaimer verified on-glass.
-- **Hardware (Crestron) defect hunt** (`d3701e7`..`c3391d8`): on-glass diagnostics in SupportModal (build SHA, computed styles, feature probes, inline-style tests, CSSOM dump) drove three proven root causes — see facts below. All three defects confirmed FIXED on the panel by the user.
+## Landing (all reviewed unless noted)
 
-## Panel webview facts (Crestron TSW, Android 12, Chromium 118 `wv`) — PROVEN on-glass
+- **UI** `feat/ui-polish` @ `d89d440` (pushed; CI → `build/feat_ui-polish` → nonprod `control-av-dev`). Shipped this rev: help-setting support cards (Support modal renders `help` map; Settings banner phone from `help.support`; `src/config.ts` deleted); toast unification (`src/notify.ts` + eslint guard, optional onClick); always-open join cards + live `sharing_key` (also on splash ClassInfoCard — both branches — and Status tab; plain font-semibold everywhere); waiting-room stack (toast+badge deep-links, Participants sidebar tab, unified waiting-first list, Admit/Admit-all/Deny — `DENY_ENABLED=true`); statically sized modals (`.modal-frame`); Support Diagnostics tab (raw rows + 5 computed health rows + operational-since; doctrine in memory); dimmed-brand disabled buttons; recording-disclaimer nested-payload fix (`reminderTextRoot`); retro-review fixes (evidence-gated health, tabNonce deep-links, admit-all snapshot).
+- **Drivers** `ucla-dev` @ `9b55221215`: deny_from_waiting_room (`52c6606114`), `signal_graph_ok` status (`b479ebe0a5`), UCLA booking converter (`drivers/ucla/zoom/booking_converter.cr` — `booking_source` setting default `ZoomZRC_1/meetings`, dual-casing normalization, generation-guarded switching; 4 review rounds).
+- **Wrapper** (`place-labs/zoom-zrc-sdk-wrapper`) `main` @ `5bf2f36`; **pod `zoom-zrc-0` runs `feat-waiting-room-deny-6f3d37d`** (rolled with backup/MAC/pairing verification — kubectl-tar backup, NOT backup.sh which archives an empty volume in k8s). Waiting-room admit routes + deny(expel) + `is_in_waiting_room` serializer fix live. `main-5bf2f36` image (serializer `is_on_hold` cleanup) awaits next natural roll. Verdict: SDK has no dedicated deny — hold ≡ waiting room (documented as intended).
 
-1. **Skins native `<button>` widgets below the author cascade**: computed background stays ButtonFace `rgb(239,239,239)` against plain un-layered `!important` transparent; forced-colors media reports false. FIX: render as `div[role=button]` (Button ghost variant + modal X buttons do this now).
-2. **Drops `box-shadow` at engine level** (computed `none` for a matching plain rule). FIX: runtime-detected gradient underlay on the header (desktop keeps true shadow, pixel-identical).
-3. No relative-color syntax (`oklch(from …)`, expected at 118), no unprefixed `mask-image` (expected, 120+). `@property`/`@layer`/`:has`/`color-mix` all present.
-4. The SupportModal diagnostics block was the debugging channel for this hardware — removed at owner request 2026-09-02 once all defects were confirmed fixed; revive from `cc20602` if panel rendering issues recur.
+## Open items
 
-## Owner decisions / open items (each with what it unblocks)
-
-1. ~~**Sharing key**~~ RESOLVED 2026-09-03: the driver already published `sharing_key` (from `directPresentationSharingKey`, nulled on meeting end) — no paste needed. UI binds it via `useZoomRoom` → `ZoomContext.sharingKey` and shows it in the (now always-open) Join wirelessly card. Verify on-glass while sharing is available.
-2. **Driver fixes still UNCOMMITTED** in `~/Documents/drivers` (`ucla-dev`): participant-refresh coalescing + event-owned mic/camera state (spec-verified) — unblocks single-fetch rosters and honest mute loading on the panel.
-3. **Backend booking_converter repoint** (`ZoomCSAPI_1:BookingsListResult` → `ZoomZRC_1:meetings`) — unblocks bookings end-to-end (README documents it).
-4. **Real AV support phone** — now a backstage setting, not code (`src/config.ts` deleted). Add to the system settings YAML (`title`/`content` are required or the whole `help` parse fails, wiping all help pages):
-   ```yaml
-   help:
-     support:
-       title: "AV Support"
-       content: ""
-       phone: "+1310XXXXXXX"
-       phone_display: "(310) XXX-XXXX"
-   ```
-   UI binds `System.help` → `help.support.phone`/`.phone_display` (spec + plan in `docs/superpowers/`). Extraction unit-verified; live verification pending the real number.
-5. **Merge**: PR `feat/ui-polish` → `development` (contains the migration; `development` also needs the CI workflow commits `ffa11a4`/`29ca490`).
+1. **Backstage** (blocks most verification): repoint `Bookings` module → `drivers/ucla/zoom/booking_converter.cr` (defaults suffice; optional explicit `booking_source: {module: ZoomZRC_1, status: meetings}`); ensure ZoomZRC/meet modules build from `ucla-dev` head.
+2. **Lab system sys-KkoQt5HDso commissioning** (in progress): `signal_graph_ok` currently **false** — stale persisted io lists; remedy = stop System module → `DEL status/mod-Kl27FJpxnA` (redis-master-0, ns placeos) → start. Camera registration YAML drafted in conversation (synthetic inert `Switcher_1: {Camera_1: Camera_1, Camera_2: Camera_2}` edges + `inputs:` metadata, `presentable: false`, NO `vc_camera_input`; keys must stay `Camera_1/2` = module names; verify Presenter/Audience name-to-camera order). `tabs:` override still needed (zone's VC tab references nonexistent `VidConf_1` → power fails). AWS SSO expired — `aws sso login` before kubectl work.
+3. **`help.support` phones YAML** (drafted in conversation, real numbers in) + on-glass check.
+4. **Consolidated on-glass session** (lab-test powered on): guest flow (toast→badge→tab→Admit/Deny/Admit-all + park-and-admit conflation check), sharing key x3, health rows green + operational-since, bookings on splash, join cards fit, disabled contrast, reminder text.
+5. **BACKBURNER**: router parser fix `fix/router-mod-ref-parse` @ `e1e8b0cf47` (Kiro-approved, pushed, UNMERGED — until merged, graph node keys must not end `_<digits>` unless they remain stable aliases). Pair with `load_io` skip-and-warn hardening (stale-restore broke this room 3x) and the unrouted-camera meet enhancement (kills the synthetic edges).
+6. **Deferred**: converter cron-interleave/sorted-assumption/join-url items (readme documents); wrapper meeting-end event logging gap (driver poll backstops); `meeting_will_stop` banner; ring buffer after health rows burn in green; module-death staleness heartbeat; upstream PRs (router regex, place converter); NVX 05:45Z blip — likely scanner; ask netsec, recheck for nightly recurrence.
+7. **Merge**: PR `feat/ui-polish` → `development` after on-glass passes (bundle CI workflow commits `ffa11a4`/`29ca490`).
 
 ## Where things live
 
 | Thing | Location |
 | --- | --- |
-| Current branch (contains everything) | `origin/feat/ui-polish` @ `c3391d8` |
-| CI build for the panel | `origin/build/feat_ui-polish` (nonprod `control-av-dev` serves it) |
-| Review verdicts + impl reports (both pushes, all rounds) | `review-verdicts/` (gitignored) |
-| On-glass diagnostics | removed (revive from `cc20602` if needed) |
-| Loading-state machinery | `src/components/RoomStatusModal.tsx`, `src/hooks/useControlState.ts` (pendingPower), `MainView.tsx` (readiness/pacing) |
-| Prompt UI + payload routing | `src/components/prompts/` |
-| Non-native button pattern | `src/components/Button.tsx` (ghost = div[role=button]) |
-| Shadow fallback | `Header.tsx` runtime detection + gradient strip |
-| Driver fixes (uncommitted) | `~/Documents/drivers` `drivers/zoom/zoom_zrc.cr` + spec |
-| Plan-of-record | https://claude.ai/code/artifact/abc596ff-85e1-43e7-be3a-83b4c95b206e |
+| UI branch | `origin/feat/ui-polish` @ `d89d440` |
+| Driver deploy branch | `origin/ucla-dev` @ `9b55221215` |
+| Wrapper mainline / pod | `main` @ `5bf2f36` / pod on `feat-waiting-room-deny-6f3d37d` |
+| Parked parser fix | `origin/fix/router-mod-ref-parse` @ `e1e8b0cf47` |
+| Health rows | `src/hooks/useSystemHealth.ts` + SupportModal Diagnostics |
+| Waiting room UI | `src/components/tabbed/ParticipantsTab.tsx` (+ SessionControls toast/badge) |
+| Toast helper | `src/notify.ts` (eslint-guarded) |
+| Specs/plans (this rev) | `docs/superpowers/{specs,plans}/2026-09-0{2,3,4}-*` |
+| Booking converter | `drivers/ucla/zoom/booking_converter.cr` (+ readme, spec) |
+| K8s | ns `placeos`: `zoom-zrc-0`, `redis-master-0`, `core-0`; System module `mod-Kl27FJpxnA`, Switcher `mod-Kl1hiPUN6V` |
