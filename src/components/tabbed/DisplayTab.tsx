@@ -22,6 +22,10 @@ export function DisplayTab() {
     value: boolean;
     seq: number;
   } | null>(null);
+  // daisyUI collapse driven by React state instead of hidden radio inputs:
+  // radios can't be unchecked by clicking, which made an open accordion
+  // impossible to close. Exclusive: at most one display open.
+  const [openDisplay, setOpenDisplay] = useState<string | null>(null);
   const displays = pending?.value ?? allPowered;
 
   const pendingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -109,12 +113,25 @@ export function DisplayTab() {
           return (
             <div
               key={dispId}
-              className="collapse collapse-arrow border border-[#999]"
+              className={`collapse collapse-arrow border border-[#999] ${
+                openDisplay === dispId ? "collapse-open" : "collapse-close"
+              }`}
             >
-              <input type="radio" name="display-accordion" className="collapse-toggle" />
-
               {/* Accordion Header */}
-              <div className="collapse-title text-xl font-medium flex items-center gap-2">
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() =>
+                  setOpenDisplay(openDisplay === dispId ? null : dispId)
+                }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setOpenDisplay(openDisplay === dispId ? null : dispId);
+                  }
+                }}
+                className="collapse-title text-xl font-medium flex items-center gap-2 cursor-pointer select-none"
+              >
                 <Icon
                   icon="material-symbols:tv-displays-outline-rounded"
                   width={24}
