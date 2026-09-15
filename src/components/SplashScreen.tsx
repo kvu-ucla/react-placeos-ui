@@ -5,13 +5,17 @@ import { Button } from "./Button";
 
 export default function SplashScreen() {
   const { system, togglePower } = useControlContext();
-  const { startInstantMeeting, joinMeeting, currentMeeting } = useZoomContext();
-  const noMeeting = currentMeeting == null;
+  const { startInstantMeeting, joinMeeting, currentMeeting, nextMeeting } =
+    useZoomContext();
+  // Match ClassInfoCard: an upcoming class is startable before its start time
+  // (join-by-number works pre-start for the host room)
+  const meetingToStart = currentMeeting ?? nextMeeting;
+  const noMeeting = meetingToStart == null;
 
   function startScheduled() {
     togglePower();
-    if (currentMeeting) {
-      joinMeeting(currentMeeting.id);
+    if (meetingToStart) {
+      joinMeeting(meetingToStart.id);
     }
   }
   function startAdHoc() {

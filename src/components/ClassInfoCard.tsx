@@ -1,112 +1,57 @@
 import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import { useZoomContext } from "../hooks/ZoomContext";
+import type { Booking } from "../hooks/useZoomRoom";
 
-interface meetingDetails {
-  classStart: string;
-  classEnd: string;
-  classTitle: string;
-  instructor: string;
+// All times derive from the Booking's raw unix seconds. The previous version
+// formatted event_start into a locale string and re-parsed it, which rendered
+// "Starts in NaN minutes" while the card hydrated and misread times near
+// midnight.
+function localeTime(unixSeconds: number): string {
+  return new Date(unixSeconds * 1000).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
+
+function statusLine(meeting: Booking, inProgress: boolean, nowMs: number): string {
+  if (inProgress) return `Started at ${localeTime(meeting.event_start)}`;
+  const diffMins = Math.round((meeting.event_start * 1000 - nowMs) / 60000);
+  if (diffMins <= 0) return "Starting now";
+  if (diffMins === 1) return "Starts in 1 minute";
+  if (diffMins < 60) return `Starts in ${diffMins} minutes`;
+  const start = new Date(meeting.event_start * 1000);
+  const sameDay = start.toDateString() === new Date(nowMs).toDateString();
+  return sameDay
+    ? `Starts at ${localeTime(meeting.event_start)}`
+    : `Starts ${start.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" })}`;
 }
 
 export function ClassInfoCard() {
-  const { nextMeeting, currentMeeting, sharingKey } = useZoomContext();
-  const [meetingDetails, setMeetingDetails] = useState<meetingDetails>({
-    classStart: "",
-    classEnd: "",
-    classTitle: "",
-    instructor: "",
-  });
+  const { nextMeeting, currentMeeting, bookings, sharingKey } = useZoomContext();
 
-  const [upcoming, setUpcoming] = useState<string>();
+  // The card shows the meeting in progress, else the next upcoming one —
+  // an upcoming class is visible (and startable) before its start time.
+  const displayed = currentMeeting ?? nextMeeting;
+  const inProgress = currentMeeting != null;
 
-  const [countdown, setCountdown] = useState(() =>
-    getCountdownToTime(meetingDetails.classStart),
-  );
-
-  const noMeeting = currentMeeting == null;
-
+  const [nowMs, setNowMs] = useState(() => Date.now());
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCountdown(getCountdownToTime(meetingDetails.classStart));
-    }, 15000); // countdown text has minute resolution; 15s keeps it fresh without per-second renders
+    // minute-resolution text; 15s keeps it fresh without per-second renders
+    const interval = setInterval(() => setNowMs(Date.now()), 15000);
+    return () => clearInterval(interval);
+  }, []);
 
-    return () => clearInterval(interval); // cleanup
-  }, [meetingDetails.classStart]);
-
-  useEffect(() => {
-    const start = currentMeeting
-      ? getLocaleTime(currentMeeting.event_start)
-      : "";
-    const end = currentMeeting ? getLocaleTime(currentMeeting.event_end) : "";
-    const title = currentMeeting ? currentMeeting.title : "";
-    const instructor = currentMeeting?.creator ?? "";
-
-    const data = {
-      classStart: start,
-      classEnd: end,
-      classTitle: title,
-      instructor: instructor,
-    };
-
-    setMeetingDetails(data);
-  }, [currentMeeting]);
-
-  useEffect(() => {
-    const start = nextMeeting
-      ? "Upcoming " + getLocaleTime(nextMeeting.event_start)
-      : "No upcoming classes";
-
-    setUpcoming(start);
-  }, [nextMeeting]);
-
-  function getLocaleTime(unixTimeStamp: number) {
-    const date = new Date(unixTimeStamp * 1000);
-
-    const timeString = date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-
-    return timeString;
-  }
-
-  function getCountdownToTime(timeString: string): string {
-    const now = new Date();
-
-    // Handle AM/PM if present
-    const isPM = timeString.toLowerCase().includes("pm");
-    const cleanTime = timeString.replace(/am|pm/i, "").trim();
-
-    const [hourStr, minuteStr] = cleanTime.split(":");
-    let inputHour = parseInt(hourStr, 10);
-    const inputMinute = parseInt(minuteStr, 10);
-
-    // Convert to 24-hour format
-    if (isPM && inputHour < 12) inputHour += 12;
-    if (!isPM && inputHour === 12) inputHour = 0; // midnight edge case
-
-    // Create a Date for the scheduled time today
-    const scheduled = new Date(now);
-    scheduled.setHours(inputHour, inputMinute, 0, 0);
-
-    // If time already passed today, assume it's tomorrow
-    if (scheduled < now) {
-      return "Class already started";
-    }
-
-    const diffMs = scheduled.getTime() - now.getTime();
-    const diffMins = Math.round(diffMs / 60000);
-
-    if (diffMins <= 0) return "Starting now";
-    if (diffMins === 1) return "Starts in 1 minute";
-    return `Starts in ${diffMins} minutes`;
-  }
+  // The meeting after the displayed one (never repeat the displayed meeting
+  // in the "Upcoming" slot). bookings is sorted by event_start.
+  const upcomingAfter = displayed
+    ? bookings?.find((b) => b.event_start > displayed.event_start)
+    : undefined;
 
   return (
     <div className="flex flex-col justify-between items-center card bg-white p-4 rounded shadow w-full max-w-[620px] text-center h-[300px]">
-      {!noMeeting ? (
+      {displayed ? (
         <>
           <div className="text-2xl flex items-center justify-center gap-2 tabular-nums">
             <Icon
@@ -114,24 +59,28 @@ export function ClassInfoCard() {
               width={48}
               height={48}
             ></Icon>
-            <span>Next Class:</span>
-            <strong>{meetingDetails.classStart}</strong>
+            <span>{inProgress ? "Current Class:" : "Next Class:"}</span>
+            <strong>{localeTime(displayed.event_start)}</strong>
             <span className="text-xs mx-2">●</span>
-            <div className="text-blue-600">{countdown}</div>
+            <div className="text-blue-600">
+              {statusLine(displayed, inProgress, nowMs)}
+            </div>
           </div>
           <div>
-            <h1 className="mt-4 text-3xl font-bold">
-              {meetingDetails.classTitle}
-            </h1>
-            {meetingDetails.instructor ? (
-              <p className="text-xl">{meetingDetails.instructor}</p>
+            <h1 className="mt-4 text-3xl font-bold">{displayed.title}</h1>
+            {displayed.creator ? (
+              <p className="text-xl">{displayed.creator}</p>
             ) : null}
           </div>
           <div className="mt-8 mb-8 text-xl flex items-center justify-center gap-2 tabular-nums">
             <span>Ends at</span>
-            <span>{meetingDetails.classEnd}</span>
-            <span className="text-xs mx-2">●</span>
-            <div>{upcoming}</div>
+            <span>{localeTime(displayed.event_end)}</span>
+            {upcomingAfter && (
+              <>
+                <span className="text-xs mx-2">●</span>
+                <div>Upcoming {localeTime(upcomingAfter.event_start)}</div>
+              </>
+            )}
           </div>
 
           {sharingKey && (
@@ -141,16 +90,14 @@ export function ClassInfoCard() {
           )}
         </>
       ) : (
-        <>
-          <div className="flex flex-col items-center justify-center gap-4 h-[300px] p-6">
-            <span className="text-2xl">
-              No classes are currently scheduled. You can still start a session.
-            </span>
-            {sharingKey && (
-              <div className="font-semibold">Sharing Key: {sharingKey}</div>
-            )}
-          </div>
-        </>
+        <div className="flex flex-col items-center justify-center gap-4 h-[300px] p-6">
+          <span className="text-2xl">
+            No classes are currently scheduled. You can still start a session.
+          </span>
+          {sharingKey && (
+            <div className="font-semibold">Sharing Key: {sharingKey}</div>
+          )}
+        </div>
       )}
     </div>
   );
