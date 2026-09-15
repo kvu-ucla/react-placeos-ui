@@ -1,6 +1,78 @@
 // TourHost.tsx
-import { TourProvider, type StepType } from "@reactour/tour";
+import { TourProvider, useTour, type StepType } from "@reactour/tour";
+import { Icon } from "@iconify/react";
+import { Button } from "./Button";
 import App from "../App";
+
+// Reactour's stock controls are mouse-sized native <button>s (tiny arrows,
+// 8px tappable dots, ~14px close X) — bad touch targets, and native buttons
+// get skinned by the panel webview. These replace them wholesale; reactour
+// keeps doing mask/positioning/step logic.
+function TourNavigation() {
+  const { currentStep, setCurrentStep, steps, setIsOpen } = useTour();
+  const isFirst = currentStep === 0;
+  const isLast = currentStep === steps.length - 1;
+  return (
+    <div className="flex flex-col gap-5 mt-6">
+      {/* Progress dots: indicators only, deliberately not tappable */}
+      <div className="flex justify-center gap-2" aria-hidden="true">
+        {steps.map((_, i) => (
+          <span
+            key={i}
+            className={`h-3 w-3 rounded-full ${
+              i === currentStep ? "bg-avit-blue" : "bg-gray-300"
+            }`}
+          />
+        ))}
+      </div>
+      <div className="flex items-center justify-between gap-4">
+        <Button
+          variant="outline"
+          onClick={() => setCurrentStep((s) => Math.max(0, s - 1))}
+          className={`min-h-14 min-w-32 px-8 text-xl ${isFirst ? "invisible" : ""}`}
+        >
+          Back
+        </Button>
+        <Button
+          variant="primary"
+          onClick={() =>
+            isLast
+              ? setIsOpen(false)
+              : setCurrentStep((s) => Math.min(steps.length - 1, s + 1))
+          }
+          className="min-h-14 min-w-32 px-8 text-xl"
+        >
+          {isLast ? "Done" : "Next"}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function TourClose() {
+  const { setIsOpen } = useTour();
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      aria-label="Close tour"
+      onClick={() => setIsOpen(false)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          setIsOpen(false);
+        }
+      }}
+      className="absolute top-3 right-3 flex h-12 w-12 cursor-pointer select-none items-center justify-center text-gray-500"
+    >
+      <Icon
+        icon="material-symbols:close-small-outline-rounded"
+        width={40}
+        height={40}
+      />
+    </div>
+  );
+}
 
 export default function TourHost() {
   const steps: StepType[] = [
@@ -114,6 +186,7 @@ export default function TourHost() {
     <TourProvider
       steps={steps}
       scrollSmooth={false}
+      components={{ Navigation: TourNavigation, Close: TourClose }}
       styles={{
         maskWrapper: (base) => ({
           ...base,
