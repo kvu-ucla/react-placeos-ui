@@ -154,9 +154,9 @@ export function ParticipantsTab() {
                 )}
             </div>
 
-            {/* The list scrolls inside this container — the modal frame is
-                statically sized and must never reflow or scroll itself */}
-            <div className="border border-[#999] rounded-lg p-4 max-h-[26rem] overflow-y-auto">
+            {/* Scrolling happens in the modal's content pane; this card just
+                grows with the list */}
+            <div className="border border-[#999] rounded-lg p-4">
                 {/* Loading — driver hasn't reported participants yet.
                     Skeleton rows in ParticipantRow geometry (avatar + name) */}
                 {participantsLoading && (

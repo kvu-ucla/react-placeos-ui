@@ -79,7 +79,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
         role="dialog"
         aria-modal="true"
         aria-label="Support"
-        className="modal-box modal-pop modal-frame bg-white p-8 overflow-y-auto rounded-lg"
+        className="modal-box modal-pop modal-frame bg-white p-8 overflow-hidden flex flex-col rounded-lg"
       >
         {/* Header */}
         <div className="flex justify-between items-center border-b border-avit-grey pb-8">
@@ -106,7 +106,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Body */}
-        <div className="flex mt-4">
+        <div className="flex mt-4 flex-1 min-h-0">
           {/* Sidebar tabs */}
           <div className="w-1/4">
             <div className="flex flex-col space-y-2">
@@ -127,7 +127,7 @@ export default function SupportModal({ onClose }: { onClose: () => void }) {
           </div>
 
           {/* Main content */}
-          <div className="w-3/4 px-6">
+          <div className="w-3/4 px-6 overflow-y-auto min-h-0">
             {activeTab === "Contact" && (
               <>
                 <div className="not-prose text-left text-base text-avit-grey-80">

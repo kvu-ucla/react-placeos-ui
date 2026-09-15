@@ -41,9 +41,9 @@ export default function SettingsModal({
         role="dialog"
         aria-modal="true"
         aria-label="Settings"
-        className="modal-box modal-pop modal-frame bg-white p-8 overflow-y-auto rounded-lg"
+        className="modal-box modal-pop modal-frame bg-white p-8 overflow-hidden flex flex-col rounded-lg"
       >
-        <div className="">
+        <div className="flex flex-col flex-1 min-h-0">
           {/* Header */}
           <div className="flex justify-between items-center border-b border-avit-grey pb-8">
             <h2 className="text-4xl font-semibold">Settings</h2>
@@ -68,7 +68,7 @@ export default function SettingsModal({
             </div>
           </div>
 
-          <div className="flex mt-4 space-x-6">
+          <div className="flex mt-4 space-x-6 flex-1 min-h-0">
             {/* Sidebar */}
             <div className="w-68 space-y-2">
               <Section
@@ -93,7 +93,7 @@ export default function SettingsModal({
             </div>
 
             {/* Content */}
-            <div className="w-full space-y-6 flex-col justify-end items-center">
+            <div className="w-full space-y-6 flex-col justify-end items-center overflow-y-auto min-h-0">
               {/* Keyed so a tab switch remounts with a light entrance fade */}
               <div key={activeTab} className="tab-fade">
                 {activeTab === "Volume" && <MicTab></MicTab>}

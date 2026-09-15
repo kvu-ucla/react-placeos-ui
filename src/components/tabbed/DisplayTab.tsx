@@ -99,7 +99,7 @@ export function DisplayTab() {
       </div>
 
       {/* Container */}
-      <div className="max-h-96 overflow-y-auto space-y-3">
+      <div className="space-y-3">
         {Object.entries(outputs).map(([dispId, display]) => {
           // Filter out camera inputs
           const nonCameraInputs = display.inputs.filter(
