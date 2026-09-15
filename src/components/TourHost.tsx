@@ -186,6 +186,7 @@ export default function TourHost() {
     <TourProvider
       steps={steps}
       scrollSmooth={false}
+      disableDotsNavigation
       components={{ Navigation: TourNavigation, Close: TourClose }}
       styles={{
         maskWrapper: (base) => ({

@@ -45,7 +45,7 @@ export default function SettingsModal({
       >
         <div className="flex flex-col flex-1 min-h-0">
           {/* Header */}
-          <div className="flex justify-between items-center border-b border-avit-grey pb-8">
+          <div className="flex justify-between items-center border-b border-avit-grey pb-8 shrink-0">
             <h2 className="text-4xl font-semibold">Settings</h2>
             <div
               role="button"
