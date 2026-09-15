@@ -87,6 +87,18 @@ header.shadow-lg {
   forced-color-adjust: none; /* forced-colors strips box-shadow */
 }
 
+/* react-toastify sizing: the stock 320px container smushes long messages
+   (e.g. the recording-disclaimer info toast) into 3-4 cramped lines.
+   Panel-scale width + type so the longest current message wraps in ≤2
+   comfortable lines. Un-layered on purpose — see nav-btn note above. */
+:root {
+  --toastify-toast-width: 440px;
+}
+.Toastify__toast-body {
+  font-size: 1.125rem;
+  line-height: 1.45;
+}
+
 @layer utilities {
   :root,
   [data-theme] {
