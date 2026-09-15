@@ -6,13 +6,14 @@ import {useRef} from "react";
 import {CameraPresetButton} from "./CameraPresetButton";
 
 // CameraController's natural rendered size (zoom column + joystick + its own
-// padding/gaps) and the factor that shrinks it so the Camera tab fits the
-// settings modal without scrolling. A transform scale inside a fixed-size box
-// keeps the pointer math exact — getBoundingClientRect reflects transforms —
-// so joystick/zoom behavior is untouched.
+// padding/gaps). A transform scale inside a fixed-size box keeps the pointer
+// math exact — getBoundingClientRect reflects transforms — so joystick/zoom
+// behavior is untouched. 0.85 makes the controls the dominant element of the
+// row (field feedback: they were half-size and dwarfed by the preset grid);
+// tune on-glass if the tab feels cramped.
 const CONTROLLER_NATURAL_W = 528;
 const CONTROLLER_NATURAL_H = 448;
-const CONTROLLER_SCALE = 0.5;
+const CONTROLLER_SCALE = 0.85;
 
 export function CameraTab() {
     const {
@@ -68,9 +69,10 @@ export function CameraTab() {
                 </div>
             </div>
 
-            {/* Pan/tilt/zoom + presets side by side */}
-            <div className="border border-[#999] rounded-lg p-4 flex items-start justify-between gap-6">
-                <div>
+            {/* Pan/tilt/zoom + presets side by side: controls dominate,
+                presets are a single column (field feedback) */}
+            <div className="border border-[#999] rounded-lg p-4 flex items-start gap-6">
+                <div className="flex-1">
                     <h4 className="font-semibold mb-2">Pan, tilt &amp; zoom</h4>
                     <div
                         style={{
@@ -94,13 +96,12 @@ export function CameraTab() {
                     </div>
                 </div>
 
-                {/* Camera Presets */}
-                <div className="flex-1 min-w-0">
+                {/* Camera Presets — one per row; a long list grows the tab and
+                    scrolls with the modal content pane */}
+                <div className="w-[280px] shrink-0">
                     <h4 className="font-semibold mb-2">Camera presets</h4>
                     {selectedCam?.presets ? (
-                        /* 3-up so even a long preset list stays shorter than
-                           the joystick column and can't grow the card */
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="flex flex-col gap-2">
                             {selectedCam.presets.map((preset) => (
                                 <CameraPresetButton
                                     key={preset}
